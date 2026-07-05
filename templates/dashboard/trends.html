@@ -1,0 +1,226 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Monthly Trends{% endblock %}
+{% block page_title %}Monthly Trends{% endblock %}
+
+{% block content %}
+<!-- Controls -->
+<div class="filter-bar">
+  <label class="filter-label">Filter by Year:
+    <select id="yearFilter" class="filter-select" onchange="loadTrends()">
+      <option value="">All Years</option>
+      <option value="2022">2022</option>
+      <option value="2023">2023</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+    </select>
+  </label>
+</div>
+
+<!-- Charts Row 1 -->
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Grant Rate with Rolling Average</span>
+      <span class="chart-badge">Monthly</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="grantRateTrendChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Monthly Application Volume</span>
+      <span class="chart-badge">Lodged</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="volumeChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Granted vs Refused per Month</span>
+      <span class="chart-badge">Stacked</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="stackedBarChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Seasonal Pattern</span>
+      <span class="chart-badge">Avg by Calendar Month</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="seasonalChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- MoM Change Table -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Month-over-Month Summary</span>
+    <span class="chart-badge" id="mom-count">Loading…</span>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="momTable">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Lodged</th>
+          <th>Granted</th>
+          <th>Grant Rate %</th>
+          <th>Refusal Rate %</th>
+          <th>3M Rolling Avg</th>
+        </tr>
+      </thead>
+      <tbody id="momTableBody">
+        <tr><td colspan="6" class="loading-cell">Loading data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let grantRateChart, volumeChartInst, stackedChartInst, seasonalChartInst;
+
+async function loadTrends() {
+  const year = document.getElementById('yearFilter').value;
+  const url  = '/api/monthly/' + (year ? `?year=${year}` : '');
+
+  try {
+    const data = await fetchJSON(url);
+    const labels = data.map(d => d.year_month);
+
+    // ── Grant Rate + Rolling Avg ───────────────────────────────────────
+    const grDatasets = [
+      {
+        label: 'Grant Rate %',
+        data: data.map(d => d.grant_rate),
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59,130,246,0.12)',
+        fill: true, tension: 0.4, pointRadius: 3,
+      },
+      {
+        label: '3M Rolling Avg',
+        data: data.map(d => d.rolling_3m),
+        borderColor: '#f59e0b',
+        borderDash: [5,3],
+        fill: false, tension: 0.4, pointRadius: 0,
+      }
+    ];
+    if (grantRateChart) grantRateChart.destroy();
+    grantRateChart = new Chart(document.getElementById('grantRateTrendChart'), {
+      type: 'line',
+      data: { labels, datasets: grDatasets },
+      options: lineOptions('Grant Rate (%)')
+    });
+
+    // ── Volume bar ────────────────────────────────────────────────────
+    if (volumeChartInst) volumeChartInst.destroy();
+    volumeChartInst = new Chart(document.getElementById('volumeChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Applications Lodged',
+          data: data.map(d => d.lodged),
+          backgroundColor: 'rgba(99,102,241,0.7)',
+          borderRadius: 3,
+        }]
+      },
+      options: barOptions()
+    });
+
+    // ── Stacked bar ───────────────────────────────────────────────────
+    if (stackedChartInst) stackedChartInst.destroy();
+    stackedChartInst = new Chart(document.getElementById('stackedBarChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Granted',
+            data: data.map(d => d.granted),
+            backgroundColor: 'rgba(34,197,94,0.8)',
+            borderRadius: 3,
+          },
+          {
+            label: 'Refused',
+            data: data.map(d => d.lodged - d.granted),
+            backgroundColor: 'rgba(239,68,68,0.7)',
+            borderRadius: 3,
+          }
+        ]
+      },
+      options: {
+        ...barOptions(),
+        scales: {
+          x: { stacked: true, grid: { color: 'rgba(148,163,184,0.06)' } },
+          y: { stacked: true, grid: { color: 'rgba(148,163,184,0.06)' } },
+        }
+      }
+    });
+
+    // ── MoM Table ─────────────────────────────────────────────────────
+    const tbody = document.getElementById('momTableBody');
+    tbody.innerHTML = '';
+    document.getElementById('mom-count').textContent = `${data.length} months`;
+    data.slice().reverse().forEach(row => {
+      const tr = document.createElement('tr');
+      const rateClass = row.grant_rate > 25 ? 'kpi-green' : row.grant_rate < 15 ? 'kpi-red' : '';
+      tr.innerHTML = `
+        <td><span class="mono">${row.year_month}</span> <small>${row.month_name || ''}</small></td>
+        <td class="mono">${fmt(row.lodged)}</td>
+        <td class="mono">${fmt(row.granted)}</td>
+        <td class="mono ${rateClass}">${(row.grant_rate||0).toFixed(1)}%</td>
+        <td class="mono">${(row.refusal_rate||0).toFixed(1)}%</td>
+        <td class="mono">${row.rolling_3m ? row.rolling_3m.toFixed(1)+'%' : '—'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+  } catch(e) { console.error('Trends error', e); }
+}
+
+// ── Seasonal pattern (separate, no year filter) ──────────────────────────
+async function loadSeasonal() {
+  try {
+    const data = await fetchJSON('/api/seasonal/');
+    if (seasonalChartInst) seasonalChartInst.destroy();
+    seasonalChartInst = new Chart(document.getElementById('seasonalChart'), {
+      type: 'line',
+      data: {
+        labels: data.map(d => d.month_name),
+        datasets: [
+          {
+            label: 'Avg Granted',
+            data: data.map(d => d.avg_grant),
+            borderColor: '#22c55e',
+            fill: false, tension: 0.4, pointRadius: 3,
+          },
+          {
+            label: 'Avg Lodged',
+            data: data.map(d => d.avg_lodged),
+            borderColor: '#3b82f6',
+            borderDash: [4,3],
+            fill: false, tension: 0.4, pointRadius: 3,
+          }
+        ]
+      },
+      options: lineOptions('Avg Applications')
+    });
+  } catch(e) { console.error('Seasonal error', e); }
+}
+
+loadTrends();
+loadSeasonal();
+</script>
+{% endblock %}

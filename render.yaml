@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: nepal-visa-analytics
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --no-input
+      python manage.py migrate
+    startCommand: gunicorn core.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "nepal-visa-analytics.onrender.com"
+      - key: DB_NAME
+        fromDatabase:
+          name: nepal-visa-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: nepal-visa-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nepal-visa-db
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: nepal-visa-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: nepal-visa-db
+          property: port
+
+databases:
+  - name: nepal-visa-db
+    databaseName: student_visa_db
+    user: visa_user
+    region: singapore
+    plan: free

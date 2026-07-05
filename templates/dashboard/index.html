@@ -1,0 +1,302 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+<!-- Plain-Language Insights -->
+<section class="card">
+  <div class="chart-header">
+    <span class="chart-title">Key Insights — In Plain Language</span>
+    <span class="chart-badge">Auto-Generated</span>
+  </div>
+  <div class="insight-grid" id="homeInsightGrid">
+    <div class="loading-cell">Generating insights…</div>
+  </div>
+</section>
+
+<!-- KPI Row -->
+<section class="kpi-grid" id="kpi-grid">
+  <div class="kpi-card loading" id="kpi-total">
+    <div class="kpi-label">Total Applications</div>
+    <div class="kpi-value" id="v-total">—</div>
+    <div class="kpi-sub">Nepal · 2022–2026</div>
+  </div>
+  <div class="kpi-card loading" id="kpi-granted">
+    <div class="kpi-label">Total Granted</div>
+    <div class="kpi-value kpi-green" id="v-granted">—</div>
+    <div class="kpi-sub" id="v-grant-rate">Grant Rate: —</div>
+  </div>
+  <div class="kpi-card loading" id="kpi-refused">
+    <div class="kpi-label">Total Refused</div>
+    <div class="kpi-value kpi-red" id="v-refused">—</div>
+    <div class="kpi-sub" id="v-refusal-rate">Refusal Rate: —</div>
+  </div>
+  <div class="kpi-card loading" id="kpi-period">
+    <div class="kpi-label">Financial Years</div>
+    <div class="kpi-value kpi-blue" id="v-fy-count">—</div>
+    <div class="kpi-sub" id="v-period">Period: —</div>
+  </div>
+  <div class="kpi-card loading" id="kpi-sector">
+    <div class="kpi-label">Top Sector</div>
+    <div class="kpi-value kpi-text" id="v-top-sector">—</div>
+    <div class="kpi-sub" id="v-sector-vol">Volume: —</div>
+  </div>
+</section>
+
+<!-- Charts Row 1 -->
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Monthly Grant Rate Trend</span>
+      <span class="chart-badge">2022 – 2026</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="monthlyGrantRateChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Outcomes Overview</span>
+      <span class="chart-badge">All Years</span>
+    </div>
+    <div class="chart-body chart-body-sm">
+      <canvas id="outcomesDoughnutChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row 2 -->
+<div class="chart-row">
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Financial Year Comparison</span>
+      <span class="chart-badge">Lodged / Granted / Refused</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="fyComparisonChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Gender Breakdown</span>
+      <span class="chart-badge">All Years</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="genderChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Row -->
+<div class="chart-row">
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Onshore vs Offshore</span>
+    </div>
+    <div class="chart-body chart-body-sm">
+      <canvas id="locationChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Lodgement Channel</span>
+    </div>
+    <div class="chart-body chart-body-sm">
+      <canvas id="channelChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Age Group Distribution</span>
+    </div>
+    <div class="chart-body chart-body-sm">
+      <canvas id="ageChart"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(async () => {
+  // ── Load Plain-Language Insights ────────────────────────────────────────
+  try {
+    const ins = await fetchJSON('/api/insights/');
+    const grid = document.getElementById('homeInsightGrid');
+    grid.innerHTML = '';
+    ins.cards.slice(0, 4).forEach(card => {
+      const div = document.createElement('div');
+      div.className = `insight-card insight-${card.tone}`;
+      div.innerHTML = `
+        <div class="insight-title">${card.title}</div>
+        <div class="insight-text">${card.text}</div>
+      `;
+      grid.appendChild(div);
+    });
+  } catch(e) { console.error('Insights error', e); }
+
+  // ── Load KPIs ──────────────────────────────────────────────────────────
+  try {
+    const kpi = await fetchJSON('/api/kpi/');
+    document.getElementById('v-total').textContent     = fmt(kpi.total_applications);
+    document.getElementById('v-granted').textContent   = fmt(kpi.total_granted);
+    document.getElementById('v-refused').textContent   = fmt(kpi.total_refused);
+    document.getElementById('v-grant-rate').textContent  = `Grant Rate: ${kpi.grant_rate}%`;
+    document.getElementById('v-refusal-rate').textContent = `Refusal Rate: ${kpi.refusal_rate}%`;
+    document.getElementById('v-fy-count').textContent  = kpi.total_financial_years;
+    document.getElementById('v-period').textContent    = `${kpi.period_start} – ${kpi.period_end}`;
+    document.getElementById('v-top-sector').textContent = shortSector(kpi.top_sector);
+    document.getElementById('v-sector-vol').textContent = `Volume: ${fmt(kpi.top_sector_volume)}`;
+    document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('loading'));
+  } catch(e) { console.error('KPI error', e); }
+
+  // ── Monthly grant rate line chart ──────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/monthly/');
+    const labels = data.map(d => d.year_month);
+    const rates  = data.map(d => d.grant_rate);
+    const roll   = data.map(d => d.rolling_3m);
+
+    new Chart(document.getElementById('monthlyGrantRateChart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Grant Rate %',
+            data: rates,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 2,
+          },
+          {
+            label: '3-Month Rolling Avg',
+            data: roll,
+            borderColor: '#f59e0b',
+            borderDash: [5, 3],
+            fill: false,
+            tension: 0.4,
+            pointRadius: 0,
+          }
+        ]
+      },
+      options: lineOptions('Grant Rate (%)')
+    });
+  } catch(e) { console.error('Monthly chart error', e); }
+
+  // ── Outcomes doughnut ──────────────────────────────────────────────────
+  try {
+    const kpi = await fetchJSON('/api/kpi/');
+    new Chart(document.getElementById('outcomesDoughnutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Granted', 'Refused'],
+        datasets: [{
+          data: [kpi.total_granted, kpi.total_refused],
+          backgroundColor: ['#22c55e', '#ef4444'],
+          borderWidth: 0,
+          hoverOffset: 8,
+        }]
+      },
+      options: {
+        cutout: '72%',
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 16, boxWidth: 12 } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${fmt(ctx.parsed)}` } }
+        }
+      }
+    });
+  } catch(e) { console.error('Doughnut error', e); }
+
+  // ── Financial year bar chart ───────────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/fy/');
+    new Chart(document.getElementById('fyComparisonChart'), {
+      type: 'bar',
+      data: {
+        labels: data.map(d => d.financial_year),
+        datasets: [
+          { label: 'Lodged',  data: data.map(d => d.lodged),  backgroundColor: '#3b82f6' },
+          { label: 'Granted', data: data.map(d => d.granted), backgroundColor: '#22c55e' },
+          { label: 'Refused', data: data.map(d => d.refused), backgroundColor: '#ef4444' },
+        ]
+      },
+      options: barOptions()
+    });
+  } catch(e) { console.error('FY chart error', e); }
+
+  // ── Gender breakdown bar ───────────────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/gender/');
+    new Chart(document.getElementById('genderChart'), {
+      type: 'bar',
+      data: {
+        labels: data.map(d => d.gender),
+        datasets: [
+          { label: 'Lodged',  data: data.map(d => d.lodged),  backgroundColor: '#6366f1' },
+          { label: 'Granted', data: data.map(d => d.granted), backgroundColor: '#22c55e' },
+        ]
+      },
+      options: barOptions()
+    });
+  } catch(e) { console.error('Gender chart error', e); }
+
+  // ── Location doughnut ──────────────────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/location/');
+    new Chart(document.getElementById('locationChart'), {
+      type: 'doughnut',
+      data: {
+        labels: data.map(d => d.client_location),
+        datasets: [{
+          data: data.map(d => d.lodged),
+          backgroundColor: ['#0ea5e9', '#f59e0b'],
+          borderWidth: 0
+        }]
+      },
+      options: { cutout: '65%', plugins: { legend: { position: 'bottom' } } }
+    });
+  } catch(e) { console.error('Location chart error', e); }
+
+  // ── Channel doughnut ───────────────────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/channel/');
+    new Chart(document.getElementById('channelChart'), {
+      type: 'doughnut',
+      data: {
+        labels: data.map(d => d.lodgement_channel),
+        datasets: [{
+          data: data.map(d => d.lodged),
+          backgroundColor: ['#a78bfa', '#34d399'],
+          borderWidth: 0
+        }]
+      },
+      options: { cutout: '65%', plugins: { legend: { position: 'bottom' } } }
+    });
+  } catch(e) { console.error('Channel chart error', e); }
+
+  // ── Age group bar ──────────────────────────────────────────────────────
+  try {
+    const data = await fetchJSON('/api/age/');
+    new Chart(document.getElementById('ageChart'), {
+      type: 'bar',
+      data: {
+        labels: data.map(d => d.age_group),
+        datasets: [{
+          label: 'Applications',
+          data: data.map(d => d.lodged),
+          backgroundColor: data.map((_, i) =>
+            `hsl(${210 + i * 12}, 70%, ${55 + (i % 3) * 5}%)`
+          ),
+          borderRadius: 4,
+        }]
+      },
+      options: { ...barOptions(), indexAxis: 'y' }
+    });
+  } catch(e) { console.error('Age chart error', e); }
+
+})();
+</script>
+{% endblock %}

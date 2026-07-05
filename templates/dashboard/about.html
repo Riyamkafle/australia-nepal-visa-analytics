@@ -1,0 +1,246 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Data Source &amp; Validation{% endblock %}
+{% block page_title %}Data Source &amp; Validation{% endblock %}
+
+{% block content %}
+<!-- Dataset Info -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-title">Dataset Information</span>
+    <span class="chart-badge">Official Source</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-item">
+      <div class="info-label">Source Dataset</div>
+      <div class="info-value">BP0015 — Student Visa Program Trends</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Published By</div>
+      <div class="info-value">Australian Department of Home Affairs</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Source URL</div>
+      <div class="info-value"><a href="https://data.gov.au" target="_blank" class="link">data.gov.au</a></div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Filtered For</div>
+      <div class="info-value">Country of Citizenship = Nepal</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Period Covered</div>
+      <div class="info-value" id="period-covered">Loading…</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Total Raw Records</div>
+      <div class="info-value mono" id="row-count">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Status -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-title">Data Integrity Check</span>
+    <span class="chart-badge" id="validation-badge">Checking…</span>
+  </div>
+  <p class="muted-text mb-3">
+    The dashboard's headline numbers come from pre-aggregated summary tables
+    (for speed). To prove these numbers are <strong>not hardcoded</strong>,
+    the checks below independently recompute the same totals directly from the
+    raw <code class="mono">nepal_merged</code> table (25,939+ row records) and
+    compare them side-by-side.
+  </p>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th>Summary Table Value</th>
+          <th>Recomputed from Raw Data</th>
+          <th>Difference</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody id="validationBody">
+        <tr><td colspan="5" class="loading-cell">Running checks…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Plain Language Insights -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-title">What Does This Data Mean?</span>
+    <span class="chart-badge">Plain Language</span>
+  </div>
+  <div class="insight-grid" id="insightGrid">
+    <div class="loading-cell">Generating insights…</div>
+  </div>
+</div>
+
+<!-- Glossary -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-title">Glossary of Terms</span>
+    <span class="chart-badge">For Non-Technical Readers</span>
+  </div>
+  <div class="glossary-grid">
+    <div class="glossary-item">
+      <div class="glossary-term">Lodged</div>
+      <div class="glossary-def">The number of visa applications submitted, regardless of outcome.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Granted</div>
+      <div class="glossary-def">The number of applications that were approved by the Department of Home Affairs.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Refused</div>
+      <div class="glossary-def">The number of applications that were rejected.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Grant Rate</div>
+      <div class="glossary-def">The percentage of applications that were approved. Calculated as (Granted ÷ Lodged) × 100.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Refusal Rate</div>
+      <div class="glossary-def">The percentage of applications that were rejected. Calculated as 100 − Grant Rate.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Onshore</div>
+      <div class="glossary-def">Applicant was already living in Australia (e.g. on another visa) when they applied.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Offshore</div>
+      <div class="glossary-def">Applicant was living outside Australia (e.g. in Nepal) when they applied.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Sector</div>
+      <div class="glossary-def">The type of education provider, e.g. Higher Education (university), VET (vocational training), or ELICOS (English language courses).</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Financial Year (FY)</div>
+      <div class="glossary-def">Australia's financial year runs from 1 July to 30 June. "2023-24" means 1 July 2023 to 30 June 2024.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">3-Month Rolling Average</div>
+      <div class="glossary-def">The average grant rate over the current month and the two months before it — smooths out month-to-month noise.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Forecast</div>
+      <div class="glossary-def">A statistical projection of future values based on historical trends. Not a guarantee.</div>
+    </div>
+    <div class="glossary-item">
+      <div class="glossary-term">Confidence Band</div>
+      <div class="glossary-def">The range (upper/lower bound) within which the actual future value is likely to fall.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Methodology -->
+<div class="card">
+  <div class="chart-header">
+    <span class="chart-title">How This Dashboard Works</span>
+    <span class="chart-badge">Methodology</span>
+  </div>
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="pipeline-num">1</div>
+      <div class="pipeline-label">CSV / Excel</div>
+      <div class="pipeline-desc">Raw data published by Dept of Home Affairs</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-num">2</div>
+      <div class="pipeline-label">PostgreSQL</div>
+      <div class="pipeline-desc">Loaded into a structured database</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-num">3</div>
+      <div class="pipeline-label">SQL Aggregation</div>
+      <div class="pipeline-desc">SUM, GROUP BY for KPIs &amp; breakdowns</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-num">4</div>
+      <div class="pipeline-label">Django REST API</div>
+      <div class="pipeline-desc">Exposes data as JSON endpoints</div>
+    </div>
+    <div class="pipeline-arrow">→</div>
+    <div class="pipeline-step">
+      <div class="pipeline-num">5</div>
+      <div class="pipeline-label">Chart.js Dashboard</div>
+      <div class="pipeline-desc">Live charts, tables &amp; insights</div>
+    </div>
+  </div>
+  <p class="muted-text mt-3">
+    Every chart on this dashboard fetches data live from the API — nothing is
+    hardcoded into the frontend. If the underlying database is updated
+    (via the <a href="{% url 'upload' %}" class="link">Upload page</a> or the
+    automated import command), every page reflects the new numbers on next load.
+  </p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadAbout() {
+  // ── KPI for period/row count ──────────────────────────────────────────
+  try {
+    const kpi = await fetchJSON('/api/kpi/');
+    document.getElementById('period-covered').textContent = `${kpi.period_start} to ${kpi.period_end}`;
+  } catch(e) { console.error(e); }
+
+  // ── Validation ─────────────────────────────────────────────────────────
+  try {
+    const val = await fetchJSON('/api/validate/');
+    document.getElementById('row-count').textContent = fmt(val.row_count);
+
+    const badge = document.getElementById('validation-badge');
+    if (val.all_checks_passed) {
+      badge.textContent = '✓ Verified';
+      badge.classList.add('badge-success');
+    } else {
+      badge.textContent = '⚠ Mismatch Found';
+      badge.classList.add('badge-error');
+    }
+
+    const tbody = document.getElementById('validationBody');
+    tbody.innerHTML = '';
+    val.checks.forEach(c => {
+      const tr = document.createElement('tr');
+      const resultBadge = c.match
+        ? '<span class="status-badge status-success">✓ Match</span>'
+        : '<span class="status-badge status-error">✗ Mismatch</span>';
+      tr.innerHTML = `
+        <td class="small">${c.check}</td>
+        <td class="mono">${typeof c.fy_summary === 'number' ? fmt(c.fy_summary) : c.fy_summary}</td>
+        <td class="mono">${typeof c.nepal_merged === 'number' ? fmt(c.nepal_merged) : c.nepal_merged}</td>
+        <td class="mono">${typeof c.difference === 'number' ? c.difference.toFixed(2) : c.difference}</td>
+        <td>${resultBadge}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch(e) { console.error('Validation error', e); }
+
+  // ── Insights ───────────────────────────────────────────────────────────
+  try {
+    const ins = await fetchJSON('/api/insights/');
+    const grid = document.getElementById('insightGrid');
+    grid.innerHTML = '';
+    ins.cards.forEach(card => {
+      const div = document.createElement('div');
+      div.className = `insight-card insight-${card.tone}`;
+      div.innerHTML = `
+        <div class="insight-title">${card.title}</div>
+        <div class="insight-text">${card.text}</div>
+      `;
+      grid.appendChild(div);
+    });
+  } catch(e) { console.error('Insights error', e); }
+}
+
+loadAbout();
+</script>
+{% endblock %}

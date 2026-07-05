@@ -1,0 +1,197 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Upload Data{% endblock %}
+{% block page_title %}Upload Data{% endblock %}
+
+{% block content %}
+<div class="upload-grid">
+  <!-- CSV Upload Card -->
+  <div class="card upload-card">
+    <div class="upload-card-header">
+      <div class="upload-icon upload-icon-csv">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="18" x2="12" y2="12"/>
+          <line x1="9" y1="15" x2="12" y2="12"/>
+          <line x1="15" y1="15" x2="12" y2="12"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="upload-card-title">Upload CSV File</h3>
+        <p class="upload-card-sub">Comma-separated values (.csv)</p>
+      </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select CSV File</label>
+        <div class="file-drop" id="csvDrop" onclick="document.getElementById('csvFile').click()">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p class="drop-text" id="csvDropText">Click to browse or drag &amp; drop</p>
+          <p class="drop-sub">.csv files only</p>
+          <input type="file" id="csvFile" name="file" accept=".csv" style="display:none" onchange="updateDropLabel(this, 'csvDropText')">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target Table <span class="form-hint">(auto-detect if empty)</span></label>
+        <select name="target_table" class="filter-select w-full">
+          <option value="">— Auto Detect —</option>
+          <option value="monthly_trend">monthly_trend</option>
+          <option value="by_sector">by_sector</option>
+          <option value="fy_summary">fy_summary</option>
+          <option value="nepal_merged">nepal_merged</option>
+          <option value="forecast">forecast</option>
+          <option value="gender_breakdown">gender_breakdown</option>
+          <option value="location_breakdown">location_breakdown</option>
+          <option value="age_breakdown">age_breakdown</option>
+          <option value="channel_breakdown">channel_breakdown</option>
+          <option value="seasonal_pattern">seasonal_pattern</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Upload CSV</button>
+    </form>
+  </div>
+
+  <!-- Excel Upload Card -->
+  <div class="card upload-card">
+    <div class="upload-card-header">
+      <div class="upload-icon upload-icon-excel">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <path d="M8 13h2l2 3 2-3h2"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="upload-card-title">Upload Excel File</h3>
+        <p class="upload-card-sub">Excel workbook (.xlsx / .xls)</p>
+      </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'upload' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Select Excel File</label>
+        <div class="file-drop" id="excelDrop" onclick="document.getElementById('excelFile').click()">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.4"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p class="drop-text" id="excelDropText">Click to browse or drag &amp; drop</p>
+          <p class="drop-sub">.xlsx or .xls files only</p>
+          <input type="file" id="excelFile" name="file" accept=".xlsx,.xls" style="display:none" onchange="updateDropLabel(this, 'excelDropText')">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Target Table <span class="form-hint">(auto-detect if empty)</span></label>
+        <select name="target_table" class="filter-select w-full">
+          <option value="">— Auto Detect —</option>
+          <option value="monthly_trend">monthly_trend</option>
+          <option value="by_sector">by_sector</option>
+          <option value="fy_summary">fy_summary</option>
+          <option value="nepal_merged">nepal_merged</option>
+          <option value="forecast">forecast</option>
+          <option value="gender_breakdown">gender_breakdown</option>
+          <option value="location_breakdown">location_breakdown</option>
+          <option value="age_breakdown">age_breakdown</option>
+          <option value="channel_breakdown">channel_breakdown</option>
+          <option value="seasonal_pattern">seasonal_pattern</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success w-full">Upload Excel</button>
+    </form>
+  </div>
+</div>
+
+<!-- Schema Reference -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Expected Column Schemas</span>
+    <span class="chart-badge">Reference</span>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead><tr><th>Table</th><th>Required Columns</th><th>Rows in DB</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">monthly_trend</td>     <td class="mono small">year_month, lodged, granted</td>                   <td class="mono">46</td></tr>
+        <tr><td class="mono">by_sector</td>         <td class="mono small">year_month, sector, lodged, granted</td>           <td class="mono">291</td></tr>
+        <tr><td class="mono">fy_summary</td>        <td class="mono small">financial_year, lodged, granted, refused</td>      <td class="mono">4</td></tr>
+        <tr><td class="mono">nepal_merged</td>      <td class="mono small">financial_year, lodged_count</td>                  <td class="mono">25,939</td></tr>
+        <tr><td class="mono">forecast</td>          <td class="mono small">year_month</td>                                    <td class="mono">12</td></tr>
+        <tr><td class="mono">gender_breakdown</td>  <td class="mono small">gender, lodged, granted, refused</td>              <td class="mono">3</td></tr>
+        <tr><td class="mono">location_breakdown</td><td class="mono small">client_location, lodged, granted, refused</td>     <td class="mono">2</td></tr>
+        <tr><td class="mono">age_breakdown</td>     <td class="mono small">age_group, lodged, granted</td>                    <td class="mono">12</td></tr>
+        <tr><td class="mono">channel_breakdown</td> <td class="mono small">lodgement_channel, lodged, granted</td>            <td class="mono">2</td></tr>
+        <tr><td class="mono">seasonal_pattern</td>  <td class="mono small">cal_month, month_name, avg_grant, avg_lodged</td>  <td class="mono">12</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Upload History -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Upload History</span>
+    <span class="chart-badge">Last 50</span>
+  </div>
+  <div class="table-wrapper">
+    {% if history %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Filename</th><th>Type</th>
+          <th>Rows Loaded</th><th>Status</th><th>Uploaded At</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in history %}
+        <tr>
+          <td class="mono">{{ log.id }}</td>
+          <td>{{ log.filename }}</td>
+          <td><span class="meta-badge">{{ log.file_type }}</span></td>
+          <td class="mono">{{ log.rows_loaded|default:"0" }}</td>
+          <td>
+            <span class="status-badge status-{{ log.status }}">{{ log.status }}</span>
+          </td>
+          <td class="mono small">{{ log.uploaded_at|date:"Y-m-d H:i" }}</td>
+          <td class="small">{{ log.notes|default:"—"|truncatechars:60 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+      <p>No uploads yet. Use the forms above to load data.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateDropLabel(input, labelId) {
+  const label = document.getElementById(labelId);
+  if (input.files && input.files[0]) {
+    label.textContent = input.files[0].name;
+    label.style.color = '#60a5fa';
+  }
+}
+
+// Drag & drop support
+['csvDrop', 'excelDrop'].forEach(id => {
+  const drop = document.getElementById(id);
+  if (!drop) return;
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    const fileInput = drop.querySelector('input[type=file]');
+    if (fileInput && e.dataTransfer.files.length) {
+      fileInput.files = e.dataTransfer.files;
+      const textId = drop.querySelector('.drop-text').id;
+      updateDropLabel(fileInput, textId);
+    }
+  });
+});
+</script>
+{% endblock %}

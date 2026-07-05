@@ -1,0 +1,167 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Universities & Providers{% endblock %}
+{% block page_title %}Universities & Providers{% endblock %}
+
+{% block content %}
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Top 10 Providers by Application Volume</span>
+      <span class="chart-badge">Lodged Count</span>
+    </div>
+    <div class="chart-body chart-body-tall">
+      <canvas id="uniVolumeChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Top 10 Providers by Grant Rate</span>
+      <span class="chart-badge">Min 50 Applications</span>
+    </div>
+    <div class="chart-body chart-body-tall">
+      <canvas id="uniGrantRateChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Full Rankings Table -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Provider State Rankings</span>
+    <span class="chart-badge" id="uni-count">Loading…</span>
+  </div>
+  <div class="filter-bar" style="padding: 0 1.5rem 1rem;">
+    <label class="filter-label">Search Provider:
+      <input type="text" id="uniSearch" class="filter-input" placeholder="e.g. NSW, VIC" oninput="filterTable()">
+    </label>
+    <label class="filter-label" style="margin-left:1rem;">Sort by:
+      <select id="uniSort" class="filter-select" onchange="sortTable()">
+        <option value="volume">Volume (Lodged)</option>
+        <option value="grant_rate">Grant Rate</option>
+        <option value="granted">Total Granted</option>
+      </select>
+    </label>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="uniTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Provider State</th>
+          <th>Total Lodged</th>
+          <th>Total Granted</th>
+          <th>Total Refused</th>
+          <th>Grant Rate %</th>
+          <th>Visual</th>
+        </tr>
+      </thead>
+      <tbody id="uniTableBody">
+        <tr><td colspan="7" class="loading-cell">Loading data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allUniData = [];
+
+async function loadUniversities() {
+  try {
+    const data = await fetchJSON('/api/universities/?limit=50');
+    allUniData = data;
+    document.getElementById('uni-count').textContent = `${data.length} providers`;
+
+    renderCharts(data);
+    renderTable(data);
+  } catch(e) { console.error('University data error', e); }
+}
+
+function renderCharts(data) {
+  // Top 10 by volume
+  const top10Vol = [...data].sort((a,b) => b.total_lodged - a.total_lodged).slice(0, 10);
+  new Chart(document.getElementById('uniVolumeChart'), {
+    type: 'bar',
+    data: {
+      labels: top10Vol.map(d => d.provider_state),
+      datasets: [
+        { label: 'Lodged',  data: top10Vol.map(d => d.total_lodged),  backgroundColor: 'rgba(99,102,241,0.8)',  borderRadius: 4 },
+        { label: 'Granted', data: top10Vol.map(d => d.total_granted), backgroundColor: 'rgba(34,197,94,0.8)',  borderRadius: 4 },
+        { label: 'Refused', data: top10Vol.map(d => d.total_refused), backgroundColor: 'rgba(239,68,68,0.6)',  borderRadius: 4 },
+      ]
+    },
+    options: { ...barOptions(), indexAxis: 'y' }
+  });
+
+  // Top 10 by grant rate (min 50 applications)
+  const top10GR = [...data]
+    .filter(d => d.total_lodged >= 50)
+    .sort((a,b) => b.grant_rate - a.grant_rate)
+    .slice(0, 10);
+  new Chart(document.getElementById('uniGrantRateChart'), {
+    type: 'bar',
+    data: {
+      labels: top10GR.map(d => d.provider_state),
+      datasets: [{
+        label: 'Grant Rate %',
+        data: top10GR.map(d => d.grant_rate),
+        backgroundColor: top10GR.map(d =>
+          d.grant_rate > 30 ? 'rgba(34,197,94,0.8)' :
+          d.grant_rate > 20 ? 'rgba(59,130,246,0.8)' :
+          'rgba(239,68,68,0.7)'
+        ),
+        borderRadius: 4,
+      }]
+    },
+    options: { ...barOptions(), indexAxis: 'y' }
+  });
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('uniTableBody');
+  tbody.innerHTML = '';
+  data.forEach((row, i) => {
+    const pct = row.grant_rate;
+    const barW = Math.min(pct * 2, 100);
+    const barColor = pct > 30 ? '#22c55e' : pct > 20 ? '#3b82f6' : '#ef4444';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="mono rank-num">${i + 1}</td>
+      <td><strong>${row.provider_state || '—'}</strong></td>
+      <td class="mono">${fmt(row.total_lodged)}</td>
+      <td class="mono kpi-green">${fmt(row.total_granted)}</td>
+      <td class="mono kpi-red">${fmt(row.total_refused)}</td>
+      <td class="mono">${pct.toFixed(1)}%</td>
+      <td>
+        <div class="mini-bar-wrap">
+          <div class="mini-bar" style="width:${barW}%;background:${barColor}"></div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterTable() {
+  const q = document.getElementById('uniSearch').value.toLowerCase();
+  const filtered = allUniData.filter(d =>
+    (d.provider_state || '').toLowerCase().includes(q)
+  );
+  renderTable(filtered);
+}
+
+function sortTable() {
+  const sortBy = document.getElementById('uniSort').value;
+  const sorted = [...allUniData].sort((a, b) => {
+    if (sortBy === 'volume')     return b.total_lodged  - a.total_lodged;
+    if (sortBy === 'grant_rate') return b.grant_rate    - a.grant_rate;
+    if (sortBy === 'granted')    return b.total_granted - a.total_granted;
+    return 0;
+  });
+  renderTable(sorted);
+}
+
+loadUniversities();
+</script>
+{% endblock %}

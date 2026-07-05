@@ -1,0 +1,180 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Sector Analysis{% endblock %}
+{% block page_title %}Sector Analysis{% endblock %}
+
+{% block content %}
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Grant Rate by Sector</span>
+      <span class="chart-badge">Aggregated All Years</span>
+    </div>
+    <div class="chart-body chart-body-tall">
+      <canvas id="sectorGrantRateChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Applications Volume by Sector</span>
+      <span class="chart-badge">Top 15</span>
+    </div>
+    <div class="chart-body chart-body-tall">
+      <canvas id="sectorVolumeChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Heatmap Table: Sector × Month -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Sector × Month Grant Rate Heatmap</span>
+    <span class="chart-badge" id="heatmap-badge">Loading…</span>
+  </div>
+  <div class="filter-bar" style="padding: 0 1.5rem 1rem;">
+    <label class="filter-label">Filter Sector:
+      <input type="text" id="sectorSearch" class="filter-input" placeholder="e.g. Higher Education" oninput="filterHeatmap()">
+    </label>
+  </div>
+  <div class="table-wrapper table-wrapper-scroll">
+    <table class="data-table heatmap-table" id="heatmapTable">
+      <thead id="heatmapHead"></thead>
+      <tbody id="heatmapBody">
+        <tr><td colspan="20" class="loading-cell">Loading heatmap…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allSectorData = [];
+let heatmapRaw = { sectors: [], months: [], grid: {} };
+
+async function loadSectors() {
+  try {
+    // Aggregate sector data from by_sector endpoint (all pages)
+    const data = await fetchAllPages('/api/sector/');
+    allSectorData = data;
+
+    // Aggregate by sector across all months
+    const agg = {};
+    data.forEach(row => {
+      if (!agg[row.sector]) agg[row.sector] = { lodged: 0, granted: 0 };
+      agg[row.sector].lodged  += row.lodged  || 0;
+      agg[row.sector].granted += row.granted || 0;
+    });
+
+    const sectors = Object.entries(agg)
+      .map(([s, v]) => ({
+        sector: s,
+        lodged: v.lodged,
+        granted: v.granted,
+        grant_rate: v.lodged ? (v.granted / v.lodged * 100) : 0
+      }))
+      .sort((a, b) => b.lodged - a.lodged)
+      .slice(0, 15);
+
+    // ── Grant Rate bar (horizontal) ───────────────────────────────────
+    const sorted = [...sectors].sort((a, b) => b.grant_rate - a.grant_rate);
+    new Chart(document.getElementById('sectorGrantRateChart'), {
+      type: 'bar',
+      data: {
+        labels: sorted.map(s => shortSector(s.sector)),
+        datasets: [{
+          label: 'Grant Rate %',
+          data: sorted.map(s => s.grant_rate.toFixed(2)),
+          backgroundColor: sorted.map(s =>
+            s.grant_rate > 30 ? 'rgba(34,197,94,0.8)' :
+            s.grant_rate > 20 ? 'rgba(59,130,246,0.8)' :
+            'rgba(239,68,68,0.7)'
+          ),
+          borderRadius: 4,
+        }]
+      },
+      options: { ...barOptions(), indexAxis: 'y' }
+    });
+
+    // ── Volume bar ────────────────────────────────────────────────────
+    new Chart(document.getElementById('sectorVolumeChart'), {
+      type: 'bar',
+      data: {
+        labels: sectors.map(s => shortSector(s.sector)),
+        datasets: [
+          {
+            label: 'Lodged',
+            data: sectors.map(s => s.lodged),
+            backgroundColor: 'rgba(99,102,241,0.75)',
+            borderRadius: 3,
+          },
+          {
+            label: 'Granted',
+            data: sectors.map(s => s.granted),
+            backgroundColor: 'rgba(34,197,94,0.75)',
+            borderRadius: 3,
+          }
+        ]
+      },
+      options: { ...barOptions(), indexAxis: 'y' }
+    });
+
+    // ── Build heatmap ─────────────────────────────────────────────────
+    buildHeatmap(data);
+
+  } catch(e) { console.error('Sectors error', e); }
+}
+
+function buildHeatmap(data) {
+  const monthSet   = [...new Set(data.map(d => d.year_month))].sort();
+  const sectorSet  = [...new Set(data.map(d => d.sector))];
+  const grid = {};
+  data.forEach(row => {
+    if (!grid[row.sector]) grid[row.sector] = {};
+    grid[row.sector][row.year_month] = row.grant_rate;
+  });
+  heatmapRaw = { sectors: sectorSet, months: monthSet, grid };
+  document.getElementById('heatmap-badge').textContent = `${sectorSet.length} sectors × ${monthSet.length} months`;
+  renderHeatmap(sectorSet);
+}
+
+function renderHeatmap(sectors) {
+  const { months, grid } = heatmapRaw;
+  const thead = document.getElementById('heatmapHead');
+  const tbody = document.getElementById('heatmapBody');
+
+  // Header (show last 12 months for readability)
+  const visMonths = months.slice(-12);
+  thead.innerHTML = `<tr><th>Sector</th>${visMonths.map(m => `<th class="mono">${m}</th>`).join('')}</tr>`;
+
+  tbody.innerHTML = '';
+  sectors.forEach(sector => {
+    const tr = document.createElement('tr');
+    const cells = visMonths.map(m => {
+      const val = grid[sector] && grid[sector][m] != null ? grid[sector][m] : null;
+      const bg  = val != null ? heatColor(val) : 'transparent';
+      const txt = val != null ? val.toFixed(1) + '%' : '—';
+      return `<td class="heatmap-cell" style="background:${bg}">${txt}</td>`;
+    }).join('');
+    tr.innerHTML = `<td class="sector-label">${shortSector(sector)}</td>${cells}`;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterHeatmap() {
+  const q = document.getElementById('sectorSearch').value.toLowerCase();
+  const filtered = heatmapRaw.sectors.filter(s => s.toLowerCase().includes(q));
+  renderHeatmap(filtered);
+}
+
+function heatColor(val) {
+  // 0% = deep red, 25% = yellow, 50%+ = green
+  const pct = Math.min(val / 50, 1);
+  const r = Math.round(239 - pct * (239 - 34));
+  const g = Math.round(68  + pct * (197 - 68));
+  const b = Math.round(68  + pct * (94  - 68));
+  return `rgba(${r},${g},${b},0.35)`;
+}
+
+loadSectors();
+</script>
+{% endblock %}

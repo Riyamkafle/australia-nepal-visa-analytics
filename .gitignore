@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+staticfiles/
+media/
+db.sqlite3
+*.log
+backup_before_fix.sql
+migration.sql
+data_sources/
+*.xlsx
+.vscode/
+Thumbs.db

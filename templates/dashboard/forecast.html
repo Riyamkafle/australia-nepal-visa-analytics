@@ -1,0 +1,240 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Forecast{% endblock %}
+{% block page_title %}12-Month Forecast{% endblock %}
+
+{% block content %}
+<!-- KPI forecast summary -->
+<section class="kpi-grid kpi-grid-4" id="forecast-kpis">
+  <div class="kpi-card loading">
+    <div class="kpi-label">Avg Forecast Lodged/Mo</div>
+    <div class="kpi-value kpi-blue" id="f-avg-lodged">—</div>
+    <div class="kpi-sub">Next 12 months</div>
+  </div>
+  <div class="kpi-card loading">
+    <div class="kpi-label">Avg Forecast Granted/Mo</div>
+    <div class="kpi-value kpi-green" id="f-avg-granted">—</div>
+    <div class="kpi-sub">Next 12 months</div>
+  </div>
+  <div class="kpi-card loading">
+    <div class="kpi-label">Avg Forecast Grant Rate</div>
+    <div class="kpi-value" id="f-avg-rate">—</div>
+    <div class="kpi-sub">Projected</div>
+  </div>
+  <div class="kpi-card loading">
+    <div class="kpi-label">Confidence Band Width</div>
+    <div class="kpi-value kpi-text" id="f-band">—</div>
+    <div class="kpi-sub">Upper – Lower avg</div>
+  </div>
+</section>
+
+<!-- Main forecast chart -->
+<div class="chart-row">
+  <div class="chart-card full-width">
+    <div class="chart-header">
+      <span class="chart-title">Historical + 12-Month Forecast</span>
+      <span class="chart-badge">Grant Rate %</span>
+    </div>
+    <div class="chart-body chart-body-lg">
+      <canvas id="forecastMainChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Volume forecast -->
+<div class="chart-row">
+  <div class="chart-card wide">
+    <div class="chart-header">
+      <span class="chart-title">Forecast Application Volumes</span>
+      <span class="chart-badge">Lodged / Granted / Refused</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="forecastVolumeChart"></canvas>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Confidence Bands</span>
+      <span class="chart-badge">Upper / Lower Grant Rate</span>
+    </div>
+    <div class="chart-body">
+      <canvas id="confidenceChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Forecast table -->
+<div class="card mt-4">
+  <div class="chart-header">
+    <span class="chart-title">Forecast Detail Table</span>
+    <span class="chart-badge" id="forecast-rows">Loading…</span>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Label</th>
+          <th>Lodged Forecast</th>
+          <th>Granted Forecast</th>
+          <th>Refused Forecast</th>
+          <th>Grant Rate %</th>
+          <th>Lower Bound %</th>
+          <th>Upper Bound %</th>
+        </tr>
+      </thead>
+      <tbody id="forecastTableBody">
+        <tr><td colspan="8" class="loading-cell">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadForecast() {
+  try {
+    const [forecastData, histData] = await Promise.all([
+      fetchJSON('/api/forecast/'),
+      fetchJSON('/api/monthly/')
+    ]);
+
+    // ── KPI cards ──────────────────────────────────────────────────────
+    const avgLodged  = avg(forecastData.map(d => d.lodged_forecast));
+    const avgGranted = avg(forecastData.map(d => d.granted_forecast));
+    const avgRate    = avg(forecastData.map(d => d.grant_rate_forecast));
+    const bandWidth  = avg(forecastData.map(d => (d.upper_bound||0) - (d.lower_bound||0)));
+    document.getElementById('f-avg-lodged').textContent  = Math.round(avgLodged).toLocaleString();
+    document.getElementById('f-avg-granted').textContent = Math.round(avgGranted).toLocaleString();
+    document.getElementById('f-avg-rate').textContent    = avgRate.toFixed(1) + '%';
+    document.getElementById('f-band').textContent        = '±' + (bandWidth/2).toFixed(1) + '%';
+    document.querySelectorAll('.kpi-card').forEach(c => c.classList.remove('loading'));
+
+    // ── Main forecast chart (historical + forecast) ────────────────────
+    const histLabels = histData.map(d => d.year_month);
+    const histRates  = histData.map(d => d.grant_rate);
+    const fLabels    = forecastData.map(d => d.year_month);
+    const fRates     = forecastData.map(d => d.grant_rate_forecast);
+    const fUpper     = forecastData.map(d => d.upper_bound);
+    const fLower     = forecastData.map(d => d.lower_bound);
+
+    // Combine labels
+    const allLabels = [...histLabels, ...fLabels];
+    const histSeries = [...histRates, ...new Array(fLabels.length).fill(null)];
+    const forecastSeries = [...new Array(histLabels.length).fill(null), ...fRates];
+    const upperSeries    = [...new Array(histLabels.length).fill(null), ...fUpper];
+    const lowerSeries    = [...new Array(histLabels.length).fill(null), ...fLower];
+
+    new Chart(document.getElementById('forecastMainChart'), {
+      type: 'line',
+      data: {
+        labels: allLabels,
+        datasets: [
+          {
+            label: 'Historical Grant Rate %',
+            data: histSeries,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59,130,246,0.08)',
+            fill: true, tension: 0.4, pointRadius: 0,
+          },
+          {
+            label: 'Forecast Grant Rate %',
+            data: forecastSeries,
+            borderColor: '#f59e0b',
+            borderDash: [6,3],
+            fill: false, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#f59e0b',
+          },
+          {
+            label: 'Upper Bound',
+            data: upperSeries,
+            borderColor: 'rgba(34,197,94,0.4)',
+            borderDash: [3,3],
+            fill: false, tension: 0.4, pointRadius: 0,
+          },
+          {
+            label: 'Lower Bound',
+            data: lowerSeries,
+            borderColor: 'rgba(239,68,68,0.4)',
+            borderDash: [3,3],
+            fill: '-1',
+            backgroundColor: 'rgba(239,68,68,0.06)',
+            tension: 0.4, pointRadius: 0,
+          }
+        ]
+      },
+      options: lineOptions('Grant Rate (%)')
+    });
+
+    // ── Volume forecast bar ────────────────────────────────────────────
+    new Chart(document.getElementById('forecastVolumeChart'), {
+      type: 'bar',
+      data: {
+        labels: forecastData.map(d => d.month_label || d.year_month),
+        datasets: [
+          { label: 'Lodged Forecast',  data: forecastData.map(d => Math.round(d.lodged_forecast  || 0)), backgroundColor: 'rgba(99,102,241,0.75)', borderRadius: 4 },
+          { label: 'Granted Forecast', data: forecastData.map(d => Math.round(d.granted_forecast || 0)), backgroundColor: 'rgba(34,197,94,0.75)',  borderRadius: 4 },
+          { label: 'Refused Forecast', data: forecastData.map(d => Math.round(d.refused_forecast || 0)), backgroundColor: 'rgba(239,68,68,0.6)',   borderRadius: 4 },
+        ]
+      },
+      options: barOptions()
+    });
+
+    // ── Confidence band chart ──────────────────────────────────────────
+    new Chart(document.getElementById('confidenceChart'), {
+      type: 'line',
+      data: {
+        labels: forecastData.map(d => d.month_label || d.year_month),
+        datasets: [
+          {
+            label: 'Grant Rate Forecast',
+            data: forecastData.map(d => d.grant_rate_forecast),
+            borderColor: '#f59e0b', fill: false, tension: 0.4, pointRadius: 4,
+          },
+          {
+            label: 'Upper',
+            data: forecastData.map(d => d.upper_bound),
+            borderColor: 'rgba(34,197,94,0.5)',
+            fill: false, tension: 0.4, pointRadius: 0, borderDash: [4,2],
+          },
+          {
+            label: 'Lower',
+            data: forecastData.map(d => d.lower_bound),
+            borderColor: 'rgba(239,68,68,0.5)',
+            fill: '-1', backgroundColor: 'rgba(239,68,68,0.08)',
+            tension: 0.4, pointRadius: 0, borderDash: [4,2],
+          }
+        ]
+      },
+      options: lineOptions('Grant Rate (%)')
+    });
+
+    // ── Table ──────────────────────────────────────────────────────────
+    const tbody = document.getElementById('forecastTableBody');
+    tbody.innerHTML = '';
+    document.getElementById('forecast-rows').textContent = `${forecastData.length} periods`;
+    forecastData.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="mono">${row.year_month}</td>
+        <td>${row.month_label || '—'}</td>
+        <td class="mono">${Math.round(row.lodged_forecast  || 0).toLocaleString()}</td>
+        <td class="mono kpi-green">${Math.round(row.granted_forecast || 0).toLocaleString()}</td>
+        <td class="mono kpi-red">${Math.round(row.refused_forecast || 0).toLocaleString()}</td>
+        <td class="mono">${(row.grant_rate_forecast||0).toFixed(1)}%</td>
+        <td class="mono">${(row.lower_bound||0).toFixed(1)}%</td>
+        <td class="mono">${(row.upper_bound||0).toFixed(1)}%</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+  } catch(e) { console.error('Forecast error', e); }
+}
+
+function avg(arr) {
+  const clean = arr.filter(v => v != null);
+  return clean.length ? clean.reduce((a,b) => a+b, 0) / clean.length : 0;
+}
+
+loadForecast();
+</script>
+{% endblock %}
