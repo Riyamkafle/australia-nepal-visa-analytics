@@ -70,7 +70,7 @@ async function loadSectors() {
         sector: s,
         lodged: v.lodged,
         granted: v.granted,
-        grant_rate: v.lodged ? (v.granted / v.lodged * 100) : 0
+        grant_rate: v.lodged ? Math.min(Math.max(v.granted / v.lodged * 100, 0), 100) : 0
       }))
       .sort((a, b) => b.lodged - a.lodged)
       .slice(0, 15);
@@ -130,7 +130,7 @@ function buildHeatmap(data) {
   const grid = {};
   data.forEach(row => {
     if (!grid[row.sector]) grid[row.sector] = {};
-    grid[row.sector][row.year_month] = row.grant_rate;
+    grid[row.sector][row.year_month] = row.display_grant_rate;
   });
   heatmapRaw = { sectors: sectorSet, months: monthSet, grid };
   document.getElementById('heatmap-badge').textContent = `${sectorSet.length} sectors × ${monthSet.length} months`;

@@ -222,22 +222,40 @@ def monthly_trend(request):
     serializer = MonthlyTrendSerializer(qs, many=True)
     clean_data = [sanitize_record(dict(row)) for row in serializer.data]
 
-    # Flag months where grant_rate exceeds 100% — a known artifact of
-    # lodged-month vs decided-month timing mismatch in the source data,
-    # not a calculation error. See FINDINGS_REPORT.md for full explanation.
+    # Flag months where grant_rate exceeds 100% or refusal_rate is negative —
+    # a known artifact of lodged-month vs decided-month timing mismatch in the
+    # source data (grants finalized this month mostly belong to applications
+    # lodged in prior months), not a calculation error. See FINDINGS_REPORT.md
+    # for full explanation.
     for row in clean_data:
         rate = row.get('grant_rate')
-        if rate is not None and (rate > 100 or rate < 0):
+        refusal = row.get('refusal_rate')
+        anomalous = (rate is not None and (rate > 100 or rate < 0)) or \
+                    (refusal is not None and (refusal > 100 or refusal < 0))
+        if anomalous:
             row['data_quality_flag'] = True
-            row['display_grant_rate'] = min(max(rate, 0), 100)
+            row['display_grant_rate'] = min(max(rate, 0), 100) if rate is not None else None
+            row['display_refusal_rate'] = min(max(refusal, 0), 100) if refusal is not None else None
             row['note'] = (
-                'Grant rate exceeds normal range because grants decided this '
-                'month resolved a backlog of applications lodged in prior months. '
-                'The raw figure is preserved in grant_rate; display_grant_rate is capped at 100%.'
+                'Grant/refusal rate exceeds the normal 0-100% range because grants '
+                'decided this month resolved a backlog of applications lodged in '
+                'prior months. Raw figures are preserved in grant_rate/refusal_rate; '
+                'display_grant_rate/display_refusal_rate are capped to 0-100% for charts.'
             )
         else:
             row['data_quality_flag'] = False
             row['display_grant_rate'] = rate
+            row['display_refusal_rate'] = refusal
+
+    # The 'rolling_3m' column was pre-computed (outside this app) from the raw,
+    # uncapped grant_rate values, so it inherits the same >100%/<0% distortion
+    # even after display_grant_rate is fixed above. Recompute a corrected
+    # trailing 3-month average from display_grant_rate instead, since clean_data
+    # is chronologically ordered (MonthlyTrend.Meta.ordering = ['year_month']).
+    for i, row in enumerate(clean_data):
+        window = clean_data[max(0, i - 2):i + 1]
+        vals = [r['display_grant_rate'] for r in window if r['display_grant_rate'] is not None]
+        row['display_rolling_3m'] = round(sum(vals) / len(vals), 2) if vals else None
 
     return Response(clean_data)
 
@@ -259,6 +277,18 @@ def sector_breakdown(request):
     serializer = BySectorSerializer(page, many=True)
     # Sanitize any inf/nan floats that may exist in grant_rate column
     clean_data = [sanitize_record(dict(row)) for row in serializer.data]
+
+    # Same lodged-vs-decided-month timing issue as monthly_trend (see
+    # FINDINGS_REPORT.md): 71 of 293 rows have grant_rate outside 0-100%.
+    for row in clean_data:
+        rate = row.get('grant_rate')
+        if rate is not None and (rate > 100 or rate < 0):
+            row['data_quality_flag'] = True
+            row['display_grant_rate'] = min(max(rate, 0), 100)
+        else:
+            row['data_quality_flag'] = False
+            row['display_grant_rate'] = rate
+
     return paginator.get_paginated_response(clean_data)
 
 

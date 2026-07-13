@@ -154,8 +154,8 @@
   try {
     const data = await fetchJSON('/api/monthly/');
     const labels = data.map(d => d.year_month);
-    const rates  = data.map(d => d.grant_rate);
-    const roll   = data.map(d => d.rolling_3m);
+    const rates  = data.map(d => d.display_grant_rate);
+    const roll   = data.map(d => d.display_rolling_3m);
 
     new Chart(document.getElementById('monthlyGrantRateChart'), {
       type: 'line',

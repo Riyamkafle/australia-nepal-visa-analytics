@@ -112,7 +112,7 @@ async function loadForecast() {
 
     // ── Main forecast chart (historical + forecast) ────────────────────
     const histLabels = histData.map(d => d.year_month);
-    const histRates  = histData.map(d => d.grant_rate);
+    const histRates  = histData.map(d => d.display_grant_rate);
     const fLabels    = forecastData.map(d => d.year_month);
     const fRates     = forecastData.map(d => d.grant_rate_forecast);
     const fUpper     = forecastData.map(d => d.upper_bound);

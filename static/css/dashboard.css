@@ -459,6 +459,14 @@ body {
 
 .kpi-green { color: var(--aus-green) !important; }
 .kpi-red   { color: var(--red) !important; }
+
+.dq-flag {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.8em;
+  color: #d97706;
+  cursor: help;
+}
 .kpi-gold  { color: var(--aus-gold) !important; }
 .rank-num  { color: var(--text-muted); font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; }
 .loading-cell { text-align: center; color: var(--text-muted); padding: 2.5rem; font-size: 0.78rem; }

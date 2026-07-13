@@ -103,14 +103,14 @@ async function loadTrends() {
     const grDatasets = [
       {
         label: 'Grant Rate %',
-        data: data.map(d => d.grant_rate),
+        data: data.map(d => d.display_grant_rate),
         borderColor: '#3b82f6',
         backgroundColor: 'rgba(59,130,246,0.12)',
         fill: true, tension: 0.4, pointRadius: 3,
       },
       {
         label: '3M Rolling Avg',
-        data: data.map(d => d.rolling_3m),
+        data: data.map(d => d.display_rolling_3m),
         borderColor: '#f59e0b',
         borderDash: [5,3],
         fill: false, tension: 0.4, pointRadius: 0,
@@ -154,7 +154,7 @@ async function loadTrends() {
           },
           {
             label: 'Refused',
-            data: data.map(d => d.lodged - d.granted),
+            data: data.map(d => Math.max(d.lodged - d.granted, 0)),
             backgroundColor: 'rgba(239,68,68,0.7)',
             borderRadius: 3,
           }
@@ -175,14 +175,20 @@ async function loadTrends() {
     document.getElementById('mom-count').textContent = `${data.length} months`;
     data.slice().reverse().forEach(row => {
       const tr = document.createElement('tr');
-      const rateClass = row.grant_rate > 25 ? 'kpi-green' : row.grant_rate < 15 ? 'kpi-red' : '';
+      const displayGrant   = row.display_grant_rate ?? row.grant_rate;
+      const displayRefusal = row.display_refusal_rate ?? row.refusal_rate;
+      const rateClass = displayGrant > 25 ? 'kpi-green' : displayGrant < 15 ? 'kpi-red' : '';
+      const flagTitle = row.data_quality_flag
+        ? 'title="Rate capped to 0-100%. Raw source data exceeded this range because grants decided this month resolved a backlog of applications lodged in prior months."'
+        : '';
+      const flagIcon = row.data_quality_flag ? ' <span class="dq-flag" ' + flagTitle + '>⚠</span>' : '';
       tr.innerHTML = `
         <td><span class="mono">${row.year_month}</span> <small>${row.month_name || ''}</small></td>
         <td class="mono">${fmt(row.lodged)}</td>
         <td class="mono">${fmt(row.granted)}</td>
-        <td class="mono ${rateClass}">${(row.grant_rate||0).toFixed(1)}%</td>
-        <td class="mono">${(row.refusal_rate||0).toFixed(1)}%</td>
-        <td class="mono">${row.rolling_3m ? row.rolling_3m.toFixed(1)+'%' : '—'}</td>
+        <td class="mono ${rateClass}">${(displayGrant||0).toFixed(1)}%${flagIcon}</td>
+        <td class="mono">${(displayRefusal||0).toFixed(1)}%</td>
+        <td class="mono">${row.display_rolling_3m ? row.display_rolling_3m.toFixed(1)+'%' : '—'}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -219,7 +225,6 @@ async function loadSeasonal() {
     });
   } catch(e) { console.error('Seasonal error', e); }
 }
-
 loadTrends();
 loadSeasonal();
 </script>
