@@ -17,14 +17,17 @@ from upload.models import UploadLog
 
 logger = logging.getLogger(__name__)
 
-# Public data.gov.au dataset URL for BP0015 student visa data
+# Public data.gov.au dataset URL for BP0015 student visa data.
+# Uses the dataset's stable UUID (not the slug) with the correct
+# /data/api/3/... path — data.gov.au's CKAN API is namespaced under
+# /data/, not just /api/, which was the root cause of earlier 404s.
 DATASET_API_URL = (
-    "https://data.gov.au/api/3/action/package_show"
-    "?id=student-visa-bp0015"
+    "https://data.gov.au/data/api/3/action/package_show"
+    "?id=324aa4f7-46bb-4d56-bc2d-772333a2317e"
 )
 
 FALLBACK_DIRECT_URL = (
-    "https://data.gov.au/data/dataset/student-visa-bp0015/"
+    "https://data.gov.au/data/dataset/student-visas/"
     "resource/latest/download"
 )
 
@@ -59,7 +62,7 @@ class Command(BaseCommand):
 
         # ── Step 1: Resolve download URL ──────────────────────────────────────
         if not direct_url:
-            direct_url = self._resolve_download_url()
+            direct_url = self._resolve_download_url(verbose=dry_run)
 
         if not direct_url:
             raise CommandError('Could not resolve a download URL for BP0015 dataset.')
@@ -132,13 +135,23 @@ class Command(BaseCommand):
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
-    def _resolve_download_url(self) -> str:
+    def _resolve_download_url(self, verbose: bool = False) -> str:
         """Query data.gov.au CKAN API to get the latest XLSX download URL."""
         try:
             resp = requests.get(DATASET_API_URL, timeout=30)
             resp.raise_for_status()
             data = resp.json()
             resources = data.get('result', {}).get('resources', [])
+
+            if verbose:
+                self.stdout.write(self.style.NOTICE(f'\n   Found {len(resources)} resource(s) in dataset:'))
+                for r in resources:
+                    name = r.get('name', '(no name)')
+                    fmt  = r.get('format', '?')
+                    url  = r.get('url', '')
+                    self.stdout.write(f'     - [{fmt}] {name}\n         {url}')
+                self.stdout.write('')
+
             for r in resources:
                 fmt = (r.get('format') or '').upper()
                 url = r.get('url', '')
@@ -149,6 +162,8 @@ class Command(BaseCommand):
                 return resources[0].get('url', '')
         except Exception as exc:
             logger.warning('CKAN API lookup failed: %s', exc)
+            if verbose:
+                self.stdout.write(self.style.ERROR(f'   CKAN API lookup failed: {exc}'))
         return FALLBACK_DIRECT_URL
 
     def _find_column(self, df: pd.DataFrame, candidates: list) -> str | None:
