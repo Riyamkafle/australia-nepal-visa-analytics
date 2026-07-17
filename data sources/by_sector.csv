@@ -1,294 +1,1560 @@
 id,year_month,sector,lodged,granted,grant_rate
-1,2022-07,Foreign Affairs or Defence Sector,4,4,100.0
-2,2022-07,Higher Education Sector,3302,3286,99.52
-3,2022-07,Independent ELICOS Sector,11,10,90.91
-4,2022-07,Postgraduate Research Sector,28,12,42.86
-5,2022-07,Vocational Education and Training Sector,1290,403,31.24
-6,2022-08,Foreign Affairs or Defence Sector,9,6,66.67
-7,2022-08,Higher Education Sector,3061,1535,50.15
-8,2022-08,Independent ELICOS Sector,15,3,20.0
-9,2022-08,Postgraduate Research Sector,17,16,94.12
-10,2022-08,Schools Sector,2,0,0.0
-11,2022-08,Vocational Education and Training Sector,1088,271,24.91
-12,2022-09,Foreign Affairs or Defence Sector,0,1,
-13,2022-09,Higher Education Sector,1914,365,19.07
-14,2022-09,Independent ELICOS Sector,12,0,0.0
-15,2022-09,Postgraduate Research Sector,27,7,25.93
-16,2022-09,Schools Sector,1,0,0.0
-17,2022-09,Vocational Education and Training Sector,721,440,61.03
-18,2022-10,Foreign Affairs or Defence Sector,3,7,233.33
-19,2022-10,Higher Education Sector,1115,978,87.71
-20,2022-10,Independent ELICOS Sector,9,2,22.22
-21,2022-10,Postgraduate Research Sector,22,27,122.73
-22,2022-10,Schools Sector,3,0,0.0
-23,2022-10,Vocational Education and Training Sector,378,268,70.9
-24,2022-11,Foreign Affairs or Defence Sector,13,1,7.69
-25,2022-11,Higher Education Sector,1712,3183,185.92
-26,2022-11,Independent ELICOS Sector,23,13,56.52
-27,2022-11,Postgraduate Research Sector,43,78,181.4
-28,2022-11,Schools Sector,2,0,0.0
-29,2022-11,Vocational Education and Training Sector,572,1162,203.15
-30,2022-12,Foreign Affairs or Defence Sector,3,20,666.67
-31,2022-12,Higher Education Sector,2147,5249,244.48
-32,2022-12,Independent ELICOS Sector,31,137,441.94
-33,2022-12,Postgraduate Research Sector,31,124,400.0
-34,2022-12,Schools Sector,1,3,300.0
-35,2022-12,Vocational Education and Training Sector,795,4004,503.65
-36,2023-01,Foreign Affairs or Defence Sector,2,0,0.0
-37,2023-01,Higher Education Sector,3341,2228,66.69
-38,2023-01,Independent ELICOS Sector,15,15,100.0
-39,2023-01,Postgraduate Research Sector,38,32,84.21
-40,2023-01,Schools Sector,0,1,
-41,2023-01,Vocational Education and Training Sector,700,384,54.86
-42,2023-02,Foreign Affairs or Defence Sector,13,6,46.15
-43,2023-02,Higher Education Sector,4371,2838,64.93
-44,2023-02,Independent ELICOS Sector,14,7,50.0
-45,2023-02,Postgraduate Research Sector,32,42,131.25
-46,2023-02,Schools Sector,1,1,100.0
-47,2023-02,Vocational Education and Training Sector,817,304,37.21
-48,2023-03,Foreign Affairs or Defence Sector,12,17,141.67
-49,2023-03,Higher Education Sector,3962,3178,80.21
-50,2023-03,Independent ELICOS Sector,30,4,13.33
-51,2023-03,Postgraduate Research Sector,23,29,126.09
-52,2023-03,Schools Sector,1,1,100.0
-53,2023-03,Vocational Education and Training Sector,1174,418,35.6
-54,2023-04,Foreign Affairs or Defence Sector,3,6,200.0
-55,2023-04,Higher Education Sector,3074,2087,67.89
-56,2023-04,Independent ELICOS Sector,18,21,116.67
-57,2023-04,Postgraduate Research Sector,17,17,100.0
-58,2023-04,Schools Sector,1,0,0.0
-59,2023-04,Vocational Education and Training Sector,641,624,97.35
-60,2023-05,Foreign Affairs or Defence Sector,1,2,200.0
-61,2023-05,Higher Education Sector,3759,2758,73.37
-62,2023-05,Independent ELICOS Sector,23,46,200.0
-63,2023-05,Non-Award Sector,3,0,0.0
-64,2023-05,Postgraduate Research Sector,46,38,82.61
-65,2023-05,Schools Sector,2,2,100.0
-66,2023-05,Vocational Education and Training Sector,737,759,102.99
-67,2023-06,Foreign Affairs or Defence Sector,4,0,0.0
-68,2023-06,Higher Education Sector,5205,2960,56.87
-69,2023-06,Independent ELICOS Sector,24,7,29.17
-70,2023-06,Non-Award Sector,1,0,0.0
-71,2023-06,Postgraduate Research Sector,21,39,185.71
-72,2023-06,Schools Sector,1,2,200.0
-73,2023-06,Vocational Education and Training Sector,800,243,30.38
-74,2023-07,Foreign Affairs or Defence Sector,2,5,250.0
-75,2023-07,Higher Education Sector,2779,1739,62.58
-76,2023-07,Independent ELICOS Sector,11,4,36.36
-77,2023-07,Postgraduate Research Sector,33,19,57.58
-78,2023-07,Vocational Education and Training Sector,463,267,57.67
-79,2023-08,Foreign Affairs or Defence Sector,12,3,25.0
-80,2023-08,Higher Education Sector,2652,1320,49.77
-81,2023-08,Independent ELICOS Sector,13,8,61.54
-82,2023-08,Postgraduate Research Sector,25,34,136.0
-83,2023-08,Schools Sector,2,0,0.0
-84,2023-08,Vocational Education and Training Sector,551,563,102.18
-85,2023-09,Foreign Affairs or Defence Sector,6,6,100.0
-86,2023-09,Higher Education Sector,2190,1358,62.01
-87,2023-09,Independent ELICOS Sector,18,7,38.89
-88,2023-09,Postgraduate Research Sector,31,21,67.74
-89,2023-09,Schools Sector,1,0,0.0
-90,2023-09,Vocational Education and Training Sector,483,286,59.21
-91,2023-10,Foreign Affairs or Defence Sector,17,17,100.0
-92,2023-10,Higher Education Sector,2061,1271,61.67
-93,2023-10,Independent ELICOS Sector,28,9,32.14
-94,2023-10,Postgraduate Research Sector,13,20,153.85
-95,2023-10,Schools Sector,4,1,25.0
-96,2023-10,Vocational Education and Training Sector,358,253,70.67
-97,2023-11,Foreign Affairs or Defence Sector,17,23,135.29
-98,2023-11,Higher Education Sector,1478,1342,90.8
-99,2023-11,Independent ELICOS Sector,10,6,60.0
-100,2023-11,Non-Award Sector,10,2,20.0
-101,2023-11,Postgraduate Research Sector,25,23,92.0
-102,2023-11,Schools Sector,2,0,0.0
-103,2023-11,Vocational Education and Training Sector,513,199,38.79
-104,2023-12,Foreign Affairs or Defence Sector,5,6,120.0
-105,2023-12,Higher Education Sector,2261,1380,61.03
-106,2023-12,Independent ELICOS Sector,23,4,17.39
-107,2023-12,Non-Award Sector,4,8,200.0
-108,2023-12,Postgraduate Research Sector,30,24,80.0
-109,2023-12,Schools Sector,2,1,50.0
-110,2023-12,Vocational Education and Training Sector,656,59,8.99
-111,2024-01,Foreign Affairs or Defence Sector,4,5,125.0
-112,2024-01,Higher Education Sector,3297,2016,61.15
-113,2024-01,Independent ELICOS Sector,25,8,32.0
-114,2024-01,Non-Award Sector,3,3,100.0
-115,2024-01,Postgraduate Research Sector,31,35,112.9
-116,2024-01,Schools Sector,2,3,150.0
-117,2024-01,Vocational Education and Training Sector,564,71,12.59
-118,2024-02,Foreign Affairs or Defence Sector,1,0,0.0
-119,2024-02,Higher Education Sector,2702,1693,62.66
-120,2024-02,Independent ELICOS Sector,21,2,9.52
-121,2024-02,Non-Award Sector,0,1,
-122,2024-02,Postgraduate Research Sector,51,44,86.27
-123,2024-02,Vocational Education and Training Sector,621,49,7.89
-124,2024-03,Higher Education Sector,3042,658,21.63
-125,2024-03,Independent ELICOS Sector,49,8,16.33
-126,2024-03,Postgraduate Research Sector,32,17,53.12
-127,2024-03,Vocational Education and Training Sector,1441,97,6.73
-128,2024-04,Foreign Affairs or Defence Sector,15,0,0.0
-129,2024-04,Higher Education Sector,1713,712,41.56
-130,2024-04,Independent ELICOS Sector,29,2,6.9
-131,2024-04,Non-Award Sector,1,1,100.0
-132,2024-04,Postgraduate Research Sector,18,13,72.22
-133,2024-04,Schools Sector,2,0,0.0
-134,2024-04,Vocational Education and Training Sector,518,200,38.61
-135,2024-05,Foreign Affairs or Defence Sector,12,20,166.67
-136,2024-05,Higher Education Sector,2408,912,37.87
-137,2024-05,Independent ELICOS Sector,28,5,17.86
-138,2024-05,Non-Award Sector,3,0,0.0
-139,2024-05,Postgraduate Research Sector,26,24,92.31
-140,2024-05,Schools Sector,2,2,100.0
-141,2024-05,Vocational Education and Training Sector,695,316,45.47
-142,2024-06,Foreign Affairs or Defence Sector,3,5,166.67
-143,2024-06,Higher Education Sector,5081,1801,35.45
-144,2024-06,Independent ELICOS Sector,91,9,9.89
-145,2024-06,Non-Award Sector,0,2,
-146,2024-06,Postgraduate Research Sector,112,33,29.46
-147,2024-06,Schools Sector,4,0,0.0
-148,2024-06,Vocational Education and Training Sector,2519,342,13.58
-149,2024-07,Foreign Affairs or Defence Sector,0,3,
-150,2024-07,Higher Education Sector,1952,1790,91.7
-151,2024-07,Independent ELICOS Sector,18,7,38.89
-152,2024-07,Postgraduate Research Sector,43,53,123.26
-153,2024-07,Schools Sector,2,0,0.0
-154,2024-07,Vocational Education and Training Sector,436,301,69.04
-155,2024-08,Foreign Affairs or Defence Sector,8,1,12.5
-156,2024-08,Higher Education Sector,2380,2041,85.76
-157,2024-08,Independent ELICOS Sector,22,9,40.91
-158,2024-08,Postgraduate Research Sector,72,38,52.78
-159,2024-08,Schools Sector,0,1,
-160,2024-08,Vocational Education and Training Sector,539,250,46.38
-161,2024-09,Foreign Affairs or Defence Sector,1,1,100.0
-162,2024-09,Higher Education Sector,2133,1167,54.71
-163,2024-09,Independent ELICOS Sector,30,7,23.33
-164,2024-09,Postgraduate Research Sector,93,25,26.88
-165,2024-09,Schools Sector,1,0,0.0
-166,2024-09,Vocational Education and Training Sector,579,288,49.74
-167,2024-10,Foreign Affairs or Defence Sector,8,9,112.5
-168,2024-10,Higher Education Sector,1577,2090,132.53
-169,2024-10,Independent ELICOS Sector,12,12,100.0
-170,2024-10,Postgraduate Research Sector,58,67,115.52
-171,2024-10,Schools Sector,1,1,100.0
-172,2024-10,Vocational Education and Training Sector,405,286,70.62
-173,2024-11,Foreign Affairs or Defence Sector,29,18,62.07
-174,2024-11,Higher Education Sector,1492,2312,154.96
-175,2024-11,Independent ELICOS Sector,11,15,136.36
-176,2024-11,Non-Award Sector,1,0,0.0
-177,2024-11,Postgraduate Research Sector,34,70,205.88
-178,2024-11,Schools Sector,1,2,200.0
-179,2024-11,Vocational Education and Training Sector,347,338,97.41
-180,2024-12,Foreign Affairs or Defence Sector,9,24,266.67
-181,2024-12,Higher Education Sector,2152,1618,75.19
-182,2024-12,Independent ELICOS Sector,18,5,27.78
-183,2024-12,Non-Award Sector,5,2,40.0
-184,2024-12,Postgraduate Research Sector,100,63,63.0
-185,2024-12,Schools Sector,4,4,100.0
-186,2024-12,Vocational Education and Training Sector,352,421,119.6
-187,2025-01,Foreign Affairs or Defence Sector,5,1,20.0
-188,2025-01,Higher Education Sector,1800,2059,114.39
-189,2025-01,Independent ELICOS Sector,15,10,66.67
-190,2025-01,Non-Award Sector,2,4,200.0
-191,2025-01,Postgraduate Research Sector,82,65,79.27
-192,2025-01,Schools Sector,1,1,100.0
-193,2025-01,Vocational Education and Training Sector,140,368,262.86
-194,2025-02,Foreign Affairs or Defence Sector,18,11,61.11
-195,2025-02,Higher Education Sector,2195,2245,102.28
-196,2025-02,Independent ELICOS Sector,14,15,107.14
-197,2025-02,Non-Award Sector,4,3,75.0
-198,2025-02,Postgraduate Research Sector,129,74,57.36
-199,2025-02,Schools Sector,0,3,
-200,2025-02,Vocational Education and Training Sector,238,523,219.75
-201,2025-03,Foreign Affairs or Defence Sector,2,8,400.0
-202,2025-03,Higher Education Sector,3826,1807,47.23
-203,2025-03,Independent ELICOS Sector,46,15,32.61
-204,2025-03,Non-Award Sector,0,3,
-205,2025-03,Postgraduate Research Sector,156,92,58.97
-206,2025-03,Schools Sector,0,1,
-207,2025-03,Vocational Education and Training Sector,800,343,42.88
-208,2025-04,Foreign Affairs or Defence Sector,4,7,175.0
-209,2025-04,Higher Education Sector,2847,2645,92.9
-210,2025-04,Independent ELICOS Sector,12,21,175.0
-211,2025-04,Non-Award Sector,3,0,0.0
-212,2025-04,Postgraduate Research Sector,90,118,131.11
-213,2025-04,Schools Sector,1,2,200.0
-214,2025-04,Vocational Education and Training Sector,521,538,103.26
-215,2025-05,Foreign Affairs or Defence Sector,7,11,157.14
-216,2025-05,Higher Education Sector,3131,2432,77.67
-217,2025-05,Independent ELICOS Sector,10,6,60.0
-218,2025-05,Non-Award Sector,2,2,100.0
-219,2025-05,Postgraduate Research Sector,132,81,61.36
-220,2025-05,Schools Sector,0,1,
-221,2025-05,Vocational Education and Training Sector,529,302,57.09
-222,2025-06,Foreign Affairs or Defence Sector,0,1,
-223,2025-06,Higher Education Sector,5262,4276,81.26
-224,2025-06,Independent ELICOS Sector,11,18,163.64
-225,2025-06,Non-Award Sector,0,1,
-226,2025-06,Postgraduate Research Sector,187,120,64.17
-227,2025-06,Schools Sector,0,1,
-228,2025-06,Vocational Education and Training Sector,701,296,42.23
-229,2025-07,Foreign Affairs or Defence Sector,7,6,85.71
-230,2025-07,Higher Education Sector,2664,3273,122.86
-231,2025-07,Independent ELICOS Sector,10,7,70.0
-232,2025-07,Non-Award Sector,1,1,100.0
-233,2025-07,Postgraduate Research Sector,101,128,126.73
-234,2025-07,Schools Sector,1,2,200.0
-235,2025-07,Vocational Education and Training Sector,505,370,73.27
-236,2025-08,Foreign Affairs or Defence Sector,0,4,
-237,2025-08,Higher Education Sector,3803,2567,67.5
-238,2025-08,Independent ELICOS Sector,21,8,38.1
-239,2025-08,Postgraduate Research Sector,248,95,38.31
-240,2025-08,Schools Sector,1,0,0.0
-241,2025-08,Vocational Education and Training Sector,684,337,49.27
-242,2025-09,Foreign Affairs or Defence Sector,15,15,100.0
-243,2025-09,Higher Education Sector,3851,3215,83.48
-244,2025-09,Independent ELICOS Sector,11,14,127.27
-245,2025-09,Postgraduate Research Sector,197,162,82.23
-246,2025-09,Schools Sector,0,1,
-247,2025-09,Vocational Education and Training Sector,814,450,55.28
-248,2025-10,Foreign Affairs or Defence Sector,7,3,42.86
-249,2025-10,Higher Education Sector,2560,3350,130.86
-250,2025-10,Independent ELICOS Sector,5,13,260.0
-251,2025-10,Non-Award Sector,1,0,0.0
-252,2025-10,Postgraduate Research Sector,89,113,126.97
-253,2025-10,Schools Sector,1,0,0.0
-254,2025-10,Vocational Education and Training Sector,598,462,77.26
-255,2025-11,Foreign Affairs or Defence Sector,34,2,5.88
-256,2025-11,Higher Education Sector,2533,2105,83.1
-257,2025-11,Independent ELICOS Sector,9,1,11.11
-258,2025-11,Non-Award Sector,2,1,50.0
-259,2025-11,Postgraduate Research Sector,107,324,302.8
-260,2025-11,Schools Sector,1,0,0.0
-261,2025-11,Vocational Education and Training Sector,499,154,30.86
-262,2025-12,Foreign Affairs or Defence Sector,7,39,557.14
-263,2025-12,Higher Education Sector,3131,1266,40.43
-264,2025-12,Independent ELICOS Sector,11,8,72.73
-265,2025-12,Non-Award Sector,3,2,66.67
-266,2025-12,Postgraduate Research Sector,140,152,108.57
-267,2025-12,Vocational Education and Training Sector,415,144,34.7
-268,2026-01,Foreign Affairs or Defence Sector,1,4,400.0
-269,2026-01,Higher Education Sector,4155,1834,44.14
-270,2026-01,Independent ELICOS Sector,17,4,23.53
-271,2026-01,Non-Award Sector,2,3,150.0
-272,2026-01,Postgraduate Research Sector,154,135,87.66
-273,2026-01,Schools Sector,2,1,50.0
-274,2026-01,Vocational Education and Training Sector,313,158,50.48
-275,2026-02,Foreign Affairs or Defence Sector,3,4,133.33
-276,2026-02,Higher Education Sector,2711,2231,82.29
-277,2026-02,Independent ELICOS Sector,26,7,26.92
-278,2026-02,Non-Award Sector,1,0,0.0
-279,2026-02,Postgraduate Research Sector,167,119,71.26
-280,2026-02,Schools Sector,2,0,0.0
-281,2026-02,Vocational Education and Training Sector,222,112,50.45
-282,2026-03,Higher Education Sector,3699,1854,50.12
-283,2026-03,Independent ELICOS Sector,31,4,12.9
-284,2026-03,Non-Award Sector,1,0,0.0
-285,2026-03,Postgraduate Research Sector,244,77,31.56
-286,2026-03,Schools Sector,1,1,100.0
-287,2026-03,Vocational Education and Training Sector,577,121,20.97
-288,2026-04,Foreign Affairs or Defence Sector,2,2,100.0
-289,2026-04,Higher Education Sector,2364,1766,74.7
-290,2026-04,Independent ELICOS Sector,14,4,28.57
-291,2026-04,Non-Award Sector,1,1,100.0
-292,2026-04,Postgraduate Research Sector,122,193,158.2
-293,2026-04,Vocational Education and Training Sector,258,118,45.74
+1,2005-07,Foreign Affairs or Defence Sector,5,3,100.0
+2,2005-07,Higher Education Sector,62,58,95.08
+3,2005-07,Postgraduate Research Sector,5,0,
+4,2005-07,Vocational Education and Training Sector,36,38,92.68
+5,2005-08,Foreign Affairs or Defence Sector,9,7,100.0
+6,2005-08,Higher Education Sector,44,31,83.78
+7,2005-08,Independent ELICOS Sector,1,0,
+8,2005-08,Non-Award Sector,1,1,100.0
+9,2005-08,Postgraduate Research Sector,4,4,100.0
+10,2005-08,Vocational Education and Training Sector,46,35,81.4
+11,2005-09,Foreign Affairs or Defence Sector,4,8,100.0
+12,2005-09,Higher Education Sector,37,19,90.48
+13,2005-09,Independent ELICOS Sector,0,0,0.0
+14,2005-09,Postgraduate Research Sector,2,3,100.0
+15,2005-09,Vocational Education and Training Sector,53,30,90.91
+16,2005-10,Foreign Affairs or Defence Sector,4,0,
+17,2005-10,Higher Education Sector,23,35,94.59
+18,2005-10,Non-Award Sector,0,1,100.0
+19,2005-10,Postgraduate Research Sector,0,1,100.0
+20,2005-10,Schools Sector,2,1,100.0
+21,2005-10,Vocational Education and Training Sector,26,35,85.37
+22,2005-11,Foreign Affairs or Defence Sector,0,4,100.0
+23,2005-11,Higher Education Sector,39,30,88.24
+24,2005-11,Independent ELICOS Sector,1,0,
+25,2005-11,Postgraduate Research Sector,0,3,100.0
+26,2005-11,Schools Sector,1,0,
+27,2005-11,Vocational Education and Training Sector,50,35,85.37
+28,2005-12,Foreign Affairs or Defence Sector,6,6,100.0
+29,2005-12,Higher Education Sector,92,17,80.95
+30,2005-12,Independent ELICOS Sector,0,1,100.0
+31,2005-12,Non-Award Sector,1,0,
+32,2005-12,Postgraduate Research Sector,4,2,100.0
+33,2005-12,Vocational Education and Training Sector,83,17,100.0
+34,2006-01,Higher Education Sector,77,69,92.0
+35,2006-01,Non-Award Sector,0,1,100.0
+36,2006-01,Postgraduate Research Sector,6,0,
+37,2006-01,Schools Sector,1,0,0.0
+38,2006-01,Vocational Education and Training Sector,68,69,95.83
+39,2006-02,Foreign Affairs or Defence Sector,4,1,100.0
+40,2006-02,Higher Education Sector,62,86,90.53
+41,2006-02,Non-Award Sector,1,0,
+42,2006-02,Postgraduate Research Sector,0,6,100.0
+43,2006-02,Schools Sector,1,1,100.0
+44,2006-02,Vocational Education and Training Sector,64,45,86.54
+45,2006-03,Foreign Affairs or Defence Sector,2,1,100.0
+46,2006-03,Higher Education Sector,84,42,91.3
+47,2006-03,Independent ELICOS Sector,1,0,
+48,2006-03,Non-Award Sector,1,0,
+49,2006-03,Postgraduate Research Sector,4,2,100.0
+50,2006-03,Schools Sector,1,0,
+51,2006-03,Vocational Education and Training Sector,88,25,89.29
+52,2006-04,Foreign Affairs or Defence Sector,0,1,100.0
+53,2006-04,Higher Education Sector,29,40,88.89
+54,2006-04,Non-Award Sector,1,0,
+55,2006-04,Postgraduate Research Sector,2,1,100.0
+56,2006-04,Schools Sector,0,1,100.0
+57,2006-04,Vocational Education and Training Sector,44,80,95.24
+58,2006-05,Foreign Affairs or Defence Sector,0,1,100.0
+59,2006-05,Higher Education Sector,148,69,95.83
+60,2006-05,Independent ELICOS Sector,1,0,
+61,2006-05,Postgraduate Research Sector,5,3,100.0
+62,2006-05,Schools Sector,2,0,
+63,2006-05,Vocational Education and Training Sector,113,59,89.39
+64,2006-06,Higher Education Sector,110,44,89.8
+65,2006-06,Independent ELICOS Sector,2,0,
+66,2006-06,Non-Award Sector,1,3,100.0
+67,2006-06,Postgraduate Research Sector,2,7,100.0
+68,2006-06,Schools Sector,0,0,0.0
+69,2006-06,Vocational Education and Training Sector,86,28,84.85
+70,2006-07,Higher Education Sector,79,109,99.09
+71,2006-07,Independent ELICOS Sector,0,0,0.0
+72,2006-07,Non-Award Sector,1,0,
+73,2006-07,Postgraduate Research Sector,4,0,
+74,2006-07,Schools Sector,0,1,100.0
+75,2006-07,Vocational Education and Training Sector,110,82,97.62
+76,2006-08,Higher Education Sector,183,89,91.75
+77,2006-08,Independent ELICOS Sector,2,1,50.0
+78,2006-08,Postgraduate Research Sector,2,6,100.0
+79,2006-08,Schools Sector,1,1,100.0
+80,2006-08,Vocational Education and Training Sector,154,86,92.47
+81,2006-09,Foreign Affairs or Defence Sector,0,0,0.0
+82,2006-09,Higher Education Sector,187,113,97.41
+83,2006-09,Independent ELICOS Sector,0,1,100.0
+84,2006-09,Schools Sector,1,1,100.0
+85,2006-09,Vocational Education and Training Sector,161,208,95.41
+86,2006-10,Foreign Affairs or Defence Sector,4,0,
+87,2006-10,Higher Education Sector,88,126,96.18
+88,2006-10,Independent ELICOS Sector,1,1,50.0
+89,2006-10,Schools Sector,1,0,
+90,2006-10,Vocational Education and Training Sector,128,87,85.29
+91,2006-11,Foreign Affairs or Defence Sector,8,3,100.0
+92,2006-11,Higher Education Sector,157,173,97.19
+93,2006-11,Postgraduate Research Sector,3,2,100.0
+94,2006-11,Schools Sector,0,1,100.0
+95,2006-11,Vocational Education and Training Sector,265,172,98.85
+96,2006-12,Foreign Affairs or Defence Sector,0,9,100.0
+97,2006-12,Higher Education Sector,274,128,91.43
+98,2006-12,Independent ELICOS Sector,2,1,100.0
+99,2006-12,Postgraduate Research Sector,2,0,
+100,2006-12,Schools Sector,2,1,100.0
+101,2006-12,Vocational Education and Training Sector,466,121,93.8
+102,2007-01,Higher Education Sector,209,233,98.73
+103,2007-01,Independent ELICOS Sector,4,1,100.0
+104,2007-01,Non-Award Sector,0,2,100.0
+105,2007-01,Postgraduate Research Sector,7,1,100.0
+106,2007-01,Schools Sector,0,1,100.0
+107,2007-01,Vocational Education and Training Sector,460,398,96.37
+108,2007-02,Foreign Affairs or Defence Sector,5,0,
+109,2007-02,Higher Education Sector,191,289,98.97
+110,2007-02,Independent ELICOS Sector,7,1,100.0
+111,2007-02,Non-Award Sector,1,0,
+112,2007-02,Postgraduate Research Sector,5,5,100.0
+113,2007-02,Vocational Education and Training Sector,395,437,99.09
+114,2007-03,Foreign Affairs or Defence Sector,8,11,100.0
+115,2007-03,Higher Education Sector,220,190,99.48
+116,2007-03,Independent ELICOS Sector,8,3,100.0
+117,2007-03,Non-Award Sector,5,0,
+118,2007-03,Postgraduate Research Sector,1,6,100.0
+119,2007-03,Schools Sector,3,0,
+120,2007-03,Vocational Education and Training Sector,440,423,98.14
+121,2007-04,Higher Education Sector,345,96,96.0
+122,2007-04,Independent ELICOS Sector,5,1,100.0
+123,2007-04,Non-Award Sector,1,2,100.0
+124,2007-04,Postgraduate Research Sector,14,5,100.0
+125,2007-04,Schools Sector,1,0,
+126,2007-04,Vocational Education and Training Sector,594,252,95.45
+127,2007-05,Foreign Affairs or Defence Sector,0,1,100.0
+128,2007-05,Higher Education Sector,471,131,92.25
+129,2007-05,Independent ELICOS Sector,8,1,100.0
+130,2007-05,Non-Award Sector,1,2,100.0
+131,2007-05,Postgraduate Research Sector,5,2,100.0
+132,2007-05,Schools Sector,1,1,100.0
+133,2007-05,Vocational Education and Training Sector,637,171,90.96
+134,2007-06,Higher Education Sector,217,296,93.67
+135,2007-06,Independent ELICOS Sector,15,3,21.43
+136,2007-06,Non-Award Sector,0,3,100.0
+137,2007-06,Postgraduate Research Sector,2,6,100.0
+138,2007-06,Schools Sector,0,0,0.0
+139,2007-06,Vocational Education and Training Sector,580,493,92.5
+140,2007-07,Higher Education Sector,198,477,96.56
+141,2007-07,Independent ELICOS Sector,8,2,66.67
+142,2007-07,Non-Award Sector,1,0,
+143,2007-07,Postgraduate Research Sector,0,8,100.0
+144,2007-07,Schools Sector,2,3,100.0
+145,2007-07,Vocational Education and Training Sector,689,603,93.06
+146,2007-08,Higher Education Sector,249,169,96.57
+147,2007-08,Independent ELICOS Sector,7,1,20.0
+148,2007-08,Non-Award Sector,1,0,
+149,2007-08,Postgraduate Research Sector,1,4,100.0
+150,2007-08,Schools Sector,0,1,100.0
+151,2007-08,Vocational Education and Training Sector,585,372,87.53
+152,2007-09,Higher Education Sector,261,167,98.24
+153,2007-09,Independent ELICOS Sector,7,1,33.33
+154,2007-09,Postgraduate Research Sector,2,1,100.0
+155,2007-09,Schools Sector,1,0,
+156,2007-09,Vocational Education and Training Sector,468,323,87.3
+157,2007-10,Higher Education Sector,116,218,99.54
+158,2007-10,Independent ELICOS Sector,4,2,100.0
+159,2007-10,Non-Award Sector,1,0,
+160,2007-10,Postgraduate Research Sector,0,1,100.0
+161,2007-10,Vocational Education and Training Sector,453,420,97.67
+162,2007-11,Foreign Affairs or Defence Sector,12,0,
+163,2007-11,Higher Education Sector,204,216,94.32
+164,2007-11,Independent ELICOS Sector,2,0,0.0
+165,2007-11,Non-Award Sector,0,2,66.67
+166,2007-11,Postgraduate Research Sector,3,0,
+167,2007-11,Schools Sector,1,2,100.0
+168,2007-11,Vocational Education and Training Sector,458,600,82.64
+169,2007-12,Foreign Affairs or Defence Sector,3,13,100.0
+170,2007-12,Higher Education Sector,287,172,96.63
+171,2007-12,Independent ELICOS Sector,5,0,0.0
+172,2007-12,Non-Award Sector,2,0,
+173,2007-12,Postgraduate Research Sector,6,2,100.0
+174,2007-12,Schools Sector,1,0,
+175,2007-12,Vocational Education and Training Sector,565,600,97.24
+176,2008-01,Foreign Affairs or Defence Sector,0,2,100.0
+177,2008-01,Higher Education Sector,193,315,98.75
+178,2008-01,Independent ELICOS Sector,3,2,11.11
+179,2008-01,Non-Award Sector,0,3,100.0
+180,2008-01,Postgraduate Research Sector,9,3,100.0
+181,2008-01,Vocational Education and Training Sector,451,648,95.29
+182,2008-02,Foreign Affairs or Defence Sector,1,0,
+183,2008-02,Higher Education Sector,251,342,96.07
+184,2008-02,Independent ELICOS Sector,1,2,15.38
+185,2008-02,Non-Award Sector,2,0,
+186,2008-02,Postgraduate Research Sector,7,6,100.0
+187,2008-02,Schools Sector,1,1,100.0
+188,2008-02,Vocational Education and Training Sector,506,606,90.72
+189,2008-03,Foreign Affairs or Defence Sector,3,0,
+190,2008-03,Higher Education Sector,346,224,96.14
+191,2008-03,Independent ELICOS Sector,5,1,20.0
+192,2008-03,Non-Award Sector,3,2,100.0
+193,2008-03,Postgraduate Research Sector,9,6,100.0
+194,2008-03,Schools Sector,1,1,100.0
+195,2008-03,Vocational Education and Training Sector,694,507,87.72
+196,2008-04,Foreign Affairs or Defence Sector,0,4,100.0
+197,2008-04,Higher Education Sector,260,305,95.91
+198,2008-04,Independent ELICOS Sector,1,0,0.0
+199,2008-04,Non-Award Sector,2,1,50.0
+200,2008-04,Postgraduate Research Sector,7,9,100.0
+201,2008-04,Schools Sector,0,2,100.0
+202,2008-04,Vocational Education and Training Sector,756,675,91.09
+203,2008-05,Higher Education Sector,322,306,96.53
+204,2008-05,Independent ELICOS Sector,3,3,75.0
+205,2008-05,Non-Award Sector,2,1,50.0
+206,2008-05,Postgraduate Research Sector,10,14,93.33
+207,2008-05,Schools Sector,2,0,
+208,2008-05,Vocational Education and Training Sector,1086,818,92.43
+209,2008-06,Higher Education Sector,202,236,98.33
+210,2008-06,Independent ELICOS Sector,2,2,66.67
+211,2008-06,Non-Award Sector,0,1,100.0
+212,2008-06,Postgraduate Research Sector,3,6,100.0
+213,2008-06,Schools Sector,1,1,100.0
+214,2008-06,Vocational Education and Training Sector,1089,823,97.74
+215,2008-07,Higher Education Sector,165,253,97.31
+216,2008-07,Independent ELICOS Sector,0,0,0.0
+217,2008-07,Non-Award Sector,0,1,100.0
+218,2008-07,Postgraduate Research Sector,5,6,85.71
+219,2008-07,Schools Sector,1,2,66.67
+220,2008-07,Vocational Education and Training Sector,1193,835,93.61
+221,2008-08,Higher Education Sector,302,181,96.79
+222,2008-08,Independent ELICOS Sector,3,1,33.33
+223,2008-08,Non-Award Sector,0,1,100.0
+224,2008-08,Postgraduate Research Sector,11,2,100.0
+225,2008-08,Vocational Education and Training Sector,1767,1034,93.15
+226,2008-09,Higher Education Sector,406,229,98.28
+227,2008-09,Independent ELICOS Sector,5,1,100.0
+228,2008-09,Postgraduate Research Sector,6,10,100.0
+229,2008-09,Schools Sector,3,0,
+230,2008-09,Vocational Education and Training Sector,1674,1048,94.33
+231,2008-10,Foreign Affairs or Defence Sector,3,0,
+232,2008-10,Higher Education Sector,211,229,99.57
+233,2008-10,Independent ELICOS Sector,2,0,0.0
+234,2008-10,Non-Award Sector,5,1,100.0
+235,2008-10,Postgraduate Research Sector,0,5,100.0
+236,2008-10,Schools Sector,2,0,
+237,2008-10,Vocational Education and Training Sector,1234,1065,96.47
+238,2008-11,Foreign Affairs or Defence Sector,13,7,100.0
+239,2008-11,Higher Education Sector,282,209,95.0
+240,2008-11,Independent ELICOS Sector,3,0,
+241,2008-11,Non-Award Sector,0,0,0.0
+242,2008-11,Postgraduate Research Sector,3,3,100.0
+243,2008-11,Schools Sector,1,3,100.0
+244,2008-11,Vocational Education and Training Sector,2124,934,91.75
+245,2008-12,Foreign Affairs or Defence Sector,3,4,100.0
+246,2008-12,Higher Education Sector,428,167,92.78
+247,2008-12,Independent ELICOS Sector,4,0,0.0
+248,2008-12,Non-Award Sector,2,0,
+249,2008-12,Postgraduate Research Sector,7,0,
+250,2008-12,Schools Sector,6,1,100.0
+251,2008-12,Vocational Education and Training Sector,2295,1101,92.29
+252,2009-01,Foreign Affairs or Defence Sector,2,0,
+253,2009-01,Higher Education Sector,327,213,92.61
+254,2009-01,Independent ELICOS Sector,1,0,
+255,2009-01,Non-Award Sector,1,0,0.0
+256,2009-01,Postgraduate Research Sector,8,2,100.0
+257,2009-01,Schools Sector,3,5,100.0
+258,2009-01,Vocational Education and Training Sector,2155,1131,83.47
+259,2009-02,Foreign Affairs or Defence Sector,0,3,100.0
+260,2009-02,Higher Education Sector,181,214,92.24
+261,2009-02,Independent ELICOS Sector,0,1,100.0
+262,2009-02,Non-Award Sector,0,0,0.0
+263,2009-02,Postgraduate Research Sector,3,6,100.0
+264,2009-02,Schools Sector,1,0,0.0
+265,2009-02,Vocational Education and Training Sector,610,639,83.09
+266,2009-03,Foreign Affairs or Defence Sector,1,1,100.0
+267,2009-03,Higher Education Sector,290,205,83.0
+268,2009-03,Independent ELICOS Sector,6,0,0.0
+269,2009-03,Non-Award Sector,1,0,
+270,2009-03,Postgraduate Research Sector,6,2,100.0
+271,2009-03,Schools Sector,6,0,
+272,2009-03,Vocational Education and Training Sector,475,795,71.88
+273,2009-04,Higher Education Sector,196,162,73.3
+274,2009-04,Independent ELICOS Sector,0,0,0.0
+275,2009-04,Non-Award Sector,4,0,
+276,2009-04,Postgraduate Research Sector,5,5,100.0
+277,2009-04,Schools Sector,9,4,80.0
+278,2009-04,Vocational Education and Training Sector,400,910,60.67
+279,2009-05,Foreign Affairs or Defence Sector,0,4,100.0
+280,2009-05,Higher Education Sector,275,202,73.45
+281,2009-05,Independent ELICOS Sector,1,5,62.5
+282,2009-05,Non-Award Sector,1,1,100.0
+283,2009-05,Postgraduate Research Sector,9,6,100.0
+284,2009-05,Schools Sector,18,0,0.0
+285,2009-05,Vocational Education and Training Sector,487,723,51.72
+286,2009-06,Foreign Affairs or Defence Sector,1,0,
+287,2009-06,Higher Education Sector,235,400,87.34
+288,2009-06,Independent ELICOS Sector,5,4,66.67
+289,2009-06,Non-Award Sector,0,4,100.0
+290,2009-06,Postgraduate Research Sector,0,10,100.0
+291,2009-06,Schools Sector,10,5,83.33
+292,2009-06,Vocational Education and Training Sector,475,1000,70.18
+293,2009-07,Foreign Affairs or Defence Sector,3,1,100.0
+294,2009-07,Higher Education Sector,204,286,87.2
+295,2009-07,Independent ELICOS Sector,0,0,0.0
+296,2009-07,Non-Award Sector,0,1,100.0
+297,2009-07,Postgraduate Research Sector,2,4,100.0
+298,2009-07,Schools Sector,4,5,62.5
+299,2009-07,Vocational Education and Training Sector,447,557,63.66
+300,2009-08,Higher Education Sector,312,153,60.71
+301,2009-08,Independent ELICOS Sector,1,0,
+302,2009-08,Postgraduate Research Sector,2,2,100.0
+303,2009-08,Schools Sector,3,0,0.0
+304,2009-08,Vocational Education and Training Sector,496,181,33.03
+305,2009-09,Foreign Affairs or Defence Sector,0,3,100.0
+306,2009-09,Higher Education Sector,295,238,83.51
+307,2009-09,Postgraduate Research Sector,14,4,100.0
+308,2009-09,Schools Sector,6,0,0.0
+309,2009-09,Vocational Education and Training Sector,427,267,46.92
+310,2009-10,Higher Education Sector,171,186,81.58
+311,2009-10,Independent ELICOS Sector,2,1,100.0
+312,2009-10,Postgraduate Research Sector,1,2,100.0
+313,2009-10,Schools Sector,3,2,16.67
+314,2009-10,Vocational Education and Training Sector,270,267,55.86
+315,2009-11,Foreign Affairs or Defence Sector,7,0,
+316,2009-11,Higher Education Sector,214,189,80.43
+317,2009-11,Independent ELICOS Sector,1,0,0.0
+318,2009-11,Postgraduate Research Sector,5,7,100.0
+319,2009-11,Schools Sector,5,2,22.22
+320,2009-11,Vocational Education and Training Sector,328,235,53.53
+321,2009-12,Foreign Affairs or Defence Sector,6,9,100.0
+322,2009-12,Higher Education Sector,230,165,91.16
+323,2009-12,Independent ELICOS Sector,1,0,0.0
+324,2009-12,Postgraduate Research Sector,2,0,
+325,2009-12,Schools Sector,0,0,0.0
+326,2009-12,Vocational Education and Training Sector,241,220,60.77
+327,2010-01,Foreign Affairs or Defence Sector,2,4,100.0
+328,2010-01,Higher Education Sector,114,189,82.17
+329,2010-01,Postgraduate Research Sector,2,5,100.0
+330,2010-01,Schools Sector,2,2,40.0
+331,2010-01,Vocational Education and Training Sector,122,187,52.38
+332,2010-02,Foreign Affairs or Defence Sector,2,3,100.0
+333,2010-02,Higher Education Sector,271,176,79.64
+334,2010-02,Independent ELICOS Sector,0,1,50.0
+335,2010-02,Postgraduate Research Sector,6,2,100.0
+336,2010-02,Schools Sector,2,1,16.67
+337,2010-02,Vocational Education and Training Sector,239,163,67.92
+338,2010-03,Foreign Affairs or Defence Sector,4,5,100.0
+339,2010-03,Higher Education Sector,556,316,97.53
+340,2010-03,Independent ELICOS Sector,1,0,0.0
+341,2010-03,Postgraduate Research Sector,9,10,100.0
+342,2010-03,Schools Sector,2,2,100.0
+343,2010-03,Vocational Education and Training Sector,621,284,90.45
+344,2010-04,Higher Education Sector,219,318,87.85
+345,2010-04,Independent ELICOS Sector,4,0,
+346,2010-04,Postgraduate Research Sector,5,5,100.0
+347,2010-04,Schools Sector,0,0,0.0
+348,2010-04,Vocational Education and Training Sector,240,297,77.95
+349,2010-05,Foreign Affairs or Defence Sector,2,0,
+350,2010-05,Higher Education Sector,340,215,89.58
+351,2010-05,Independent ELICOS Sector,1,5,100.0
+352,2010-05,Non-Award Sector,2,0,
+353,2010-05,Postgraduate Research Sector,10,14,100.0
+354,2010-05,Schools Sector,1,1,50.0
+355,2010-05,Vocational Education and Training Sector,300,265,87.46
+356,2010-06,Foreign Affairs or Defence Sector,2,2,100.0
+357,2010-06,Higher Education Sector,257,320,91.17
+358,2010-06,Independent ELICOS Sector,3,1,50.0
+359,2010-06,Postgraduate Research Sector,12,6,100.0
+360,2010-06,Schools Sector,1,1,100.0
+361,2010-06,Vocational Education and Training Sector,285,286,80.56
+362,2010-07,Foreign Affairs or Defence Sector,0,2,100.0
+363,2010-07,Higher Education Sector,283,239,85.36
+364,2010-07,Independent ELICOS Sector,0,1,50.0
+365,2010-07,Non-Award Sector,2,2,100.0
+366,2010-07,Postgraduate Research Sector,7,7,100.0
+367,2010-07,Schools Sector,1,1,100.0
+368,2010-07,Vocational Education and Training Sector,270,215,78.18
+369,2010-08,Foreign Affairs or Defence Sector,3,0,
+370,2010-08,Higher Education Sector,578,248,86.71
+371,2010-08,Independent ELICOS Sector,3,1,100.0
+372,2010-08,Postgraduate Research Sector,7,6,100.0
+373,2010-08,Schools Sector,1,0,0.0
+374,2010-08,Vocational Education and Training Sector,469,200,73.8
+375,2010-09,Foreign Affairs or Defence Sector,3,3,100.0
+376,2010-09,Higher Education Sector,393,389,92.18
+377,2010-09,Independent ELICOS Sector,6,2,100.0
+378,2010-09,Non-Award Sector,0,0,0.0
+379,2010-09,Postgraduate Research Sector,4,7,100.0
+380,2010-09,Vocational Education and Training Sector,268,259,79.69
+381,2010-10,Foreign Affairs or Defence Sector,0,3,100.0
+382,2010-10,Higher Education Sector,336,371,91.15
+383,2010-10,Independent ELICOS Sector,5,2,66.67
+384,2010-10,Postgraduate Research Sector,5,4,100.0
+385,2010-10,Vocational Education and Training Sector,307,250,83.89
+386,2010-11,Foreign Affairs or Defence Sector,34,14,100.0
+387,2010-11,Higher Education Sector,535,439,94.61
+388,2010-11,Independent ELICOS Sector,3,5,71.43
+389,2010-11,Postgraduate Research Sector,3,5,100.0
+390,2010-11,Schools Sector,2,0,
+391,2010-11,Vocational Education and Training Sector,470,374,88.84
+392,2010-12,Foreign Affairs or Defence Sector,1,16,100.0
+393,2010-12,Higher Education Sector,363,456,95.2
+394,2010-12,Independent ELICOS Sector,3,2,100.0
+395,2010-12,Non-Award Sector,1,0,
+396,2010-12,Postgraduate Research Sector,4,3,100.0
+397,2010-12,Vocational Education and Training Sector,241,302,86.29
+398,2011-01,Foreign Affairs or Defence Sector,4,0,
+399,2011-01,Higher Education Sector,267,300,93.75
+400,2011-01,Independent ELICOS Sector,1,1,50.0
+401,2011-01,Non-Award Sector,0,1,100.0
+402,2011-01,Postgraduate Research Sector,7,6,100.0
+403,2011-01,Schools Sector,0,1,50.0
+404,2011-01,Vocational Education and Training Sector,133,253,88.46
+405,2011-02,Foreign Affairs or Defence Sector,9,13,100.0
+406,2011-02,Higher Education Sector,643,313,92.88
+407,2011-02,Independent ELICOS Sector,2,2,66.67
+408,2011-02,Postgraduate Research Sector,10,9,100.0
+409,2011-02,Vocational Education and Training Sector,306,168,81.55
+410,2011-03,Foreign Affairs or Defence Sector,11,9,100.0
+411,2011-03,Higher Education Sector,1210,603,94.66
+412,2011-03,Independent ELICOS Sector,22,2,100.0
+413,2011-03,Postgraduate Research Sector,15,8,100.0
+414,2011-03,Schools Sector,1,0,
+415,2011-03,Vocational Education and Training Sector,897,282,92.16
+416,2011-04,Foreign Affairs or Defence Sector,2,3,100.0
+417,2011-04,Higher Education Sector,268,497,93.95
+418,2011-04,Independent ELICOS Sector,10,10,100.0
+419,2011-04,Postgraduate Research Sector,2,12,100.0
+420,2011-04,Schools Sector,0,1,100.0
+421,2011-04,Vocational Education and Training Sector,192,383,92.74
+422,2011-05,Foreign Affairs or Defence Sector,3,3,100.0
+423,2011-05,Higher Education Sector,586,608,98.22
+424,2011-05,Independent ELICOS Sector,11,10,90.91
+425,2011-05,Non-Award Sector,1,0,
+426,2011-05,Postgraduate Research Sector,13,9,100.0
+427,2011-05,Schools Sector,1,0,
+428,2011-05,Vocational Education and Training Sector,505,401,93.04
+429,2011-06,Foreign Affairs or Defence Sector,0,2,100.0
+430,2011-06,Higher Education Sector,570,661,96.08
+431,2011-06,Independent ELICOS Sector,22,8,88.89
+432,2011-06,Non-Award Sector,0,0,0.0
+433,2011-06,Postgraduate Research Sector,4,6,100.0
+434,2011-06,Schools Sector,5,0,
+435,2011-06,Vocational Education and Training Sector,418,417,90.06
+436,2011-07,Foreign Affairs or Defence Sector,1,0,
+437,2011-07,Higher Education Sector,386,411,96.03
+438,2011-07,Independent ELICOS Sector,10,9,69.23
+439,2011-07,Postgraduate Research Sector,7,7,100.0
+440,2011-07,Schools Sector,1,3,75.0
+441,2011-07,Vocational Education and Training Sector,275,362,89.16
+442,2011-08,Foreign Affairs or Defence Sector,4,1,100.0
+443,2011-08,Higher Education Sector,650,409,94.24
+444,2011-08,Independent ELICOS Sector,22,14,100.0
+445,2011-08,Postgraduate Research Sector,13,13,100.0
+446,2011-08,Schools Sector,2,0,0.0
+447,2011-08,Vocational Education and Training Sector,450,317,90.57
+448,2011-09,Foreign Affairs or Defence Sector,0,3,100.0
+449,2011-09,Higher Education Sector,477,443,91.72
+450,2011-09,Independent ELICOS Sector,11,16,94.12
+451,2011-09,Postgraduate Research Sector,5,3,100.0
+452,2011-09,Schools Sector,1,0,0.0
+453,2011-09,Vocational Education and Training Sector,225,328,88.65
+454,2011-10,Foreign Affairs or Defence Sector,24,0,
+455,2011-10,Higher Education Sector,227,417,88.91
+456,2011-10,Independent ELICOS Sector,8,15,100.0
+457,2011-10,Non-Award Sector,1,0,
+458,2011-10,Postgraduate Research Sector,7,1,100.0
+459,2011-10,Schools Sector,0,0,0.0
+460,2011-10,Vocational Education and Training Sector,160,252,90.32
+461,2011-11,Foreign Affairs or Defence Sector,2,9,100.0
+462,2011-11,Higher Education Sector,284,344,83.29
+463,2011-11,Independent ELICOS Sector,9,13,92.86
+464,2011-11,Non-Award Sector,2,0,0.0
+465,2011-11,Postgraduate Research Sector,3,8,66.67
+466,2011-11,Schools Sector,1,1,100.0
+467,2011-11,Vocational Education and Training Sector,219,240,93.39
+468,2011-12,Foreign Affairs or Defence Sector,0,14,100.0
+469,2011-12,Higher Education Sector,417,243,85.56
+470,2011-12,Independent ELICOS Sector,5,8,88.89
+471,2011-12,Non-Award Sector,1,0,
+472,2011-12,Postgraduate Research Sector,13,6,100.0
+473,2011-12,Schools Sector,2,0,0.0
+474,2011-12,Vocational Education and Training Sector,145,145,81.92
+475,2012-01,Foreign Affairs or Defence Sector,14,14,100.0
+476,2012-01,Higher Education Sector,496,385,88.71
+477,2012-01,Independent ELICOS Sector,2,4,80.0
+478,2012-01,Non-Award Sector,1,3,100.0
+479,2012-01,Postgraduate Research Sector,21,17,100.0
+480,2012-01,Schools Sector,1,1,100.0
+481,2012-01,Vocational Education and Training Sector,76,119,75.32
+482,2012-02,Foreign Affairs or Defence Sector,6,4,100.0
+483,2012-02,Higher Education Sector,415,362,69.75
+484,2012-02,Independent ELICOS Sector,6,4,50.0
+485,2012-02,Postgraduate Research Sector,15,21,100.0
+486,2012-02,Schools Sector,2,1,50.0
+487,2012-02,Vocational Education and Training Sector,112,81,72.97
+488,2012-03,Foreign Affairs or Defence Sector,12,7,100.0
+489,2012-03,Higher Education Sector,603,284,65.59
+490,2012-03,Independent ELICOS Sector,17,3,100.0
+491,2012-03,Non-Award Sector,0,0,0.0
+492,2012-03,Postgraduate Research Sector,20,16,100.0
+493,2012-03,Schools Sector,0,2,100.0
+494,2012-03,Vocational Education and Training Sector,252,90,76.27
+495,2012-04,Foreign Affairs or Defence Sector,5,6,100.0
+496,2012-04,Higher Education Sector,264,352,67.69
+497,2012-04,Independent ELICOS Sector,10,4,57.14
+498,2012-04,Postgraduate Research Sector,6,10,100.0
+499,2012-04,Schools Sector,2,1,100.0
+500,2012-04,Vocational Education and Training Sector,127,146,83.43
+501,2012-05,Foreign Affairs or Defence Sector,3,4,100.0
+502,2012-05,Higher Education Sector,409,320,78.82
+503,2012-05,Independent ELICOS Sector,8,13,81.25
+504,2012-05,Postgraduate Research Sector,15,5,100.0
+505,2012-05,Schools Sector,1,1,100.0
+506,2012-05,Vocational Education and Training Sector,162,148,85.06
+507,2012-06,Foreign Affairs or Defence Sector,2,4,100.0
+508,2012-06,Higher Education Sector,834,232,47.25
+509,2012-06,Independent ELICOS Sector,13,4,57.14
+510,2012-06,Postgraduate Research Sector,7,7,100.0
+511,2012-06,Schools Sector,2,1,50.0
+512,2012-06,Vocational Education and Training Sector,132,109,77.3
+513,2012-07,Foreign Affairs or Defence Sector,1,3,100.0
+514,2012-07,Higher Education Sector,502,405,55.48
+515,2012-07,Independent ELICOS Sector,9,12,100.0
+516,2012-07,Postgraduate Research Sector,10,14,93.33
+517,2012-07,Schools Sector,1,0,0.0
+518,2012-07,Vocational Education and Training Sector,118,104,81.25
+519,2012-08,Foreign Affairs or Defence Sector,1,3,75.0
+520,2012-08,Higher Education Sector,497,296,80.22
+521,2012-08,Independent ELICOS Sector,15,5,71.43
+522,2012-08,Postgraduate Research Sector,12,13,100.0
+523,2012-08,Schools Sector,1,0,0.0
+524,2012-08,Vocational Education and Training Sector,176,97,82.91
+525,2012-09,Foreign Affairs or Defence Sector,25,1,100.0
+526,2012-09,Higher Education Sector,735,348,70.45
+527,2012-09,Independent ELICOS Sector,19,10,76.92
+528,2012-09,Postgraduate Research Sector,7,10,100.0
+529,2012-09,Vocational Education and Training Sector,162,123,84.83
+530,2012-10,Foreign Affairs or Defence Sector,6,17,100.0
+531,2012-10,Higher Education Sector,290,586,88.65
+532,2012-10,Independent ELICOS Sector,14,17,100.0
+533,2012-10,Postgraduate Research Sector,6,5,100.0
+534,2012-10,Vocational Education and Training Sector,103,152,83.06
+535,2012-11,Foreign Affairs or Defence Sector,2,16,100.0
+536,2012-11,Higher Education Sector,291,421,89.57
+537,2012-11,Independent ELICOS Sector,3,12,92.31
+538,2012-11,Non-Award Sector,4,2,100.0
+539,2012-11,Postgraduate Research Sector,7,11,100.0
+540,2012-11,Schools Sector,1,0,
+541,2012-11,Vocational Education and Training Sector,170,118,84.89
+542,2012-12,Foreign Affairs or Defence Sector,3,1,100.0
+543,2012-12,Higher Education Sector,420,277,90.82
+544,2012-12,Independent ELICOS Sector,13,8,80.0
+545,2012-12,Postgraduate Research Sector,9,4,100.0
+546,2012-12,Schools Sector,1,1,100.0
+547,2012-12,Vocational Education and Training Sector,85,93,82.3
+548,2013-01,Foreign Affairs or Defence Sector,18,2,100.0
+549,2013-01,Higher Education Sector,608,398,92.99
+550,2013-01,Independent ELICOS Sector,4,5,62.5
+551,2013-01,Non-Award Sector,0,1,100.0
+552,2013-01,Postgraduate Research Sector,29,9,100.0
+553,2013-01,Schools Sector,5,1,100.0
+554,2013-01,Vocational Education and Training Sector,71,81,68.07
+555,2013-02,Foreign Affairs or Defence Sector,17,3,100.0
+556,2013-02,Higher Education Sector,610,667,97.66
+557,2013-02,Independent ELICOS Sector,11,7,87.5
+558,2013-02,Postgraduate Research Sector,13,24,100.0
+559,2013-02,Schools Sector,0,2,66.67
+560,2013-02,Vocational Education and Training Sector,113,83,84.69
+561,2013-03,Foreign Affairs or Defence Sector,15,19,100.0
+562,2013-03,Higher Education Sector,768,585,95.28
+563,2013-03,Independent ELICOS Sector,15,11,91.67
+564,2013-03,Postgraduate Research Sector,3,19,100.0
+565,2013-03,Schools Sector,1,0,
+566,2013-03,Vocational Education and Training Sector,309,105,90.52
+567,2013-04,Foreign Affairs or Defence Sector,7,5,100.0
+568,2013-04,Higher Education Sector,512,417,93.71
+569,2013-04,Independent ELICOS Sector,13,6,60.0
+570,2013-04,Postgraduate Research Sector,12,2,100.0
+571,2013-04,Schools Sector,2,2,66.67
+572,2013-04,Vocational Education and Training Sector,166,178,88.12
+573,2013-05,Foreign Affairs or Defence Sector,0,30,100.0
+574,2013-05,Higher Education Sector,823,367,89.29
+575,2013-05,Independent ELICOS Sector,10,5,71.43
+576,2013-05,Postgraduate Research Sector,8,11,100.0
+577,2013-05,Schools Sector,0,0,0.0
+578,2013-05,Vocational Education and Training Sector,141,145,83.82
+579,2013-06,Foreign Affairs or Defence Sector,1,0,
+580,2013-06,Higher Education Sector,998,620,96.42
+581,2013-06,Independent ELICOS Sector,10,11,84.62
+582,2013-06,Non-Award Sector,1,1,100.0
+583,2013-06,Postgraduate Research Sector,12,5,100.0
+584,2013-06,Schools Sector,0,1,100.0
+585,2013-06,Vocational Education and Training Sector,117,99,76.74
+586,2013-07,Foreign Affairs or Defence Sector,0,1,100.0
+587,2013-07,Higher Education Sector,533,1197,97.95
+588,2013-07,Independent ELICOS Sector,18,8,80.0
+589,2013-07,Postgraduate Research Sector,16,16,100.0
+590,2013-07,Vocational Education and Training Sector,76,142,88.75
+591,2013-08,Foreign Affairs or Defence Sector,30,21,100.0
+592,2013-08,Higher Education Sector,809,563,96.74
+593,2013-08,Independent ELICOS Sector,8,5,62.5
+594,2013-08,Non-Award Sector,1,1,100.0
+595,2013-08,Postgraduate Research Sector,13,17,100.0
+596,2013-08,Vocational Education and Training Sector,128,67,87.01
+597,2013-09,Foreign Affairs or Defence Sector,40,8,100.0
+598,2013-09,Higher Education Sector,1164,760,97.56
+599,2013-09,Independent ELICOS Sector,11,10,90.91
+600,2013-09,Postgraduate Research Sector,9,6,100.0
+601,2013-09,Schools Sector,3,1,100.0
+602,2013-09,Vocational Education and Training Sector,143,84,85.71
+603,2013-10,Foreign Affairs or Defence Sector,4,33,100.0
+604,2013-10,Higher Education Sector,736,1092,97.15
+605,2013-10,Independent ELICOS Sector,6,12,92.31
+606,2013-10,Postgraduate Research Sector,8,10,100.0
+607,2013-10,Vocational Education and Training Sector,75,114,89.76
+608,2013-11,Foreign Affairs or Defence Sector,0,5,100.0
+609,2013-11,Higher Education Sector,586,583,97.17
+610,2013-11,Independent ELICOS Sector,5,5,83.33
+611,2013-11,Postgraduate Research Sector,22,7,100.0
+612,2013-11,Schools Sector,0,1,100.0
+613,2013-11,Vocational Education and Training Sector,59,78,84.78
+614,2013-12,Foreign Affairs or Defence Sector,0,2,100.0
+615,2013-12,Higher Education Sector,1187,400,93.68
+616,2013-12,Independent ELICOS Sector,10,5,71.43
+617,2013-12,Non-Award Sector,2,0,
+618,2013-12,Postgraduate Research Sector,25,12,100.0
+619,2013-12,Schools Sector,2,0,
+620,2013-12,Vocational Education and Training Sector,97,60,82.19
+621,2014-01,Foreign Affairs or Defence Sector,1,1,100.0
+622,2014-01,Higher Education Sector,1745,986,97.14
+623,2014-01,Independent ELICOS Sector,7,9,81.82
+624,2014-01,Non-Award Sector,1,2,100.0
+625,2014-01,Postgraduate Research Sector,25,28,100.0
+626,2014-01,Schools Sector,0,1,100.0
+627,2014-01,Vocational Education and Training Sector,29,44,88.0
+628,2014-02,Foreign Affairs or Defence Sector,22,12,100.0
+629,2014-02,Higher Education Sector,1222,1091,98.11
+630,2014-02,Independent ELICOS Sector,12,6,100.0
+631,2014-02,Postgraduate Research Sector,15,30,100.0
+632,2014-02,Schools Sector,1,1,100.0
+633,2014-02,Vocational Education and Training Sector,73,49,92.45
+634,2014-03,Foreign Affairs or Defence Sector,21,28,100.0
+635,2014-03,Higher Education Sector,1220,664,97.5
+636,2014-03,Independent ELICOS Sector,24,7,100.0
+637,2014-03,Non-Award Sector,0,0,0.0
+638,2014-03,Postgraduate Research Sector,12,14,100.0
+639,2014-03,Schools Sector,1,1,33.33
+640,2014-03,Vocational Education and Training Sector,198,55,91.67
+641,2014-04,Foreign Affairs or Defence Sector,8,7,100.0
+642,2014-04,Higher Education Sector,364,640,93.84
+643,2014-04,Independent ELICOS Sector,5,9,81.82
+644,2014-04,Postgraduate Research Sector,6,12,92.31
+645,2014-04,Schools Sector,1,0,
+646,2014-04,Vocational Education and Training Sector,81,117,92.86
+647,2014-05,Foreign Affairs or Defence Sector,3,9,100.0
+648,2014-05,Higher Education Sector,486,612,93.58
+649,2014-05,Independent ELICOS Sector,10,13,92.86
+650,2014-05,Non-Award Sector,2,0,
+651,2014-05,Postgraduate Research Sector,7,8,100.0
+652,2014-05,Vocational Education and Training Sector,93,134,82.72
+653,2014-06,Foreign Affairs or Defence Sector,11,8,100.0
+654,2014-06,Higher Education Sector,814,651,95.04
+655,2014-06,Independent ELICOS Sector,7,3,37.5
+656,2014-06,Non-Award Sector,1,0,
+657,2014-06,Postgraduate Research Sector,8,10,100.0
+658,2014-06,Schools Sector,1,0,0.0
+659,2014-06,Vocational Education and Training Sector,123,63,76.83
+660,2014-07,Foreign Affairs or Defence Sector,0,4,100.0
+661,2014-07,Higher Education Sector,865,1025,97.06
+662,2014-07,Independent ELICOS Sector,11,8,61.54
+663,2014-07,Non-Award Sector,1,2,100.0
+664,2014-07,Postgraduate Research Sector,10,10,100.0
+665,2014-07,Schools Sector,1,1,100.0
+666,2014-07,Vocational Education and Training Sector,96,95,85.59
+667,2014-08,Higher Education Sector,821,512,94.29
+668,2014-08,Independent ELICOS Sector,6,9,75.0
+669,2014-08,Postgraduate Research Sector,8,6,100.0
+670,2014-08,Vocational Education and Training Sector,100,68,78.16
+671,2014-09,Foreign Affairs or Defence Sector,45,6,100.0
+672,2014-09,Higher Education Sector,1042,671,92.68
+673,2014-09,Independent ELICOS Sector,6,4,57.14
+674,2014-09,Non-Award Sector,0,0,0.0
+675,2014-09,Postgraduate Research Sector,22,8,100.0
+676,2014-09,Schools Sector,0,1,100.0
+677,2014-09,Vocational Education and Training Sector,108,54,61.36
+678,2014-10,Foreign Affairs or Defence Sector,2,35,100.0
+679,2014-10,Higher Education Sector,679,745,95.27
+680,2014-10,Independent ELICOS Sector,7,2,33.33
+681,2014-10,Postgraduate Research Sector,11,12,100.0
+682,2014-10,Schools Sector,2,0,
+683,2014-10,Vocational Education and Training Sector,92,93,83.04
+684,2014-11,Foreign Affairs or Defence Sector,1,5,100.0
+685,2014-11,Higher Education Sector,525,868,90.23
+686,2014-11,Independent ELICOS Sector,2,1,50.0
+687,2014-11,Postgraduate Research Sector,9,15,100.0
+688,2014-11,Schools Sector,3,1,100.0
+689,2014-11,Vocational Education and Training Sector,76,105,77.21
+690,2014-12,Foreign Affairs or Defence Sector,6,4,100.0
+691,2014-12,Higher Education Sector,808,525,95.45
+692,2014-12,Independent ELICOS Sector,2,3,60.0
+693,2014-12,Non-Award Sector,1,0,
+694,2014-12,Postgraduate Research Sector,16,5,100.0
+695,2014-12,Schools Sector,3,3,100.0
+696,2014-12,Vocational Education and Training Sector,77,50,75.76
+697,2015-01,Foreign Affairs or Defence Sector,4,8,100.0
+698,2015-01,Higher Education Sector,836,545,95.78
+699,2015-01,Independent ELICOS Sector,4,7,100.0
+700,2015-01,Non-Award Sector,0,1,100.0
+701,2015-01,Postgraduate Research Sector,7,22,100.0
+702,2015-01,Schools Sector,1,2,50.0
+703,2015-01,Vocational Education and Training Sector,39,55,67.9
+704,2015-02,Foreign Affairs or Defence Sector,9,4,100.0
+705,2015-02,Higher Education Sector,919,938,94.27
+706,2015-02,Independent ELICOS Sector,10,0,0.0
+707,2015-02,Postgraduate Research Sector,9,7,100.0
+708,2015-02,Schools Sector,1,1,100.0
+709,2015-02,Vocational Education and Training Sector,83,36,60.0
+710,2015-03,Foreign Affairs or Defence Sector,34,31,100.0
+711,2015-03,Higher Education Sector,1138,802,93.36
+712,2015-03,Independent ELICOS Sector,12,4,100.0
+713,2015-03,Postgraduate Research Sector,19,20,100.0
+714,2015-03,Schools Sector,1,1,50.0
+715,2015-03,Vocational Education and Training Sector,197,63,81.82
+716,2015-04,Foreign Affairs or Defence Sector,5,13,100.0
+717,2015-04,Higher Education Sector,486,534,86.41
+718,2015-04,Independent ELICOS Sector,5,11,84.62
+719,2015-04,Non-Award Sector,1,0,
+720,2015-04,Postgraduate Research Sector,9,10,100.0
+721,2015-04,Schools Sector,5,1,25.0
+722,2015-04,Vocational Education and Training Sector,89,100,84.03
+723,2015-05,Foreign Affairs or Defence Sector,6,1,100.0
+724,2015-05,Higher Education Sector,409,203,69.52
+725,2015-05,Independent ELICOS Sector,4,3,75.0
+726,2015-05,Non-Award Sector,1,1,100.0
+727,2015-05,Postgraduate Research Sector,8,7,100.0
+728,2015-05,Schools Sector,3,0,
+729,2015-05,Vocational Education and Training Sector,69,54,65.85
+730,2015-06,Foreign Affairs or Defence Sector,32,29,100.0
+731,2015-06,Higher Education Sector,925,427,83.4
+732,2015-06,Independent ELICOS Sector,3,1,33.33
+733,2015-06,Non-Award Sector,1,0,
+734,2015-06,Postgraduate Research Sector,3,11,100.0
+735,2015-06,Schools Sector,3,2,66.67
+736,2015-06,Vocational Education and Training Sector,120,76,80.0
+737,2015-07,Foreign Affairs or Defence Sector,23,11,100.0
+738,2015-07,Higher Education Sector,752,1116,95.38
+739,2015-07,Independent ELICOS Sector,3,6,100.0
+740,2015-07,Non-Award Sector,0,1,100.0
+741,2015-07,Postgraduate Research Sector,16,5,100.0
+742,2015-07,Schools Sector,1,3,100.0
+743,2015-07,Vocational Education and Training Sector,91,103,88.03
+744,2015-08,Foreign Affairs or Defence Sector,13,23,100.0
+745,2015-08,Higher Education Sector,931,526,89.61
+746,2015-08,Independent ELICOS Sector,7,2,100.0
+747,2015-08,Postgraduate Research Sector,13,10,90.91
+748,2015-08,Schools Sector,2,1,50.0
+749,2015-08,Vocational Education and Training Sector,113,56,76.71
+750,2015-09,Foreign Affairs or Defence Sector,2,9,100.0
+751,2015-09,Higher Education Sector,764,682,87.77
+752,2015-09,Independent ELICOS Sector,5,1,20.0
+753,2015-09,Postgraduate Research Sector,8,16,100.0
+754,2015-09,Schools Sector,2,2,66.67
+755,2015-09,Vocational Education and Training Sector,111,88,70.97
+756,2015-10,Foreign Affairs or Defence Sector,3,2,100.0
+757,2015-10,Higher Education Sector,602,664,94.72
+758,2015-10,Independent ELICOS Sector,4,1,100.0
+759,2015-10,Postgraduate Research Sector,12,7,100.0
+760,2015-10,Vocational Education and Training Sector,101,79,69.3
+761,2015-11,Foreign Affairs or Defence Sector,4,3,100.0
+762,2015-11,Higher Education Sector,568,619,93.65
+763,2015-11,Independent ELICOS Sector,10,3,60.0
+764,2015-11,Postgraduate Research Sector,6,8,100.0
+765,2015-11,Schools Sector,8,1,100.0
+766,2015-11,Vocational Education and Training Sector,113,52,82.54
+767,2015-12,Higher Education Sector,697,276,74.39
+768,2015-12,Independent ELICOS Sector,5,3,60.0
+769,2015-12,Non-Award Sector,2,0,
+770,2015-12,Postgraduate Research Sector,11,8,100.0
+771,2015-12,Schools Sector,3,4,100.0
+772,2015-12,Vocational Education and Training Sector,149,54,40.0
+773,2016-01,Foreign Affairs or Defence Sector,0,3,100.0
+774,2016-01,Higher Education Sector,819,836,86.01
+775,2016-01,Independent ELICOS Sector,2,8,100.0
+776,2016-01,Non-Award Sector,0,1,100.0
+777,2016-01,Postgraduate Research Sector,42,28,100.0
+778,2016-01,Schools Sector,4,2,66.67
+779,2016-01,Vocational Education and Training Sector,79,91,59.09
+780,2016-02,Foreign Affairs or Defence Sector,5,0,
+781,2016-02,Higher Education Sector,1096,1171,91.7
+782,2016-02,Independent ELICOS Sector,4,5,100.0
+783,2016-02,Non-Award Sector,0,1,100.0
+784,2016-02,Postgraduate Research Sector,17,20,100.0
+785,2016-02,Schools Sector,0,1,25.0
+786,2016-02,Vocational Education and Training Sector,107,54,63.53
+787,2016-03,Foreign Affairs or Defence Sector,18,13,100.0
+788,2016-03,Higher Education Sector,828,807,88.88
+789,2016-03,Independent ELICOS Sector,8,1,20.0
+790,2016-03,Postgraduate Research Sector,5,15,100.0
+791,2016-03,Schools Sector,2,3,75.0
+792,2016-03,Vocational Education and Training Sector,213,112,69.57
+793,2016-04,Foreign Affairs or Defence Sector,3,7,100.0
+794,2016-04,Higher Education Sector,561,654,90.46
+795,2016-04,Independent ELICOS Sector,8,3,75.0
+796,2016-04,Postgraduate Research Sector,16,17,94.44
+797,2016-04,Schools Sector,2,1,100.0
+798,2016-04,Vocational Education and Training Sector,136,128,74.85
+799,2016-05,Foreign Affairs or Defence Sector,0,3,100.0
+800,2016-05,Higher Education Sector,879,666,93.15
+801,2016-05,Independent ELICOS Sector,4,7,87.5
+802,2016-05,Postgraduate Research Sector,23,4,80.0
+803,2016-05,Schools Sector,0,0,0.0
+804,2016-05,Vocational Education and Training Sector,203,109,75.17
+805,2016-06,Foreign Affairs or Defence Sector,3,0,
+806,2016-06,Higher Education Sector,2087,1271,95.06
+807,2016-06,Independent ELICOS Sector,5,4,80.0
+808,2016-06,Non-Award Sector,2,0,
+809,2016-06,Postgraduate Research Sector,21,16,94.12
+810,2016-06,Schools Sector,4,0,
+811,2016-06,Vocational Education and Training Sector,341,148,68.84
+812,2016-07,Foreign Affairs or Defence Sector,23,21,100.0
+813,2016-07,Higher Education Sector,768,1289,94.78
+814,2016-07,Independent ELICOS Sector,12,1,50.0
+815,2016-07,Non-Award Sector,0,1,100.0
+816,2016-07,Postgraduate Research Sector,16,16,76.19
+817,2016-07,Schools Sector,3,3,100.0
+818,2016-07,Vocational Education and Training Sector,151,148,66.07
+819,2016-08,Foreign Affairs or Defence Sector,5,2,100.0
+820,2016-08,Higher Education Sector,1399,544,85.4
+821,2016-08,Independent ELICOS Sector,8,4,66.67
+822,2016-08,Non-Award Sector,2,1,100.0
+823,2016-08,Postgraduate Research Sector,14,14,100.0
+824,2016-08,Schools Sector,4,0,0.0
+825,2016-08,Vocational Education and Training Sector,249,103,47.91
+826,2016-09,Foreign Affairs or Defence Sector,6,0,
+827,2016-09,Higher Education Sector,1054,1421,96.14
+828,2016-09,Independent ELICOS Sector,7,7,87.5
+829,2016-09,Non-Award Sector,0,2,100.0
+830,2016-09,Postgraduate Research Sector,13,10,100.0
+831,2016-09,Schools Sector,8,0,0.0
+832,2016-09,Vocational Education and Training Sector,302,152,56.09
+833,2016-10,Foreign Affairs or Defence Sector,17,7,100.0
+834,2016-10,Higher Education Sector,927,1083,94.83
+835,2016-10,Independent ELICOS Sector,3,1,20.0
+836,2016-10,Postgraduate Research Sector,15,6,85.71
+837,2016-10,Schools Sector,6,5,71.43
+838,2016-10,Vocational Education and Training Sector,264,150,58.37
+839,2016-11,Foreign Affairs or Defence Sector,7,13,100.0
+840,2016-11,Higher Education Sector,718,1157,96.66
+841,2016-11,Independent ELICOS Sector,5,6,85.71
+842,2016-11,Non-Award Sector,1,0,
+843,2016-11,Postgraduate Research Sector,23,15,100.0
+844,2016-11,Schools Sector,5,2,22.22
+845,2016-11,Vocational Education and Training Sector,235,204,63.75
+846,2016-12,Foreign Affairs or Defence Sector,17,10,100.0
+847,2016-12,Higher Education Sector,1255,693,95.98
+848,2016-12,Independent ELICOS Sector,9,4,80.0
+849,2016-12,Non-Award Sector,3,1,100.0
+850,2016-12,Postgraduate Research Sector,16,21,100.0
+851,2016-12,Schools Sector,4,1,25.0
+852,2016-12,Vocational Education and Training Sector,437,162,68.35
+853,2017-01,Foreign Affairs or Defence Sector,19,11,100.0
+854,2017-01,Higher Education Sector,2134,1748,97.27
+855,2017-01,Independent ELICOS Sector,10,5,100.0
+856,2017-01,Non-Award Sector,0,2,100.0
+857,2017-01,Postgraduate Research Sector,30,18,100.0
+858,2017-01,Schools Sector,10,2,18.18
+859,2017-01,Vocational Education and Training Sector,569,413,74.28
+860,2017-02,Foreign Affairs or Defence Sector,8,18,100.0
+861,2017-02,Higher Education Sector,1957,1964,95.57
+862,2017-02,Independent ELICOS Sector,7,10,71.43
+863,2017-02,Non-Award Sector,0,1,100.0
+864,2017-02,Postgraduate Research Sector,27,30,100.0
+865,2017-02,Schools Sector,8,2,100.0
+866,2017-02,Vocational Education and Training Sector,504,309,63.45
+867,2017-03,Foreign Affairs or Defence Sector,31,22,100.0
+868,2017-03,Higher Education Sector,2071,1730,93.21
+869,2017-03,Independent ELICOS Sector,11,8,66.67
+870,2017-03,Postgraduate Research Sector,29,29,100.0
+871,2017-03,Schools Sector,6,4,30.77
+872,2017-03,Vocational Education and Training Sector,972,417,58.73
+873,2017-04,Foreign Affairs or Defence Sector,6,13,100.0
+874,2017-04,Higher Education Sector,963,972,92.66
+875,2017-04,Independent ELICOS Sector,6,1,100.0
+876,2017-04,Non-Award Sector,1,0,
+877,2017-04,Postgraduate Research Sector,11,11,84.62
+878,2017-04,Schools Sector,2,1,20.0
+879,2017-04,Vocational Education and Training Sector,480,300,55.56
+880,2017-05,Foreign Affairs or Defence Sector,5,6,100.0
+881,2017-05,Higher Education Sector,1517,890,83.73
+882,2017-05,Independent ELICOS Sector,7,5,45.45
+883,2017-05,Non-Award Sector,4,1,100.0
+884,2017-05,Postgraduate Research Sector,14,12,100.0
+885,2017-05,Schools Sector,4,0,0.0
+886,2017-05,Vocational Education and Training Sector,551,245,50.72
+887,2017-06,Foreign Affairs or Defence Sector,2,3,100.0
+888,2017-06,Higher Education Sector,2327,1675,91.73
+889,2017-06,Independent ELICOS Sector,4,2,50.0
+890,2017-06,Non-Award Sector,2,3,100.0
+891,2017-06,Postgraduate Research Sector,26,16,100.0
+892,2017-06,Schools Sector,4,0,0.0
+893,2017-06,Vocational Education and Training Sector,741,328,57.34
+894,2017-07,Foreign Affairs or Defence Sector,4,4,100.0
+895,2017-07,Higher Education Sector,1213,1922,93.89
+896,2017-07,Independent ELICOS Sector,4,2,20.0
+897,2017-07,Non-Award Sector,1,2,100.0
+898,2017-07,Postgraduate Research Sector,18,27,93.1
+899,2017-07,Schools Sector,3,3,42.86
+900,2017-07,Vocational Education and Training Sector,563,400,69.69
+901,2017-08,Foreign Affairs or Defence Sector,8,12,100.0
+902,2017-08,Higher Education Sector,1826,1069,91.45
+903,2017-08,Independent ELICOS Sector,10,2,50.0
+904,2017-08,Non-Award Sector,0,1,100.0
+905,2017-08,Postgraduate Research Sector,10,16,100.0
+906,2017-08,Schools Sector,2,2,66.67
+907,2017-08,Vocational Education and Training Sector,605,516,69.54
+908,2017-09,Foreign Affairs or Defence Sector,18,7,100.0
+909,2017-09,Higher Education Sector,1515,1083,92.96
+910,2017-09,Independent ELICOS Sector,7,1,100.0
+911,2017-09,Non-Award Sector,0,1,100.0
+912,2017-09,Postgraduate Research Sector,12,11,100.0
+913,2017-09,Schools Sector,8,0,0.0
+914,2017-09,Vocational Education and Training Sector,623,285,68.51
+915,2017-10,Foreign Affairs or Defence Sector,12,17,100.0
+916,2017-10,Higher Education Sector,1076,1561,91.07
+917,2017-10,Independent ELICOS Sector,5,9,100.0
+918,2017-10,Postgraduate Research Sector,9,7,100.0
+919,2017-10,Schools Sector,4,1,16.67
+920,2017-10,Vocational Education and Training Sector,391,365,65.3
+921,2017-11,Foreign Affairs or Defence Sector,10,14,100.0
+922,2017-11,Higher Education Sector,987,1153,92.02
+923,2017-11,Independent ELICOS Sector,5,3,33.33
+924,2017-11,Non-Award Sector,3,0,
+925,2017-11,Postgraduate Research Sector,10,12,100.0
+926,2017-11,Schools Sector,9,3,75.0
+927,2017-11,Vocational Education and Training Sector,555,259,64.11
+928,2017-12,Foreign Affairs or Defence Sector,23,5,100.0
+929,2017-12,Higher Education Sector,1318,695,94.82
+930,2017-12,Independent ELICOS Sector,6,0,0.0
+931,2017-12,Non-Award Sector,4,2,100.0
+932,2017-12,Postgraduate Research Sector,22,13,100.0
+933,2017-12,Schools Sector,10,3,37.5
+934,2017-12,Vocational Education and Training Sector,851,383,78.0
+935,2018-01,Foreign Affairs or Defence Sector,20,20,100.0
+936,2018-01,Higher Education Sector,2049,1729,92.07
+937,2018-01,Independent ELICOS Sector,10,4,80.0
+938,2018-01,Non-Award Sector,2,4,100.0
+939,2018-01,Postgraduate Research Sector,35,22,100.0
+940,2018-01,Schools Sector,9,4,30.77
+941,2018-01,Vocational Education and Training Sector,951,777,77.54
+942,2018-02,Foreign Affairs or Defence Sector,14,3,100.0
+943,2018-02,Higher Education Sector,2251,2339,92.67
+944,2018-02,Independent ELICOS Sector,12,6,42.86
+945,2018-02,Non-Award Sector,0,3,100.0
+946,2018-02,Postgraduate Research Sector,28,42,100.0
+947,2018-02,Schools Sector,5,4,33.33
+948,2018-02,Vocational Education and Training Sector,1054,864,71.35
+949,2018-03,Foreign Affairs or Defence Sector,24,25,100.0
+950,2018-03,Higher Education Sector,2039,1606,91.3
+951,2018-03,Independent ELICOS Sector,26,8,61.54
+952,2018-03,Non-Award Sector,4,4,100.0
+953,2018-03,Postgraduate Research Sector,21,25,100.0
+954,2018-03,Schools Sector,5,0,0.0
+955,2018-03,Vocational Education and Training Sector,1104,660,63.22
+956,2018-04,Foreign Affairs or Defence Sector,0,32,100.0
+957,2018-04,Higher Education Sector,1312,1343,90.74
+958,2018-04,Independent ELICOS Sector,5,9,52.94
+959,2018-04,Postgraduate Research Sector,14,21,100.0
+960,2018-04,Schools Sector,2,2,50.0
+961,2018-04,Vocational Education and Training Sector,1142,659,70.71
+962,2018-05,Foreign Affairs or Defence Sector,6,4,100.0
+963,2018-05,Higher Education Sector,1627,1998,94.87
+964,2018-05,Independent ELICOS Sector,10,12,92.31
+965,2018-05,Non-Award Sector,2,1,100.0
+966,2018-05,Postgraduate Research Sector,22,22,100.0
+967,2018-05,Schools Sector,1,1,100.0
+968,2018-05,Vocational Education and Training Sector,1379,1139,75.83
+969,2018-06,Foreign Affairs or Defence Sector,2,0,
+970,2018-06,Higher Education Sector,2488,2174,95.64
+971,2018-06,Independent ELICOS Sector,8,11,84.62
+972,2018-06,Non-Award Sector,2,2,66.67
+973,2018-06,Postgraduate Research Sector,17,16,88.89
+974,2018-06,Schools Sector,2,3,100.0
+975,2018-06,Vocational Education and Training Sector,1693,1110,76.87
+976,2018-07,Foreign Affairs or Defence Sector,4,4,100.0
+977,2018-07,Higher Education Sector,1622,2047,96.33
+978,2018-07,Independent ELICOS Sector,8,9,69.23
+979,2018-07,Postgraduate Research Sector,21,23,100.0
+980,2018-07,Schools Sector,4,4,100.0
+981,2018-07,Vocational Education and Training Sector,1602,1075,63.61
+982,2018-08,Foreign Affairs or Defence Sector,0,5,100.0
+983,2018-08,Higher Education Sector,2113,1403,93.66
+984,2018-08,Independent ELICOS Sector,20,7,70.0
+985,2018-08,Postgraduate Research Sector,34,26,100.0
+986,2018-08,Schools Sector,4,2,40.0
+987,2018-08,Vocational Education and Training Sector,1426,878,67.18
+988,2018-09,Foreign Affairs or Defence Sector,18,5,100.0
+989,2018-09,Higher Education Sector,1794,1192,93.05
+990,2018-09,Independent ELICOS Sector,11,8,88.89
+991,2018-09,Postgraduate Research Sector,14,20,100.0
+992,2018-09,Schools Sector,7,0,0.0
+993,2018-09,Vocational Education and Training Sector,1639,757,71.75
+994,2018-10,Foreign Affairs or Defence Sector,19,14,100.0
+995,2018-10,Higher Education Sector,1624,1836,94.2
+996,2018-10,Independent ELICOS Sector,13,9,100.0
+997,2018-10,Postgraduate Research Sector,23,12,100.0
+998,2018-10,Schools Sector,9,0,0.0
+999,2018-10,Vocational Education and Training Sector,1460,916,63.97
+1000,2018-11,Foreign Affairs or Defence Sector,11,20,100.0
+1001,2018-11,Higher Education Sector,1062,1321,91.67
+1002,2018-11,Independent ELICOS Sector,6,9,81.82
+1003,2018-11,Non-Award Sector,3,1,100.0
+1004,2018-11,Postgraduate Research Sector,27,23,100.0
+1005,2018-11,Schools Sector,5,4,44.44
+1006,2018-11,Vocational Education and Training Sector,1451,859,77.46
+1007,2018-12,Foreign Affairs or Defence Sector,12,0,
+1008,2018-12,Higher Education Sector,1453,941,90.92
+1009,2018-12,Independent ELICOS Sector,10,8,100.0
+1010,2018-12,Non-Award Sector,2,2,100.0
+1011,2018-12,Postgraduate Research Sector,32,16,100.0
+1012,2018-12,Schools Sector,5,1,25.0
+1013,2018-12,Vocational Education and Training Sector,2125,1164,76.63
+1014,2019-01,Foreign Affairs or Defence Sector,2,4,100.0
+1015,2019-01,Higher Education Sector,2237,1472,91.6
+1016,2019-01,Independent ELICOS Sector,13,7,87.5
+1017,2019-01,Non-Award Sector,1,3,100.0
+1018,2019-01,Postgraduate Research Sector,57,33,100.0
+1019,2019-01,Schools Sector,7,3,42.86
+1020,2019-01,Vocational Education and Training Sector,2051,584,56.86
+1021,2019-02,Foreign Affairs or Defence Sector,12,17,100.0
+1022,2019-02,Higher Education Sector,2838,2394,93.52
+1023,2019-02,Independent ELICOS Sector,18,6,75.0
+1024,2019-02,Non-Award Sector,1,1,100.0
+1025,2019-02,Postgraduate Research Sector,40,61,100.0
+1026,2019-02,Schools Sector,3,0,0.0
+1027,2019-02,Vocational Education and Training Sector,1413,949,55.27
+1028,2019-03,Foreign Affairs or Defence Sector,3,2,100.0
+1029,2019-03,Higher Education Sector,2867,1940,93.27
+1030,2019-03,Independent ELICOS Sector,23,20,74.07
+1031,2019-03,Non-Award Sector,1,0,
+1032,2019-03,Postgraduate Research Sector,36,22,100.0
+1033,2019-03,Schools Sector,6,1,16.67
+1034,2019-03,Vocational Education and Training Sector,1778,1118,56.61
+1035,2019-04,Foreign Affairs or Defence Sector,21,21,100.0
+1036,2019-04,Higher Education Sector,1758,1848,90.72
+1037,2019-04,Independent ELICOS Sector,11,3,75.0
+1038,2019-04,Postgraduate Research Sector,25,21,100.0
+1039,2019-04,Schools Sector,3,0,0.0
+1040,2019-04,Vocational Education and Training Sector,1577,748,67.39
+1041,2019-05,Foreign Affairs or Defence Sector,6,9,100.0
+1042,2019-05,Higher Education Sector,2366,2151,88.7
+1043,2019-05,Independent ELICOS Sector,19,5,35.71
+1044,2019-05,Postgraduate Research Sector,43,33,97.06
+1045,2019-05,Schools Sector,2,1,33.33
+1046,2019-05,Vocational Education and Training Sector,830,925,55.32
+1047,2019-06,Foreign Affairs or Defence Sector,24,10,100.0
+1048,2019-06,Higher Education Sector,2567,2096,87.7
+1049,2019-06,Independent ELICOS Sector,20,17,80.95
+1050,2019-06,Non-Award Sector,3,0,
+1051,2019-06,Postgraduate Research Sector,20,35,100.0
+1052,2019-06,Schools Sector,1,0,
+1053,2019-06,Vocational Education and Training Sector,794,618,66.81
+1054,2019-07,Foreign Affairs or Defence Sector,5,19,100.0
+1055,2019-07,Higher Education Sector,2080,2002,82.49
+1056,2019-07,Independent ELICOS Sector,24,13,76.47
+1057,2019-07,Non-Award Sector,2,4,100.0
+1058,2019-07,Postgraduate Research Sector,17,35,100.0
+1059,2019-07,Schools Sector,0,0,0.0
+1060,2019-07,Vocational Education and Training Sector,715,572,50.93
+1061,2019-08,Foreign Affairs or Defence Sector,1,0,
+1062,2019-08,Higher Education Sector,2624,1429,75.45
+1063,2019-08,Independent ELICOS Sector,31,19,70.37
+1064,2019-08,Non-Award Sector,0,1,50.0
+1065,2019-08,Postgraduate Research Sector,56,29,100.0
+1066,2019-08,Schools Sector,3,1,50.0
+1067,2019-08,Vocational Education and Training Sector,711,374,52.9
+1068,2019-09,Foreign Affairs or Defence Sector,1,3,100.0
+1069,2019-09,Higher Education Sector,2470,1589,92.06
+1070,2019-09,Independent ELICOS Sector,37,16,80.0
+1071,2019-09,Postgraduate Research Sector,50,26,100.0
+1072,2019-09,Schools Sector,0,1,100.0
+1073,2019-09,Vocational Education and Training Sector,779,393,62.58
+1074,2019-10,Foreign Affairs or Defence Sector,29,1,100.0
+1075,2019-10,Higher Education Sector,1481,2197,90.86
+1076,2019-10,Independent ELICOS Sector,26,16,80.0
+1077,2019-10,Postgraduate Research Sector,29,43,100.0
+1078,2019-10,Schools Sector,2,1,100.0
+1079,2019-10,Vocational Education and Training Sector,622,294,60.25
+1080,2019-11,Foreign Affairs or Defence Sector,18,34,100.0
+1081,2019-11,Higher Education Sector,1281,1655,80.07
+1082,2019-11,Independent ELICOS Sector,25,12,48.0
+1083,2019-11,Non-Award Sector,1,0,
+1084,2019-11,Postgraduate Research Sector,50,37,100.0
+1085,2019-11,Schools Sector,1,0,
+1086,2019-11,Vocational Education and Training Sector,640,424,69.74
+1087,2019-12,Foreign Affairs or Defence Sector,11,24,100.0
+1088,2019-12,Higher Education Sector,1626,1014,86.3
+1089,2019-12,Independent ELICOS Sector,42,16,55.17
+1090,2019-12,Postgraduate Research Sector,60,27,100.0
+1091,2019-12,Schools Sector,2,2,100.0
+1092,2019-12,Vocational Education and Training Sector,641,397,58.73
+1093,2020-01,Foreign Affairs or Defence Sector,0,1,100.0
+1094,2020-01,Higher Education Sector,2286,1698,89.56
+1095,2020-01,Independent ELICOS Sector,29,29,70.73
+1096,2020-01,Non-Award Sector,1,2,100.0
+1097,2020-01,Postgraduate Research Sector,34,47,94.0
+1098,2020-01,Schools Sector,1,2,100.0
+1099,2020-01,Vocational Education and Training Sector,593,468,66.95
+1100,2020-02,Foreign Affairs or Defence Sector,1,1,100.0
+1101,2020-02,Higher Education Sector,2847,2250,91.61
+1102,2020-02,Independent ELICOS Sector,27,12,75.0
+1103,2020-02,Non-Award Sector,1,0,
+1104,2020-02,Postgraduate Research Sector,37,31,100.0
+1105,2020-02,Schools Sector,0,1,100.0
+1106,2020-02,Vocational Education and Training Sector,645,526,65.83
+1107,2020-03,Higher Education Sector,3126,1849,93.29
+1108,2020-03,Independent ELICOS Sector,53,24,72.73
+1109,2020-03,Postgraduate Research Sector,67,37,100.0
+1110,2020-03,Schools Sector,0,1,100.0
+1111,2020-03,Vocational Education and Training Sector,1003,389,74.95
+1112,2020-04,Higher Education Sector,833,915,100.0
+1113,2020-04,Independent ELICOS Sector,22,14,100.0
+1114,2020-04,Postgraduate Research Sector,15,37,100.0
+1115,2020-04,Vocational Education and Training Sector,542,304,100.0
+1116,2020-05,Foreign Affairs or Defence Sector,0,1,100.0
+1117,2020-05,Higher Education Sector,555,1094,100.0
+1118,2020-05,Independent ELICOS Sector,28,12,100.0
+1119,2020-05,Postgraduate Research Sector,20,34,100.0
+1120,2020-05,Schools Sector,1,0,
+1121,2020-05,Vocational Education and Training Sector,474,341,100.0
+1122,2020-06,Foreign Affairs or Defence Sector,3,0,
+1123,2020-06,Higher Education Sector,663,1110,100.0
+1124,2020-06,Independent ELICOS Sector,13,13,100.0
+1125,2020-06,Postgraduate Research Sector,12,27,100.0
+1126,2020-06,Vocational Education and Training Sector,474,455,100.0
+1127,2020-07,Foreign Affairs or Defence Sector,5,0,
+1128,2020-07,Higher Education Sector,1029,894,97.92
+1129,2020-07,Independent ELICOS Sector,19,31,100.0
+1130,2020-07,Non-Award Sector,0,1,100.0
+1131,2020-07,Postgraduate Research Sector,20,23,100.0
+1132,2020-07,Vocational Education and Training Sector,408,486,98.18
+1133,2020-08,Foreign Affairs or Defence Sector,0,5,100.0
+1134,2020-08,Higher Education Sector,1947,829,92.11
+1135,2020-08,Independent ELICOS Sector,18,26,100.0
+1136,2020-08,Postgraduate Research Sector,22,30,100.0
+1137,2020-08,Schools Sector,0,1,100.0
+1138,2020-08,Vocational Education and Training Sector,659,520,89.35
+1139,2020-09,Higher Education Sector,1615,1015,92.53
+1140,2020-09,Independent ELICOS Sector,18,15,100.0
+1141,2020-09,Postgraduate Research Sector,37,29,96.67
+1142,2020-09,Schools Sector,0,1,100.0
+1143,2020-09,Vocational Education and Training Sector,724,581,86.85
+1144,2020-10,Foreign Affairs or Defence Sector,0,3,100.0
+1145,2020-10,Higher Education Sector,699,1520,94.94
+1146,2020-10,Independent ELICOS Sector,17,13,100.0
+1147,2020-10,Postgraduate Research Sector,15,28,100.0
+1148,2020-10,Schools Sector,1,0,
+1149,2020-10,Vocational Education and Training Sector,744,585,90.14
+1150,2020-11,Foreign Affairs or Defence Sector,0,1,100.0
+1151,2020-11,Higher Education Sector,860,1303,95.95
+1152,2020-11,Independent ELICOS Sector,10,11,100.0
+1153,2020-11,Postgraduate Research Sector,20,24,100.0
+1154,2020-11,Vocational Education and Training Sector,679,487,93.83
+1155,2020-12,Higher Education Sector,1092,1035,94.69
+1156,2020-12,Independent ELICOS Sector,23,15,100.0
+1157,2020-12,Postgraduate Research Sector,25,17,100.0
+1158,2020-12,Schools Sector,1,1,100.0
+1159,2020-12,Vocational Education and Training Sector,708,510,92.06
+1160,2021-01,Foreign Affairs or Defence Sector,1,0,
+1161,2021-01,Higher Education Sector,981,1042,90.37
+1162,2021-01,Independent ELICOS Sector,14,12,100.0
+1163,2021-01,Postgraduate Research Sector,26,21,100.0
+1164,2021-01,Vocational Education and Training Sector,505,557,85.96
+1165,2021-02,Foreign Affairs or Defence Sector,4,0,
+1166,2021-02,Higher Education Sector,1823,1145,91.09
+1167,2021-02,Independent ELICOS Sector,23,12,100.0
+1168,2021-02,Postgraduate Research Sector,36,25,100.0
+1169,2021-02,Schools Sector,0,1,100.0
+1170,2021-02,Vocational Education and Training Sector,670,583,82.23
+1171,2021-03,Foreign Affairs or Defence Sector,3,1,100.0
+1172,2021-03,Higher Education Sector,3273,1409,88.28
+1173,2021-03,Independent ELICOS Sector,40,10,100.0
+1174,2021-03,Postgraduate Research Sector,58,35,100.0
+1175,2021-03,Vocational Education and Training Sector,1598,493,83.14
+1176,2021-04,Foreign Affairs or Defence Sector,0,4,100.0
+1177,2021-04,Higher Education Sector,1119,1033,94.51
+1178,2021-04,Independent ELICOS Sector,13,13,100.0
+1179,2021-04,Postgraduate Research Sector,21,32,100.0
+1180,2021-04,Vocational Education and Training Sector,806,395,89.57
+1181,2021-05,Foreign Affairs or Defence Sector,3,0,
+1182,2021-05,Higher Education Sector,604,1196,94.47
+1183,2021-05,Independent ELICOS Sector,13,13,100.0
+1184,2021-05,Postgraduate Research Sector,13,21,91.3
+1185,2021-05,Vocational Education and Training Sector,676,473,94.79
+1186,2021-06,Foreign Affairs or Defence Sector,1,0,
+1187,2021-06,Higher Education Sector,618,1419,87.7
+1188,2021-06,Independent ELICOS Sector,12,20,100.0
+1189,2021-06,Postgraduate Research Sector,14,29,100.0
+1190,2021-06,Vocational Education and Training Sector,618,551,88.02
+1191,2021-07,Foreign Affairs or Defence Sector,0,3,100.0
+1192,2021-07,Higher Education Sector,803,1246,87.32
+1193,2021-07,Independent ELICOS Sector,6,9,100.0
+1194,2021-07,Postgraduate Research Sector,24,18,94.74
+1195,2021-07,Schools Sector,1,0,
+1196,2021-07,Vocational Education and Training Sector,445,793,90.63
+1197,2021-08,Foreign Affairs or Defence Sector,3,3,100.0
+1198,2021-08,Higher Education Sector,1624,741,92.28
+1199,2021-08,Independent ELICOS Sector,15,4,100.0
+1200,2021-08,Postgraduate Research Sector,26,29,96.67
+1201,2021-08,Vocational Education and Training Sector,642,551,92.29
+1202,2021-09,Foreign Affairs or Defence Sector,2,0,
+1203,2021-09,Higher Education Sector,1356,597,89.1
+1204,2021-09,Independent ELICOS Sector,13,12,75.0
+1205,2021-09,Postgraduate Research Sector,26,25,96.15
+1206,2021-09,Vocational Education and Training Sector,803,365,92.17
+1207,2021-10,Foreign Affairs or Defence Sector,3,3,100.0
+1208,2021-10,Higher Education Sector,555,417,85.8
+1209,2021-10,Independent ELICOS Sector,5,8,66.67
+1210,2021-10,Postgraduate Research Sector,21,9,100.0
+1211,2021-10,Vocational Education and Training Sector,534,307,82.09
+1212,2021-11,Foreign Affairs or Defence Sector,0,2,100.0
+1213,2021-11,Higher Education Sector,742,697,94.06
+1214,2021-11,Independent ELICOS Sector,7,15,93.75
+1215,2021-11,Postgraduate Research Sector,9,18,100.0
+1216,2021-11,Vocational Education and Training Sector,645,473,84.31
+1217,2021-12,Foreign Affairs or Defence Sector,1,0,
+1218,2021-12,Higher Education Sector,1097,1212,97.51
+1219,2021-12,Independent ELICOS Sector,5,9,81.82
+1220,2021-12,Non-Award Sector,1,1,100.0
+1221,2021-12,Postgraduate Research Sector,32,37,100.0
+1222,2021-12,Schools Sector,3,0,
+1223,2021-12,Vocational Education and Training Sector,1115,733,93.02
+1224,2022-01,Foreign Affairs or Defence Sector,1,4,100.0
+1225,2022-01,Higher Education Sector,2009,1452,96.48
+1226,2022-01,Independent ELICOS Sector,3,6,66.67
+1227,2022-01,Postgraduate Research Sector,24,20,100.0
+1228,2022-01,Schools Sector,0,2,100.0
+1229,2022-01,Vocational Education and Training Sector,1508,1048,88.96
+1230,2022-02,Foreign Affairs or Defence Sector,5,1,100.0
+1231,2022-02,Higher Education Sector,3450,2522,96.3
+1232,2022-02,Independent ELICOS Sector,7,10,76.92
+1233,2022-02,Postgraduate Research Sector,45,22,100.0
+1234,2022-02,Vocational Education and Training Sector,2101,1294,87.2
+1235,2022-03,Foreign Affairs or Defence Sector,7,3,100.0
+1236,2022-03,Higher Education Sector,3987,3031,97.93
+1237,2022-03,Independent ELICOS Sector,13,11,100.0
+1238,2022-03,Postgraduate Research Sector,34,29,100.0
+1239,2022-03,Schools Sector,1,1,50.0
+1240,2022-03,Vocational Education and Training Sector,3613,1743,85.36
+1241,2022-04,Foreign Affairs or Defence Sector,16,6,100.0
+1242,2022-04,Higher Education Sector,2258,1570,96.73
+1243,2022-04,Independent ELICOS Sector,8,8,66.67
+1244,2022-04,Postgraduate Research Sector,26,6,100.0
+1245,2022-04,Schools Sector,1,0,
+1246,2022-04,Vocational Education and Training Sector,2932,1611,87.65
+1247,2022-05,Foreign Affairs or Defence Sector,20,18,100.0
+1248,2022-05,Higher Education Sector,3383,2728,97.12
+1249,2022-05,Independent ELICOS Sector,9,5,83.33
+1250,2022-05,Postgraduate Research Sector,26,10,100.0
+1251,2022-05,Schools Sector,1,0,
+1252,2022-05,Vocational Education and Training Sector,3020,1276,72.38
+1253,2022-06,Foreign Affairs or Defence Sector,8,20,100.0
+1254,2022-06,Higher Education Sector,4535,2940,84.14
+1255,2022-06,Independent ELICOS Sector,11,10,71.43
+1256,2022-06,Non-Award Sector,1,1,100.0
+1257,2022-06,Postgraduate Research Sector,20,10,90.91
+1258,2022-06,Schools Sector,0,2,100.0
+1259,2022-06,Vocational Education and Training Sector,2635,910,43.9
+1260,2022-07,Foreign Affairs or Defence Sector,4,4,100.0
+1261,2022-07,Higher Education Sector,3302,3286,78.09
+1262,2022-07,Independent ELICOS Sector,11,10,100.0
+1263,2022-07,Postgraduate Research Sector,28,12,100.0
+1264,2022-07,Vocational Education and Training Sector,1290,403,25.57
+1265,2022-08,Foreign Affairs or Defence Sector,9,6,100.0
+1266,2022-08,Higher Education Sector,3061,1535,78.84
+1267,2022-08,Independent ELICOS Sector,15,3,60.0
+1268,2022-08,Postgraduate Research Sector,17,16,100.0
+1269,2022-08,Schools Sector,2,0,
+1270,2022-08,Vocational Education and Training Sector,1088,271,52.52
+1271,2022-09,Foreign Affairs or Defence Sector,0,1,100.0
+1272,2022-09,Higher Education Sector,1914,365,47.1
+1273,2022-09,Independent ELICOS Sector,12,0,
+1274,2022-09,Postgraduate Research Sector,27,7,100.0
+1275,2022-09,Schools Sector,1,0,
+1276,2022-09,Vocational Education and Training Sector,721,440,17.62
+1277,2022-10,Foreign Affairs or Defence Sector,3,7,100.0
+1278,2022-10,Higher Education Sector,1115,978,51.66
+1279,2022-10,Independent ELICOS Sector,9,2,100.0
+1280,2022-10,Postgraduate Research Sector,22,27,100.0
+1281,2022-10,Schools Sector,3,0,
+1282,2022-10,Vocational Education and Training Sector,378,268,23.51
+1283,2022-11,Foreign Affairs or Defence Sector,13,1,100.0
+1284,2022-11,Higher Education Sector,1712,3183,78.17
+1285,2022-11,Independent ELICOS Sector,23,13,72.22
+1286,2022-11,Postgraduate Research Sector,43,78,100.0
+1287,2022-11,Schools Sector,2,0,0.0
+1288,2022-11,Vocational Education and Training Sector,572,1162,71.46
+1289,2022-12,Foreign Affairs or Defence Sector,3,20,100.0
+1290,2022-12,Higher Education Sector,2147,5249,88.44
+1291,2022-12,Independent ELICOS Sector,31,137,97.86
+1292,2022-12,Postgraduate Research Sector,31,124,100.0
+1293,2022-12,Schools Sector,1,3,75.0
+1294,2022-12,Vocational Education and Training Sector,795,4004,91.94
+1295,2023-01,Foreign Affairs or Defence Sector,2,0,
+1296,2023-01,Higher Education Sector,3341,2228,78.87
+1297,2023-01,Independent ELICOS Sector,15,15,100.0
+1298,2023-01,Postgraduate Research Sector,38,32,100.0
+1299,2023-01,Schools Sector,0,1,100.0
+1300,2023-01,Vocational Education and Training Sector,700,384,47.76
+1301,2023-02,Foreign Affairs or Defence Sector,13,6,100.0
+1302,2023-02,Higher Education Sector,4371,2838,78.7
+1303,2023-02,Independent ELICOS Sector,14,7,100.0
+1304,2023-02,Postgraduate Research Sector,32,42,100.0
+1305,2023-02,Schools Sector,1,1,100.0
+1306,2023-02,Vocational Education and Training Sector,817,304,51.26
+1307,2023-03,Foreign Affairs or Defence Sector,12,17,100.0
+1308,2023-03,Higher Education Sector,3962,3178,73.36
+1309,2023-03,Independent ELICOS Sector,30,4,100.0
+1310,2023-03,Postgraduate Research Sector,23,29,100.0
+1311,2023-03,Schools Sector,1,1,100.0
+1312,2023-03,Vocational Education and Training Sector,1174,418,64.91
+1313,2023-04,Foreign Affairs or Defence Sector,3,6,100.0
+1314,2023-04,Higher Education Sector,3074,2087,67.98
+1315,2023-04,Independent ELICOS Sector,18,21,95.45
+1316,2023-04,Postgraduate Research Sector,17,17,100.0
+1317,2023-04,Schools Sector,1,0,
+1318,2023-04,Vocational Education and Training Sector,641,624,58.32
+1319,2023-05,Foreign Affairs or Defence Sector,1,2,100.0
+1320,2023-05,Higher Education Sector,3759,2758,64.27
+1321,2023-05,Independent ELICOS Sector,23,46,80.7
+1322,2023-05,Non-Award Sector,3,0,0.0
+1323,2023-05,Postgraduate Research Sector,46,38,97.44
+1324,2023-05,Schools Sector,2,2,66.67
+1325,2023-05,Vocational Education and Training Sector,737,759,68.87
+1326,2023-06,Foreign Affairs or Defence Sector,4,0,
+1327,2023-06,Higher Education Sector,5205,2960,69.14
+1328,2023-06,Independent ELICOS Sector,24,7,63.64
+1329,2023-06,Non-Award Sector,1,0,0.0
+1330,2023-06,Postgraduate Research Sector,21,39,100.0
+1331,2023-06,Schools Sector,1,2,100.0
+1332,2023-06,Vocational Education and Training Sector,800,243,50.94
+1333,2023-07,Foreign Affairs or Defence Sector,2,5,100.0
+1334,2023-07,Higher Education Sector,2779,1739,58.53
+1335,2023-07,Independent ELICOS Sector,11,4,40.0
+1336,2023-07,Postgraduate Research Sector,33,19,100.0
+1337,2023-07,Vocational Education and Training Sector,463,267,66.92
+1338,2023-08,Foreign Affairs or Defence Sector,12,3,100.0
+1339,2023-08,Higher Education Sector,2652,1320,52.8
+1340,2023-08,Independent ELICOS Sector,13,8,53.33
+1341,2023-08,Postgraduate Research Sector,25,34,100.0
+1342,2023-08,Schools Sector,2,0,
+1343,2023-08,Vocational Education and Training Sector,551,563,75.98
+1344,2023-09,Foreign Affairs or Defence Sector,6,6,100.0
+1345,2023-09,Higher Education Sector,2190,1358,53.4
+1346,2023-09,Independent ELICOS Sector,18,7,77.78
+1347,2023-09,Postgraduate Research Sector,31,21,100.0
+1348,2023-09,Schools Sector,1,0,0.0
+1349,2023-09,Vocational Education and Training Sector,483,286,74.48
+1350,2023-10,Foreign Affairs or Defence Sector,17,17,100.0
+1351,2023-10,Higher Education Sector,2061,1271,66.82
+1352,2023-10,Independent ELICOS Sector,28,9,64.29
+1353,2023-10,Postgraduate Research Sector,13,20,100.0
+1354,2023-10,Schools Sector,4,1,33.33
+1355,2023-10,Vocational Education and Training Sector,358,253,64.21
+1356,2023-11,Foreign Affairs or Defence Sector,17,23,100.0
+1357,2023-11,Higher Education Sector,1478,1342,63.21
+1358,2023-11,Independent ELICOS Sector,10,6,85.71
+1359,2023-11,Non-Award Sector,10,2,100.0
+1360,2023-11,Postgraduate Research Sector,25,23,100.0
+1361,2023-11,Schools Sector,2,0,0.0
+1362,2023-11,Vocational Education and Training Sector,513,199,74.25
+1363,2023-12,Foreign Affairs or Defence Sector,5,6,100.0
+1364,2023-12,Higher Education Sector,2261,1380,76.37
+1365,2023-12,Independent ELICOS Sector,23,4,100.0
+1366,2023-12,Non-Award Sector,4,8,100.0
+1367,2023-12,Postgraduate Research Sector,30,24,96.0
+1368,2023-12,Schools Sector,2,1,50.0
+1369,2023-12,Vocational Education and Training Sector,656,59,55.66
+1370,2024-01,Foreign Affairs or Defence Sector,4,5,100.0
+1371,2024-01,Higher Education Sector,3297,2016,69.9
+1372,2024-01,Independent ELICOS Sector,25,8,72.73
+1373,2024-01,Non-Award Sector,3,3,100.0
+1374,2024-01,Postgraduate Research Sector,31,35,100.0
+1375,2024-01,Schools Sector,2,3,100.0
+1376,2024-01,Vocational Education and Training Sector,564,71,58.2
+1377,2024-02,Foreign Affairs or Defence Sector,1,0,
+1378,2024-02,Higher Education Sector,2702,1693,66.47
+1379,2024-02,Independent ELICOS Sector,21,2,100.0
+1380,2024-02,Non-Award Sector,0,1,100.0
+1381,2024-02,Postgraduate Research Sector,51,44,100.0
+1382,2024-02,Schools Sector,0,0,0.0
+1383,2024-02,Vocational Education and Training Sector,621,49,58.33
+1384,2024-03,Higher Education Sector,3042,658,82.25
+1385,2024-03,Independent ELICOS Sector,49,8,25.0
+1386,2024-03,Postgraduate Research Sector,32,17,100.0
+1387,2024-03,Vocational Education and Training Sector,1441,97,58.43
+1388,2024-04,Foreign Affairs or Defence Sector,15,0,
+1389,2024-04,Higher Education Sector,1713,712,71.92
+1390,2024-04,Independent ELICOS Sector,29,2,25.0
+1391,2024-04,Non-Award Sector,1,1,100.0
+1392,2024-04,Postgraduate Research Sector,18,13,100.0
+1393,2024-04,Schools Sector,2,0,
+1394,2024-04,Vocational Education and Training Sector,518,200,62.31
+1395,2024-05,Foreign Affairs or Defence Sector,12,20,100.0
+1396,2024-05,Higher Education Sector,2408,912,82.31
+1397,2024-05,Independent ELICOS Sector,28,5,35.71
+1398,2024-05,Non-Award Sector,3,0,
+1399,2024-05,Postgraduate Research Sector,26,24,100.0
+1400,2024-05,Schools Sector,2,2,100.0
+1401,2024-05,Vocational Education and Training Sector,695,316,50.89
+1402,2024-06,Foreign Affairs or Defence Sector,3,5,100.0
+1403,2024-06,Higher Education Sector,5081,1801,92.03
+1404,2024-06,Independent ELICOS Sector,91,9,52.94
+1405,2024-06,Non-Award Sector,0,2,100.0
+1406,2024-06,Postgraduate Research Sector,112,33,97.06
+1407,2024-06,Schools Sector,4,0,
+1408,2024-06,Vocational Education and Training Sector,2519,342,64.17
+1409,2024-07,Foreign Affairs or Defence Sector,0,3,100.0
+1410,2024-07,Higher Education Sector,1952,1790,87.36
+1411,2024-07,Independent ELICOS Sector,18,7,28.0
+1412,2024-07,Postgraduate Research Sector,43,53,96.36
+1413,2024-07,Schools Sector,2,0,
+1414,2024-07,Vocational Education and Training Sector,436,301,47.03
+1415,2024-08,Foreign Affairs or Defence Sector,8,1,100.0
+1416,2024-08,Higher Education Sector,2380,2041,91.44
+1417,2024-08,Independent ELICOS Sector,22,9,42.86
+1418,2024-08,Postgraduate Research Sector,72,38,100.0
+1419,2024-08,Schools Sector,0,1,100.0
+1420,2024-08,Vocational Education and Training Sector,539,250,47.35
+1421,2024-09,Foreign Affairs or Defence Sector,1,1,100.0
+1422,2024-09,Higher Education Sector,2133,1167,80.54
+1423,2024-09,Independent ELICOS Sector,30,7,33.33
+1424,2024-09,Postgraduate Research Sector,93,25,100.0
+1425,2024-09,Schools Sector,1,0,
+1426,2024-09,Vocational Education and Training Sector,579,288,43.11
+1427,2024-10,Foreign Affairs or Defence Sector,8,9,100.0
+1428,2024-10,Higher Education Sector,1577,2090,85.48
+1429,2024-10,Independent ELICOS Sector,12,12,46.15
+1430,2024-10,Postgraduate Research Sector,58,67,89.33
+1431,2024-10,Schools Sector,1,1,100.0
+1432,2024-10,Vocational Education and Training Sector,405,286,43.6
+1433,2024-11,Foreign Affairs or Defence Sector,29,18,100.0
+1434,2024-11,Higher Education Sector,1492,2312,85.82
+1435,2024-11,Independent ELICOS Sector,11,15,41.67
+1436,2024-11,Non-Award Sector,1,0,
+1437,2024-11,Postgraduate Research Sector,34,70,77.78
+1438,2024-11,Schools Sector,1,2,100.0
+1439,2024-11,Vocational Education and Training Sector,347,338,55.41
+1440,2024-12,Foreign Affairs or Defence Sector,9,24,100.0
+1441,2024-12,Higher Education Sector,2152,1618,85.2
+1442,2024-12,Independent ELICOS Sector,18,5,35.71
+1443,2024-12,Non-Award Sector,5,2,100.0
+1444,2024-12,Postgraduate Research Sector,100,63,100.0
+1445,2024-12,Schools Sector,4,4,80.0
+1446,2024-12,Vocational Education and Training Sector,352,421,60.14
+1447,2025-01,Foreign Affairs or Defence Sector,5,1,100.0
+1448,2025-01,Higher Education Sector,1800,2059,90.62
+1449,2025-01,Independent ELICOS Sector,15,10,50.0
+1450,2025-01,Non-Award Sector,2,4,100.0
+1451,2025-01,Postgraduate Research Sector,82,65,94.2
+1452,2025-01,Schools Sector,1,1,100.0
+1453,2025-01,Vocational Education and Training Sector,140,368,57.86
+1454,2025-02,Foreign Affairs or Defence Sector,18,11,100.0
+1455,2025-02,Higher Education Sector,2195,2245,87.22
+1456,2025-02,Independent ELICOS Sector,14,15,27.27
+1457,2025-02,Non-Award Sector,4,3,100.0
+1458,2025-02,Postgraduate Research Sector,129,74,98.67
+1459,2025-02,Schools Sector,0,3,100.0
+1460,2025-02,Vocational Education and Training Sector,238,523,46.82
+1461,2025-03,Foreign Affairs or Defence Sector,2,8,100.0
+1462,2025-03,Higher Education Sector,3826,1807,89.41
+1463,2025-03,Independent ELICOS Sector,46,15,57.69
+1464,2025-03,Non-Award Sector,0,3,100.0
+1465,2025-03,Postgraduate Research Sector,156,92,98.92
+1466,2025-03,Schools Sector,0,1,100.0
+1467,2025-03,Vocational Education and Training Sector,800,343,54.97
+1468,2025-04,Foreign Affairs or Defence Sector,4,7,100.0
+1469,2025-04,Higher Education Sector,2847,2645,89.18
+1470,2025-04,Independent ELICOS Sector,12,21,47.73
+1471,2025-04,Non-Award Sector,3,0,
+1472,2025-04,Postgraduate Research Sector,90,118,91.47
+1473,2025-04,Schools Sector,1,2,100.0
+1474,2025-04,Vocational Education and Training Sector,521,538,53.59
+1475,2025-05,Foreign Affairs or Defence Sector,7,11,100.0
+1476,2025-05,Higher Education Sector,3131,2432,93.57
+1477,2025-05,Independent ELICOS Sector,10,6,40.0
+1478,2025-05,Non-Award Sector,2,2,100.0
+1479,2025-05,Postgraduate Research Sector,132,81,93.1
+1480,2025-05,Schools Sector,0,1,100.0
+1481,2025-05,Vocational Education and Training Sector,529,302,54.71
+1482,2025-06,Foreign Affairs or Defence Sector,0,1,100.0
+1483,2025-06,Higher Education Sector,5262,4276,95.9
+1484,2025-06,Independent ELICOS Sector,11,18,54.55
+1485,2025-06,Non-Award Sector,0,1,100.0
+1486,2025-06,Postgraduate Research Sector,187,120,99.17
+1487,2025-06,Schools Sector,0,1,100.0
+1488,2025-06,Vocational Education and Training Sector,701,296,52.48
+1489,2025-07,Foreign Affairs or Defence Sector,7,6,100.0
+1490,2025-07,Higher Education Sector,2665,3273,95.06
+1491,2025-07,Independent ELICOS Sector,10,7,50.0
+1492,2025-07,Non-Award Sector,1,1,100.0
+1493,2025-07,Postgraduate Research Sector,102,128,100.0
+1494,2025-07,Schools Sector,1,2,100.0
+1495,2025-07,Vocational Education and Training Sector,505,370,60.06
+1496,2025-08,Foreign Affairs or Defence Sector,0,4,100.0
+1497,2025-08,Higher Education Sector,3803,2567,93.69
+1498,2025-08,Independent ELICOS Sector,21,8,42.11
+1499,2025-08,Postgraduate Research Sector,248,95,96.94
+1500,2025-08,Schools Sector,1,0,
+1501,2025-08,Vocational Education and Training Sector,684,337,55.25
+1502,2025-09,Foreign Affairs or Defence Sector,15,15,100.0
+1503,2025-09,Higher Education Sector,3850,3215,87.51
+1504,2025-09,Independent ELICOS Sector,11,14,45.16
+1505,2025-09,Postgraduate Research Sector,197,162,98.18
+1506,2025-09,Schools Sector,0,1,100.0
+1507,2025-09,Vocational Education and Training Sector,815,450,48.54
+1508,2025-10,Foreign Affairs or Defence Sector,7,3,100.0
+1509,2025-10,Higher Education Sector,2562,3350,86.72
+1510,2025-10,Independent ELICOS Sector,5,13,56.52
+1511,2025-10,Non-Award Sector,1,0,
+1512,2025-10,Postgraduate Research Sector,89,113,95.76
+1513,2025-10,Schools Sector,1,0,
+1514,2025-10,Vocational Education and Training Sector,598,461,42.45
+1515,2025-11,Foreign Affairs or Defence Sector,34,2,100.0
+1516,2025-11,Higher Education Sector,2531,2108,78.48
+1517,2025-11,Independent ELICOS Sector,9,1,16.67
+1518,2025-11,Non-Award Sector,2,1,100.0
+1519,2025-11,Postgraduate Research Sector,107,324,95.29
+1520,2025-11,Schools Sector,1,0,0.0
+1521,2025-11,Vocational Education and Training Sector,499,154,21.01
+1522,2025-12,Foreign Affairs or Defence Sector,7,39,100.0
+1523,2025-12,Higher Education Sector,3131,1267,74.53
+1524,2025-12,Independent ELICOS Sector,11,8,100.0
+1525,2025-12,Non-Award Sector,3,2,100.0
+1526,2025-12,Postgraduate Research Sector,140,153,91.07
+1527,2025-12,Vocational Education and Training Sector,415,144,41.86
+1528,2026-01,Foreign Affairs or Defence Sector,1,4,100.0
+1529,2026-01,Higher Education Sector,4155,1834,55.97
+1530,2026-01,Independent ELICOS Sector,17,4,40.0
+1531,2026-01,Non-Award Sector,2,3,100.0
+1532,2026-01,Postgraduate Research Sector,154,135,79.88
+1533,2026-01,Schools Sector,2,1,100.0
+1534,2026-01,Vocational Education and Training Sector,313,158,31.73
+1535,2026-02,Foreign Affairs or Defence Sector,3,4,100.0
+1536,2026-02,Higher Education Sector,2711,2231,52.22
+1537,2026-02,Independent ELICOS Sector,26,7,70.0
+1538,2026-02,Non-Award Sector,1,0,0.0
+1539,2026-02,Postgraduate Research Sector,167,119,68.79
+1540,2026-02,Schools Sector,2,0,
+1541,2026-02,Vocational Education and Training Sector,222,112,29.55
+1542,2026-03,Higher Education Sector,3699,1858,44.13
+1543,2026-03,Independent ELICOS Sector,31,4,25.0
+1544,2026-03,Non-Award Sector,1,0,
+1545,2026-03,Postgraduate Research Sector,244,77,74.76
+1546,2026-03,Schools Sector,1,1,100.0
+1547,2026-03,Vocational Education and Training Sector,577,121,22.87
+1548,2026-04,Foreign Affairs or Defence Sector,2,2,100.0
+1549,2026-04,Higher Education Sector,2367,1769,71.94
+1550,2026-04,Independent ELICOS Sector,14,4,40.0
+1551,2026-04,Non-Award Sector,1,1,100.0
+1552,2026-04,Postgraduate Research Sector,122,194,88.18
+1553,2026-04,Vocational Education and Training Sector,258,119,39.02
+1554,2026-05,Higher Education Sector,2496,1383,56.89
+1555,2026-05,Independent ELICOS Sector,12,6,66.67
+1556,2026-05,Non-Award Sector,2,0,
+1557,2026-05,Postgraduate Research Sector,98,160,78.05
+1558,2026-05,Schools Sector,1,0,
+1559,2026-05,Vocational Education and Training Sector,210,131,36.49

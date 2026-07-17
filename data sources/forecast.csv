@@ -1,13 +1,13 @@
 year_month,month_label,lodged_forecast,granted_forecast,refused_forecast,grant_rate_forecast,lower_bound,upper_bound,model_note
-2026-05,M11 May,3664.8,2344.6,1320.2,63.98,19.92,100.0,
-2026-06,M12 Jun,6490.9,3181.5,3309.4,49.02,24.14,73.89,
-2026-07,M01 Jul,3058.2,2530.5,527.7,82.75,29.95,100.0,
-2026-08,M02 Aug,3449.2,1887.5,1561.7,54.72,7.91,100.0,
-2026-09,M03 Sep,2929.3,1558.8,1370.5,53.22,0.0,100.0,
-2026-10,M04 Oct,1972.2,1944.1,28.1,98.58,16.7,100.0,
-2026-11,M05 Nov,2014.6,2014.6,0.0,100.0,19.85,100.0,Capped at lodged volume - raw model output exceeded 100% due to lodged/granted month-timing mismatch in source data
-2026-12,M06 Dec,2708.6,2708.6,0.0,100.0,40.39,100.0,Capped at lodged volume - raw model output exceeded 100% due to lodged/granted month-timing mismatch in source data
-2027-01,M07 Jan,3309.3,2042.9,1266.4,61.73,12.94,100.0,
-2027-02,M08 Feb,3222.5,2231.8,990.7,69.26,19.15,100.0,
-2027-03,M09 Mar,4422.4,1838.9,2583.6,41.58,5.07,78.09,
-2027-04,M10 Apr,2702.2,1915.9,786.4,70.9,11.14,100.0,
+2026-06,June 2026,4945,3042,1903,61.5,48.8,74.2,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-07,July 2026,3380,2043,1337,60.4,46.7,74.2,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-08,August 2026,3672,2180,1492,59.4,44.6,74.1,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-09,September 2026,3568,2080,1488,58.3,42.5,74.1,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-10,October 2026,2952,1690,1262,57.2,40.4,74.0,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-11,November 2026,2903,1631,1272,56.2,38.4,74.0,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2026-12,December 2026,3481,1918,1563,55.1,36.3,73.9,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2027-01,January 2027,4234,2288,1946,54.0,34.2,73.9,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2027-02,February 2027,4015,2127,1888,53.0,32.1,73.8,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2027-03,March 2027,4543,2358,2185,51.9,30.0,73.8,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2027-04,April 2027,3632,1846,1786,50.8,27.9,73.7,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
+2027-05,May 2027,4104,2042,2062,49.8,25.8,73.7,"Linear trend on last 24 months of real BP0015 data, seasonally adjusted by calendar month; band = +/-1 std dev, widening with horizon."
