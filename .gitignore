@@ -14,3 +14,12 @@ data_sources/
 *.xlsx
 .vscode/
 Thumbs.db
+nepal_lodged_extracted.csv
+nepal_granted_extracted.csv
+nepal_grant_rates_extracted.csv
+nepal_merged_real.csv
+# Raw pivot-cache extracts (large, regenerate via extract_nepal_*.py)
+nepal_lodged_extracted.csv
+nepal_granted_extracted.csv
+nepal_grant_rates_extracted.csv
+nepal_merged_real.csv
