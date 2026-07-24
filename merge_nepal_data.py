@@ -40,14 +40,19 @@ merged['lodged_count']  = merged['lodged_count'].fillna(0).astype(int)
 merged['granted_count'] = merged['granted_count'].fillna(0).astype(int)
 merged['refused_count'] = (merged['lodged_count'] - merged['granted_count']).clip(lower=0)
 
-# Grant rate per combo — undefined (NaN) where lodged_count is 0, not divide-by-zero
+# Grant/refusal rate per combo — denominator is granted+refused (decided
+# applications only), not lodged_count (which includes pending decisions).
+# Undefined (None) where granted+refused is 0, not divide-by-zero.
+merged['decided_count'] = merged['granted_count'] + merged['refused_count']
 merged['grant_rate_calc'] = merged.apply(
-    lambda r: round(r['granted_count'] / r['lodged_count'] * 100, 2) if r['lodged_count'] > 0 else None,
+    lambda r: round(r['granted_count'] / r['decided_count'] * 100, 2) if r['decided_count'] > 0 else None,
     axis=1
 )
-merged['refusal_rate_calc'] = merged['grant_rate_calc'].apply(
-    lambda v: round(100 - v, 2) if v is not None else None
+merged['refusal_rate_calc'] = merged.apply(
+    lambda r: round(r['refused_count'] / r['decided_count'] * 100, 2) if r['decided_count'] > 0 else None,
+    axis=1
 )
+merged = merged.drop(columns=['decided_count'])
 
 # Derive year_month from financial_year + month (e.g. 2005-06 + M01 Jul -> 2005-07)
 MONTH_MAP = {
@@ -83,8 +88,20 @@ april_2026 = merged[merged['year_month'] == '2026-04']
 if len(april_2026):
     total_lodged  = april_2026['lodged_count'].sum()
     total_granted = april_2026['granted_count'].sum()
-    rate = total_granted / total_lodged * 100 if total_lodged else 0
+    total_refused = april_2026['refused_count'].sum()
+    total_decided = total_granted + total_refused
+    rate = total_granted / total_decided * 100 if total_decided else 0
     print(f"\n─── April 2026 sanity check ───")
-    print(f"Lodged: {total_lodged:,}  Granted: {total_granted:,}  Grant rate: {rate:.1f}%")
+    print(f"Lodged: {total_lodged:,}  Granted: {total_granted:,}  Refused: {total_refused:,}  "
+          f"Grant rate: {rate:.1f}% (Granted / (Granted+Refused))")
 else:
     print("\n⚠ No April 2026 rows found — check year_month derivation.")
+
+# ── grant_rate_calc / refusal_rate_calc range check ──────────────────────
+print(f"\n─── grant_rate_calc range check ───")
+print(f"grant_rate_calc:   min={merged['grant_rate_calc'].min():.2f}%  "
+      f"max={merged['grant_rate_calc'].max():.2f}%")
+print(f"refusal_rate_calc: min={merged['refusal_rate_calc'].min():.2f}%  "
+      f"max={merged['refusal_rate_calc'].max():.2f}%")
+out_of_range = merged[(merged['grant_rate_calc'] < 0) | (merged['grant_rate_calc'] > 100)]
+print(f"Rows with grant_rate_calc outside 0-100%: {len(out_of_range)}")

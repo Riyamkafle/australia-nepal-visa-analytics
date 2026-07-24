@@ -179,6 +179,34 @@ class LocationBreakdown(models.Model):
         return f"LocationBreakdown({self.client_location})"
 
 
+class NepalGrantRates(models.Model):
+    """
+    Real decision-based grant/refused records from the Home Affairs pivot
+    cache (Grant Rates report), including applicant_type and client_location.
+    Source table: nepal_grant_rates (loaded via `import_homeaffairs`).
+    """
+    financial_year      = models.TextField(null=True, blank=True)
+    fy_quarter          = models.TextField(null=True, blank=True)
+    month                = models.TextField(null=True, blank=True)
+    client_location      = models.TextField(null=True, blank=True)
+    lodgement_channel    = models.TextField(null=True, blank=True)
+    sector               = models.TextField(null=True, blank=True)
+    applicant_type       = models.TextField(null=True, blank=True)
+    provider_state       = models.TextField(null=True, blank=True)
+    gender               = models.TextField(null=True, blank=True)
+    citizenship_country   = models.TextField(null=True, blank=True)
+    age_group            = models.TextField(null=True, blank=True)
+    grant_total          = models.IntegerField(default=0)
+    refused_total        = models.IntegerField(default=0)
+
+    class Meta:
+        managed  = False
+        db_table = 'nepal_grant_rates'
+
+    def __str__(self):
+        return f"NepalGrantRates({self.financial_year}, {self.month}, {self.client_location})"
+
+
 class AgeBreakdown(models.Model):
     id         = models.IntegerField(primary_key=True)
     age_group  = models.CharField(max_length=30, null=True, blank=True)

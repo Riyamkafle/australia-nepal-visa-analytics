@@ -12,6 +12,7 @@ urlpatterns = [
     path('forecast/',     views.forecast_data,       name='api-forecast'),
     path('gender/',       views.gender_breakdown,    name='api-gender'),
     path('location/',     views.location_breakdown,  name='api-location'),
+    path('location-comparison/', views.location_comparison, name='api-location-comparison'),
     path('age/',          views.age_breakdown,       name='api-age'),
     path('channel/',      views.channel_breakdown,   name='api-channel'),
     path('seasonal/',     views.seasonal_pattern,    name='api-seasonal'),

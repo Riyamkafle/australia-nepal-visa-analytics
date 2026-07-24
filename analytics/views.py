@@ -48,7 +48,7 @@ def fmt_num(n):
 from .models import (
     MonthlyTrend, BySector, FySummary, NepalMerged, Forecast,
     GenderBreakdown, LocationBreakdown, AgeBreakdown,
-    ChannelBreakdown, SeasonalPattern,
+    ChannelBreakdown, SeasonalPattern, NepalGrantRates,
 )
 from .serializers import (
     MonthlyTrendSerializer, BySectorSerializer, FySummarySerializer,
@@ -114,6 +114,7 @@ def api_root(request):
         'forecast':     base + 'forecast/',
         'gender':       base + 'gender/',
         'location':     base + 'location/',
+        'location_comparison': base + 'location-comparison/',
         'age':          base + 'age/',
         'channel':      base + 'channel/',
         'seasonal':     base + 'seasonal/',
@@ -429,6 +430,100 @@ def university_rankings(request):
             'grant_rate':     rate,
         })
     return Response(results)
+
+
+# ─── Onshore vs Offshore Comparison (BI-style cards + trend) ─────────────────
+
+_MONTH_MAP = {
+    'M01 Jul': 7, 'M02 Aug': 8, 'M03 Sep': 9, 'M04 Oct': 10,
+    'M05 Nov': 11, 'M06 Dec': 12, 'M07 Jan': 1, 'M08 Feb': 2,
+    'M09 Mar': 3, 'M10 Apr': 4, 'M11 May': 5, 'M12 Jun': 6,
+}
+
+
+def _rate_pair(granted, refused):
+    decided = granted + refused
+    if not decided:
+        return None, None
+    return (round(granted / decided * 100, 2), round(refused / decided * 100, 2))
+
+
+@api_view(['GET'])
+def location_comparison(request):
+    """
+    BI-style Onshore vs Offshore comparison: two independent KPI cards
+    (aggregate totals) plus a monthly grant-rate trend for both locations.
+    Calculated only from NepalGrantRates (real decision-based data);
+    Grant Rate = Granted / (Granted + Refused) * 100, computed separately
+    per location — never blended.
+
+    Optional filter: ?financial_year=2025-26
+    """
+    qs = NepalGrantRates.objects.all()
+    financial_year = request.query_params.get('financial_year')
+    if financial_year:
+        qs = qs.filter(financial_year=financial_year)
+
+    cards = {}
+    for loc_key, loc_label in [('outside', 'Outside Australia'), ('in', 'In Australia')]:
+        loc_qs = qs.filter(client_location__iexact=loc_label)
+        agg = loc_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+        granted = agg['granted'] or 0
+        refused = agg['refused'] or 0
+        grant_rate, refusal_rate = _rate_pair(granted, refused)
+        cards[loc_key] = {
+            'label':            loc_label,
+            'total_applications': granted + refused,
+            'total_grants':     granted,
+            'total_refusals':   refused,
+            'grant_rate':       grant_rate,
+            'refusal_rate':     refusal_rate,
+        }
+
+    # Monthly trend — group by (financial_year, month) per location, derive year_month
+    trend_rows = (
+        qs.exclude(client_location__isnull=True)
+        .values('financial_year', 'month', 'client_location')
+        .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+    )
+
+    trend_map = {}  # year_month -> {'offshore': rate, 'onshore': rate}
+    for row in trend_rows:
+        fy = row['financial_year']
+        month = row['month']
+        loc = (row['client_location'] or '').strip()
+        if not fy or month not in _MONTH_MAP:
+            continue
+        try:
+            fy_start = int(fy[:4])
+        except (TypeError, ValueError):
+            continue
+        m_num = _MONTH_MAP[month]
+        year = fy_start if m_num >= 7 else fy_start + 1
+        year_month = f"{year:04d}-{m_num:02d}"
+
+        rate, _ = _rate_pair(row['granted'] or 0, row['refused'] or 0)
+        bucket = trend_map.setdefault(year_month, {'offshore': None, 'onshore': None})
+        if loc.lower() == 'outside australia':
+            bucket['offshore'] = rate
+        elif loc.lower() == 'in australia':
+            bucket['onshore'] = rate
+
+    trend = [
+        {'year_month': ym, 'offshore_grant_rate': v['offshore'], 'onshore_grant_rate': v['onshore']}
+        for ym, v in sorted(trend_map.items())
+    ]
+
+    return Response({
+        'offshore': cards['outside'],
+        'onshore':  cards['in'],
+        'trend':    trend,
+        'note': (
+            'Offshore = Outside Australia, Onshore = In Australia at time of decision. '
+            'Each calculated independently: Grant Rate = Granted / (Granted + Refused) * 100. '
+            'Source: NepalGrantRates (real decision-based Home Affairs data).'
+        ),
+    })
 
 
 # ─── Search ───────────────────────────────────────────────────────────────────
