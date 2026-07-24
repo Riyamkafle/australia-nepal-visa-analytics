@@ -145,8 +145,9 @@ def kpi_summary(request):
         total_lodged  = agg['total_lodged']  or 0
         total_granted = agg['total_granted'] or 0
         total_refused = agg['total_refused'] or 0
-        grant_rate    = round((total_granted / total_lodged * 100), 2) if total_lodged else 0.0
-        refusal_rate  = round(100 - grant_rate, 2)
+        total_decided = total_granted + total_refused
+        grant_rate    = round((total_granted / total_decided * 100), 2) if total_decided else 0.0
+        refusal_rate  = round((total_refused / total_decided * 100), 2) if total_decided else 0.0
 
         fy_years = FySummary.objects.order_by('financial_year')
         period_start = fy_years.first().financial_year if fy_years.exists() else '2022-23'
@@ -418,7 +419,8 @@ def university_rankings(request):
         lodged = row['total_lodged'] or 0
         granted = row['total_granted'] or 0
         refused = row['total_refused'] or 0
-        rate = round((granted / lodged * 100), 2) if lodged else 0.0
+        decided = granted + refused
+        rate = round((granted / decided * 100), 2) if decided else 0.0
         results.append({
             'provider_state': row['provider_state'],
             'total_lodged':   lodged,
@@ -573,7 +575,8 @@ def insights(request):
         total_lodged  = fy_agg.get('lodged')  or 1
         total_granted = fy_agg.get('granted') or 0
         total_refused = fy_agg.get('refused') or 0
-        grant_rate    = round((total_granted / total_lodged * 100), 1)
+        total_decided = total_granted + total_refused
+        grant_rate    = round((total_granted / total_decided * 100), 1) if total_decided else 0.0
 
         # Per-100 framing
         per_100_granted = round(grant_rate)
