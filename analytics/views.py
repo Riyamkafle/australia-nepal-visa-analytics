@@ -127,7 +127,7 @@ def api_root(request):
     }
     return Response({
         'project':     'Nepal Student Visa Analytics Dashboard',
-        'description': 'Australian Subclass 500 visa data for Nepal applicants (2022-2026)',
+        'description': 'Australian student visa data (subclass 500 and 570-576) for Nepal applicants (2005-06 to present)',
         'endpoints':   endpoints,
     })
 
@@ -224,11 +224,12 @@ def monthly_trend(request):
     serializer = MonthlyTrendSerializer(qs, many=True)
     clean_data = [sanitize_record(dict(row)) for row in serializer.data]
 
-    # Flag months where grant_rate exceeds 100% or refusal_rate is negative —
-    # a known artifact of lodged-month vs decided-month timing mismatch in the
-    # source data (grants finalized this month mostly belong to applications
-    # lodged in prior months), not a calculation error. See FINDINGS_REPORT.md
-    # for full explanation.
+    # Defensive flag/clamp for grant_rate > 100% or refusal_rate < 0% — this
+    # would indicate a lodged-month vs decided-month timing mismatch (see
+    # FINDINGS_REPORT.md). As of the real decision-based formula fix
+    # (Granted / (Granted+Refused)), values are bounded 0-100% by
+    # construction and this currently has nothing to clamp; retained as a
+    # regression safety net.
     for row in clean_data:
         rate = row.get('grant_rate')
         refusal = row.get('refusal_rate')
@@ -280,8 +281,9 @@ def sector_breakdown(request):
     # Sanitize any inf/nan floats that may exist in grant_rate column
     clean_data = [sanitize_record(dict(row)) for row in serializer.data]
 
-    # Same lodged-vs-decided-month timing issue as monthly_trend (see
-    # FINDINGS_REPORT.md): 71 of 293 rows have grant_rate outside 0-100%.
+    # Same defensive flag/clamp as monthly_trend, for the same reason (see
+    # FINDINGS_REPORT.md). Currently 0 rows are out of range with the fixed
+    # decision-based formula; retained as a regression safety net.
     for row in clean_data:
         rate = row.get('grant_rate')
         if rate is not None and (rate > 100 or rate < 0):
@@ -766,7 +768,7 @@ def insights(request):
             'title': 'Overall Approval Rate',
             'text': (
                 f"Out of every 100 Nepali students who applied for an Australian "
-                f"Subclass 500 student visa, about {per_100_granted} were approved "
+                f"student visa, about {per_100_granted} were approved "
                 f"and {per_100_refused} were refused."
             ),
             'tone': 'neutral',
