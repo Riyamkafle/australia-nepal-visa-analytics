@@ -463,8 +463,15 @@ def location_comparison(request):
     """
     qs = NepalGrantRates.objects.all()
     financial_year = request.query_params.get('financial_year')
+
     if financial_year:
+        # A financial_year was explicitly given -> aggregate the whole year (BI default)
         qs = qs.filter(financial_year=financial_year)
+    else:
+        # No financial_year given -> default to latest available month only
+        latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
+        if latest:
+            qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
 
     cards = {}
     for loc_key, loc_label in [('outside', 'Outside Australia'), ('in', 'In Australia')]:
@@ -484,7 +491,7 @@ def location_comparison(request):
 
     # Monthly trend — group by (financial_year, month) per location, derive year_month
     trend_rows = (
-        qs.exclude(client_location__isnull=True)
+        NepalGrantRates.objects.exclude(client_location__isnull=True)
         .values('financial_year', 'month', 'client_location')
         .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
     )
