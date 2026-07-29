@@ -534,6 +534,83 @@ def location_comparison(request):
         ),
     })
 
+    
+@api_view(['GET'])
+def applicant_type_comparison(request):
+    """
+    BI-style Primary vs Secondary applicant comparison: two independent
+    KPI cards (aggregate totals) plus a monthly grant-rate trend for both
+    types. Calculated only from NepalGrantRates (real decision-based data);
+    Grant Rate = Granted / (Granted + Refused) * 100, computed separately
+    per applicant_type — never blended.
+    Optional filter: ?financial_year=2025-26
+    """
+    qs = NepalGrantRates.objects.all()
+    financial_year = request.query_params.get('financial_year')
+
+    if financial_year:
+        qs = qs.filter(financial_year=financial_year)
+    else:
+        latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
+        if latest:
+            qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
+
+    cards = {}
+    for type_key, type_label in [('primary', 'Primary'), ('secondary', 'Secondary')]:
+        type_qs = qs.filter(applicant_type__iexact=type_label)
+        agg = type_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+        granted = agg['granted'] or 0
+        refused = agg['refused'] or 0
+        grant_rate, refusal_rate = _rate_pair(granted, refused)
+        cards[type_key] = {
+            'label':              type_label,
+            'total_applications': granted + refused,
+            'total_grants':       granted,
+            'total_refusals':     refused,
+            'grant_rate':         grant_rate,
+            'refusal_rate':       refusal_rate,
+        }
+
+    trend_rows = (
+        NepalGrantRates.objects.exclude(applicant_type__isnull=True)
+        .values('financial_year', 'month', 'applicant_type')
+        .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+    )
+    trend_map = {}
+    for row in trend_rows:
+        fy = row['financial_year']
+        month = row['month']
+        atype = (row['applicant_type'] or '').strip()
+        if not fy or month not in _MONTH_MAP:
+            continue
+        try:
+            fy_start = int(fy[:4])
+        except (TypeError, ValueError):
+            continue
+        m_num = _MONTH_MAP[month]
+        year = fy_start if m_num >= 7 else fy_start + 1
+        year_month = f"{year:04d}-{m_num:02d}"
+        rate, _ = _rate_pair(row['granted'] or 0, row['refused'] or 0)
+        bucket = trend_map.setdefault(year_month, {'primary': None, 'secondary': None})
+        if atype.lower() == 'primary':
+            bucket['primary'] = rate
+        elif atype.lower() == 'secondary':
+            bucket['secondary'] = rate
+
+    trend = [
+        {'year_month': ym, 'primary_grant_rate': v['primary'], 'secondary_grant_rate': v['secondary']}
+        for ym, v in sorted(trend_map.items())
+    ]
+
+    return Response({
+        'primary':   cards['primary'],
+        'secondary': cards['secondary'],
+        'trend':     trend,
+        'note': (
+            'Each calculated independently: Grant Rate = Granted / (Granted + Refused) * 100. '
+            'Source: NepalGrantRates (real decision-based Home Affairs data).'
+        ),
+    })
 
 # ─── Search ───────────────────────────────────────────────────────────────────
 
