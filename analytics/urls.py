@@ -17,6 +17,7 @@ urlpatterns = [
     path('channel/',      views.channel_breakdown,   name='api-channel'),
     path('seasonal/',     views.seasonal_pattern,    name='api-seasonal'),
     path('universities/', views.university_rankings, name='api-universities'),
+    path('overview/',     views.overview,            name='api-overview'),
     path('search/',       views.search,              name='api-search'),
     path('validate/',     views.validate_data,       name='api-validate'),
     path('insights/',     views.insights,            name='api-insights'),

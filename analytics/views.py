@@ -6,6 +6,7 @@ Includes both HTML template views and DRF API views.
 import math
 
 from django.shortcuts import render
+from django.utils import timezone
 from django.db.models import Sum, Avg, Count, Q
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
@@ -828,3 +829,279 @@ def insights(request):
 
     except Exception as e:
         return Response({'cards': [], 'error': str(e)})
+
+# ─── Combined Overview Page Payload ───────────────────────────────────────────
+
+def _share_bar_items(rows, id_key, label_key, value_key, total):
+    """Build ShareBarItem-shaped dicts (id/label/share/value/bar) from an
+    iterable of dict rows, where `bar`/`share` are each row's percentage
+    of `total`. Matches the frontend's ShareBarItem type exactly."""
+    items = []
+    for row in rows:
+        value = row[value_key] or 0
+        pct = round((value / total * 100), 1) if total else 0.0
+        items.append({
+            'id':    str(row[id_key]),
+            'label': row[label_key],
+            'share': f"{pct}%",
+            'value': fmt_num(value),
+            'bar':   pct,
+        })
+    return items
+
+
+@api_view(['GET'])
+def overview(request):
+    """
+    Combined payload for the frontend Overview page. Every top-level key here
+    maps directly to OverviewResponse in the frontend's src/types/api.ts —
+    do not rename/remove a field without updating that file too.
+
+    Nothing here recalculates figures using a different method than the rest
+    of the app: KPI/grant-rate math reuses the same Granted/(Granted+Refused)
+    formula as kpi_summary()/location_comparison(), offshore/onshore reuses
+    location_comparison()'s logic, and provider/sector figures reuse
+    university_rankings()/sector_breakdown()'s aggregation.
+    """
+    try:
+        # ── Financial-year KPI cards + deltas (FySummary has real refused counts) ──
+        fy_qs = list(FySummary.objects.order_by('financial_year'))
+        latest_fy = fy_qs[-1] if fy_qs else None
+        prev_fy   = fy_qs[-2] if len(fy_qs) >= 2 else None
+
+        def _pct_delta(current, prior):
+            if current is None or prior is None or prior == 0:
+                return None
+            return round((current - prior) / prior * 100, 1)
+
+        def _fmt_delta_label(pct):
+            if pct is None:
+                return '—'
+            sign = '+' if pct > 0 else ''
+            return f"{sign}{pct}%"
+
+        kpis = []
+        if latest_fy:
+            for key, label in [('lodged', 'Applications Lodged'), ('granted', 'Granted'), ('refused', 'Refused')]:
+                cur = getattr(latest_fy, key)
+                prior = getattr(prev_fy, key) if prev_fy else None
+                pct = _pct_delta(cur, prior)
+                if pct is None:
+                    tone = 'neutral'
+                elif key == 'refused':
+                    tone = 'negative' if pct > 0 else ('positive' if pct < 0 else 'neutral')
+                else:
+                    tone = 'positive' if pct > 0 else ('negative' if pct < 0 else 'neutral')
+                kpis.append({
+                    'id':           key,
+                    'label':        label,
+                    'value':        fmt_num(cur),
+                    'deltaLabel':   _fmt_delta_label(pct),
+                    'deltaTone':    tone,
+                    'deltaCaption': f'vs {prev_fy.financial_year}' if prev_fy else 'no prior year',
+                })
+
+        grant_rate_kpi = {
+            'id':           'grant_rate',
+            'label':        'Grant Rate',
+            'value':        f"{latest_fy.grant_rate:.1f}%" if (latest_fy and latest_fy.grant_rate is not None) else '—',
+            'deltaLabel':   (
+                f"{'+' if (latest_fy.grant_rate - prev_fy.grant_rate) > 0 else ''}"
+                f"{round(latest_fy.grant_rate - prev_fy.grant_rate, 1)}pp"
+            ) if (latest_fy and prev_fy and latest_fy.grant_rate is not None and prev_fy.grant_rate is not None) else '—',
+            'deltaTone':    (
+                'positive' if (latest_fy and prev_fy and latest_fy.grant_rate is not None
+                                and prev_fy.grant_rate is not None and latest_fy.grant_rate > prev_fy.grant_rate)
+                else 'negative' if (latest_fy and prev_fy and latest_fy.grant_rate is not None
+                                     and prev_fy.grant_rate is not None and latest_fy.grant_rate < prev_fy.grant_rate)
+                else 'neutral'
+            ),
+            'deltaCaption': f'vs {prev_fy.financial_year}' if prev_fy else 'no prior year',
+        }
+
+        # ── Offshore vs Onshore (mirrors location_comparison(), lifetime totals) ──
+        gr_qs = NepalGrantRates.objects.all()
+
+        def _comparison_side(filter_kwargs, label, sublabel):
+            side_qs = gr_qs.filter(**filter_kwargs)
+            agg = side_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+            granted = agg['granted'] or 0
+            refused = agg['refused'] or 0
+            total = granted + refused
+            rate, _ = _rate_pair(granted, refused)
+            return {
+                'label':    label,
+                'sublabel': sublabel,
+                'value':    fmt_num(total),
+                'share':    total,  # raw count; frontend computes/receives % via caption below
+                'caption':  f"{rate}% grant rate" if rate is not None else 'No decided applications',
+            }, total
+
+        offshore_side, offshore_total = _comparison_side({'client_location__iexact': 'Outside Australia'}, 'Offshore', 'Outside Australia')
+        onshore_side, onshore_total   = _comparison_side({'client_location__iexact': 'In Australia'}, 'Onshore', 'In Australia')
+        loc_total = offshore_total + onshore_total
+        offshore_side['share'] = round(offshore_total / loc_total * 100, 1) if loc_total else 0.0
+        onshore_side['share']  = round(onshore_total / loc_total * 100, 1) if loc_total else 0.0
+
+        offshore_vs_onshore = {
+            'left':    offshore_side,
+            'right':   onshore_side,
+            'insight': (
+                f"Offshore applicants make up {offshore_side['share']}% of decided applications, "
+                f"onshore {onshore_side['share']}%."
+            ),
+        }
+
+        # ── Primary vs Secondary applicants (same pattern, applicant_type field) ──
+        primary_side, primary_total = _comparison_side({'applicant_type__icontains': 'primary'}, 'Primary', 'Primary applicants')
+        secondary_side, secondary_total = _comparison_side({'applicant_type__icontains': 'secondary'}, 'Secondary', 'Secondary applicants')
+        type_total = primary_total + secondary_total
+        primary_side['share']   = round(primary_total / type_total * 100, 1) if type_total else 0.0
+        secondary_side['share'] = round(secondary_total / type_total * 100, 1) if type_total else 0.0
+
+        primary_vs_secondary = {
+            'left':    primary_side,
+            'right':   secondary_side,
+            'insight': (
+                f"Primary applicants account for {primary_side['share']}% of decided applications, "
+                f"secondary {secondary_side['share']}%."
+            ),
+        }
+
+        # ── Monthly grant-rate trend, offshore vs onshore (last 12 months) ──
+        trend_rows = (
+            gr_qs.exclude(client_location__isnull=True)
+            .values('financial_year', 'month', 'client_location')
+            .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+        )
+        trend_map = {}
+        for row in trend_rows:
+            fy = row['financial_year']
+            month = row['month']
+            loc = (row['client_location'] or '').strip()
+            if not fy or month not in _MONTH_MAP:
+                continue
+            try:
+                fy_start = int(fy[:4])
+            except (TypeError, ValueError):
+                continue
+            m_num = _MONTH_MAP[month]
+            year = fy_start if m_num >= 7 else fy_start + 1
+            year_month = f"{year:04d}-{m_num:02d}"
+            rate, _ = _rate_pair(row['granted'] or 0, row['refused'] or 0)
+            bucket = trend_map.setdefault(year_month, {'offshore': None, 'onshore': None})
+            if loc.lower() == 'outside australia':
+                bucket['offshore'] = rate
+            elif loc.lower() == 'in australia':
+                bucket['onshore'] = rate
+        monthly_grant_rate = [
+            {'month': ym, 'offshore': v['offshore'], 'onshore': v['onshore']}
+            for ym, v in sorted(trend_map.items())
+        ][-12:]
+
+        # ── Monthly volume trend (last 12 months, from verified MonthlyTrend) ──
+        monthly_volume = []
+        for m in list(MonthlyTrend.objects.order_by('year_month'))[-12:]:
+            decided = round(m.granted / (m.grant_rate / 100)) if (m.grant_rate and m.grant_rate > 0) else None
+            refused = (decided - m.granted) if decided is not None else None
+            monthly_volume.append({
+                'month':   m.year_month,
+                'lodged':  m.lodged,
+                'granted': m.granted,
+                'refused': refused if refused is not None and refused >= 0 else 0,
+            })
+
+        # ── Top provider states (real decision-based data — NepalMerged's
+        # provider_state is unpopulated/broken; NepalGrantRates has 70k+ real
+        # rows across 9 provider states from the verified pivot-cache import) ──
+        provider_qs = (
+            NepalGrantRates.objects
+            .exclude(provider_state__isnull=True)
+            .exclude(provider_state__exact='')
+            .values('provider_state')
+            .annotate(total_granted=Sum('grant_total'), total_refused=Sum('refused_total'))
+            .order_by('-total_granted')
+        )
+        provider_list = [
+            {**r, 'total_decided': (r['total_granted'] or 0) + (r['total_refused'] or 0)}
+            for r in provider_qs
+        ]
+        provider_total = sum(r['total_decided'] for r in provider_list)
+        top_provider_states = _share_bar_items(
+            provider_list[:5], 'provider_state', 'provider_state', 'total_decided', provider_total
+        )
+
+        # ── Education sectors (mirrors sector_breakdown(), aggregated overall) ──
+        sector_qs = (
+            BySector.objects
+            .values('sector')
+            .annotate(total_lodged=Sum('lodged'))
+            .order_by('-total_lodged')
+        )
+        sector_list = list(sector_qs)
+        sector_total = sum(r['total_lodged'] or 0 for r in sector_list)
+        education_sectors = _share_bar_items(
+            sector_list[:5], 'sector', 'sector', 'total_lodged', sector_total
+        )
+        sector_insight = (
+            f"{education_sectors[0]['label']} leads with {education_sectors[0]['share']} of lodged applications."
+            if education_sectors else "No sector data available."
+        )
+
+        # ── Executive story + key takeaways ──
+        story_title = f"Steady demand through {latest_fy.financial_year}" if latest_fy else "Overview"
+        story_paragraphs = []
+        if latest_fy:
+            story_paragraphs.append(
+                f"In {latest_fy.financial_year}, {fmt_num(latest_fy.lodged)} applications were lodged, "
+                f"with a grant rate of {latest_fy.grant_rate:.1f}%."
+            )
+        if latest_fy and prev_fy and latest_fy.grant_rate is not None and prev_fy.grant_rate is not None:
+            change = round(latest_fy.grant_rate - prev_fy.grant_rate, 1)
+            direction = "improved" if change > 0 else "declined" if change < 0 else "held steady"
+            story_paragraphs.append(
+                f"The grant rate {direction} compared to {prev_fy.financial_year} "
+                f"({'+' if change > 0 else ''}{change} percentage points)."
+            )
+
+        story_highlights = []
+        if latest_fy:
+            story_highlights = [
+                {'id': 'lodged',  'label': 'Applications Lodged', 'value': fmt_num(latest_fy.lodged)},
+                {'id': 'granted', 'label': 'Granted',              'value': fmt_num(latest_fy.granted)},
+                {'id': 'rate',    'label': 'Grant Rate',           'value': f"{latest_fy.grant_rate:.1f}%"},
+            ]
+
+        key_takeaways = []
+        if offshore_vs_onshore['insight']:
+            key_takeaways.append({'id': 'location', 'text': offshore_vs_onshore['insight']})
+        if primary_vs_secondary['insight']:
+            key_takeaways.append({'id': 'applicant-type', 'text': primary_vs_secondary['insight']})
+        if sector_insight:
+            key_takeaways.append({'id': 'sector', 'text': sector_insight})
+
+        meta = {
+            'period':        latest_fy.financial_year if latest_fy else 'Unknown',
+            'financialYear': latest_fy.financial_year if latest_fy else 'Unknown',
+            'source':        'Australian Department of Home Affairs',
+            'lastUpdated':   timezone.now().date().isoformat(),
+        }
+
+        return Response({
+            'meta':               meta,
+            'kpis':               kpis,
+            'grantRateKpi':       grant_rate_kpi,
+            'offshoreVsOnshore':  offshore_vs_onshore,
+            'primaryVsSecondary': primary_vs_secondary,
+            'executiveStory':     {'title': story_title, 'paragraphs': story_paragraphs},
+            'storyHighlights':    story_highlights,
+            'keyTakeaways':       key_takeaways,
+            'monthlyGrantRate':   monthly_grant_rate,
+            'monthlyVolume':      monthly_volume,
+            'topProviderStates':  top_provider_states,
+            'educationSectors':   education_sectors,
+            'sectorInsight':      sector_insight,
+        })
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
