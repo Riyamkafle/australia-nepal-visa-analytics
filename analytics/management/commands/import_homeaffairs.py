@@ -156,6 +156,7 @@ class Command(BaseCommand):
             self.stdout.write(f'   [{key}] {url}')
             content = self._download(url)
             df = self._extract_pivot_cache(content, country, key, spec['value_field'])
+            df = df.sort_values('financial_year', ascending=False)
             extracted[key] = df
             self.stdout.write(f'   [{key}] Extracted {len(df):,} {country} rows.')
 
@@ -170,7 +171,7 @@ class Command(BaseCommand):
             decided = granted + refused
             rate = round(granted / decided * 100, 2) if decided else 0.0
             self.stdout.write(self.style.SUCCESS(
-                f'   Grant rate check: {granted:,} granted / {refused:,} refused '
+                f'   Grant rate check (all-time, 2005-26): {granted:,} granted / {refused:,} refused '
                 f'-> {rate}% (Granted / (Granted+Refused))'
             ))
 
@@ -179,6 +180,35 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f'   Loaded {rows:,} rows into nepal_grant_rates table.'))
             else:
                 self.stdout.write(self.style.WARNING('   Dry run — nepal_grant_rates table not written.'))
+
+            # Latest-month rate (most recent data point, not blended across 20 years)
+            latest_fy = df['financial_year'].iloc[0]
+            fy_df = df[df['financial_year'] == latest_fy]
+            month_num = fy_df['month'].str.extract(r'M(\d+)')[0].astype(int)
+            latest_month_num = month_num.max()
+            latest_df = fy_df[month_num == latest_month_num]
+            m_granted = latest_df['grant_total'].sum()
+            m_refused = latest_df['refused_total'].sum()
+            m_decided = m_granted + m_refused
+            m_rate = round(m_granted / m_decided * 100, 2) if m_decided else 0.0
+            latest_month_label = latest_df['month'].iloc[0]
+            self.stdout.write(self.style.SUCCESS(
+                f'   Latest month ({latest_month_label}, {latest_fy}): '
+                f'{m_granted:,} granted / {m_refused:,} refused -> {m_rate}%'
+            ))
+
+            # Onshore vs Offshore split for the same latest month
+            for location_label in latest_df['client_location'].dropna().unique():
+                loc_df = latest_df[latest_df['client_location'] == location_label]
+                l_granted = loc_df['grant_total'].sum()
+                l_refused = loc_df['refused_total'].sum()
+                l_decided = l_granted + l_refused
+                l_rate = round(l_granted / l_decided * 100, 2) if l_decided else 0.0
+                tag = 'Onshore' if str(location_label).strip() == 'In Australia' else 'Offshore'
+                self.stdout.write(self.style.SUCCESS(
+                    f'      [{tag}] {location_label}: {l_granted:,} granted / {l_refused:,} refused '
+                    f'-> {l_rate}%'
+                ))
 
     def _extract_pivot_cache(self, content, country, key, value_field):
         zf = zipfile.ZipFile(io.BytesIO(content))
