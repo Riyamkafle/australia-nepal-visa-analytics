@@ -110,7 +110,16 @@ REST_FRAMEWORK = {
 }
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
-CORS_ALLOW_ALL_ORIGINS = True
+# Comma-separated list of allowed frontend origins. Override via .env for
+# staging/production; defaults cover the common local Vite dev server ports.
+CORS_ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in config(
+        'CORS_ALLOWED_ORIGINS',
+        default='http://localhost:5173,http://localhost:8080,http://127.0.0.1:5173,http://127.0.0.1:8080',
+    ).split(',')
+    if origin.strip()
+]
 CORS_ALLOW_CREDENTIALS = True
 
 # ─── File Upload ─────────────────────────────────────────────────────────────
