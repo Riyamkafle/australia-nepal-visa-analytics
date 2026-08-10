@@ -1003,8 +1003,58 @@ def overview(request):
             'deltaCaption': f'vs {prev_fy.financial_year}' if prev_fy else 'no prior year',
         }
 
-        # ── Offshore vs Onshore (mirrors location_comparison(), lifetime totals) ──
-        gr_qs = NepalGrantRates.objects.all()
+        # ── Latest Official Snapshot (single latest published month — NOT FY cumulative) ──
+        latest_year_month = None
+        latest_month_pair = None
+        for row in (
+            NepalGrantRates.objects
+            .exclude(financial_year__isnull=True)
+            .exclude(month__isnull=True)
+            .values('financial_year', 'month')
+            .distinct()
+        ):
+            fy_val, month_val = row['financial_year'], row['month']
+            if not fy_val or month_val not in _MONTH_MAP:
+                continue
+            try:
+                fy_start = int(fy_val[:4])
+            except (TypeError, ValueError):
+                continue
+            m_num = _MONTH_MAP[month_val]
+            year = fy_start if m_num >= 7 else fy_start + 1
+            year_month = f"{year:04d}-{m_num:02d}"
+            if latest_year_month is None or year_month > latest_year_month:
+                latest_year_month = year_month
+                latest_month_pair = (fy_val, month_val)
+
+        latest_snapshot = None
+        if latest_month_pair:
+            snap_fy, snap_month = latest_month_pair
+            snap_agg = (
+                NepalGrantRates.objects
+                .filter(financial_year=snap_fy, month=snap_month)
+                .aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+            )
+            snap_granted = snap_agg['granted'] or 0
+            snap_refused = snap_agg['refused'] or 0
+            snap_lodged = snap_granted + snap_refused
+            snap_rate, snap_refusal_rate = _rate_pair(snap_granted, snap_refused)
+            latest_snapshot = {
+                'financialYear': snap_fy,
+                'month':         snap_month,
+                'monthLabel':    f"{snap_month.split(' ')[1]} {latest_year_month[:4]}",
+                'lodged':        snap_lodged,
+                'granted':       snap_granted,
+                'refused':       snap_refused,
+                'grantRate':     f"{snap_rate:.1f}%" if snap_rate is not None else '—',
+                'refusalRate':   f"{snap_refusal_rate:.1f}%" if snap_refusal_rate is not None else '—',
+            }
+
+        # ── FY-scoped queryset: defaults to latest FY, responds to ?financial_year= ──
+        selected_fy = request.GET.get('financial_year') or (latest_fy.financial_year if latest_fy else None)
+        gr_qs = NepalGrantRates.objects.filter(financial_year=selected_fy) if selected_fy else NepalGrantRates.objects.none()
+
+        # ── Offshore vs Onshore (FY-scoped, mirrors location_comparison()) ──
 
         def _comparison_side(filter_kwargs, label, sublabel):
             side_qs = gr_qs.filter(**filter_kwargs)
@@ -1173,6 +1223,7 @@ def overview(request):
 
         return Response({
             'meta':               meta,
+            'latestSnapshot':     latest_snapshot,
             'kpis':               kpis,
             'grantRateKpi':       grant_rate_kpi,
             'offshoreVsOnshore':  offshore_vs_onshore,
