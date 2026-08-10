@@ -1133,9 +1133,23 @@ def overview(request):
             for ym, v in sorted(trend_map.items())
         ][-12:]
 
-        # ── Monthly volume trend (last 12 months, from verified MonthlyTrend) ──
+        # ── Monthly volume trend (FY-scoped via year_month range — MonthlyTrend
+        # has no financial_year field, so we derive Jul(fy_start)..Jun(fy_start+1)
+        # from selected_fy, same pattern as Education Sectors; bounded range,
+        # no missing months fabricated) ──
+        try:
+            _volume_fy_start = int(selected_fy[:4]) if selected_fy else None
+        except (TypeError, ValueError):
+            _volume_fy_start = None
+        monthly_trend_qs = MonthlyTrend.objects.order_by('year_month')
+        if _volume_fy_start is not None:
+            _volume_start_ym = f"{_volume_fy_start:04d}-07"
+            _volume_end_ym = f"{_volume_fy_start + 1:04d}-06"
+            monthly_trend_qs = monthly_trend_qs.filter(
+                year_month__gte=_volume_start_ym, year_month__lte=_volume_end_ym
+            )
         monthly_volume = []
-        for m in list(MonthlyTrend.objects.order_by('year_month'))[-12:]:
+        for m in list(monthly_trend_qs):
             decided = round(m.granted / (m.grant_rate / 100)) if (m.grant_rate and m.grant_rate > 0) else None
             refused = (decided - m.granted) if decided is not None else None
             monthly_volume.append({
