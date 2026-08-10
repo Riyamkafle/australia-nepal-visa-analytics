@@ -1145,11 +1145,11 @@ def overview(request):
                 'refused': refused if refused is not None and refused >= 0 else 0,
             })
 
-        # ── Top provider states (real decision-based data — NepalMerged's
+        # ── Top provider states (FY-scoped via gr_qs — NepalMerged's
         # provider_state is unpopulated/broken; NepalGrantRates has 70k+ real
         # rows across 9 provider states from the verified pivot-cache import) ──
         provider_qs = (
-            NepalGrantRates.objects
+            gr_qs
             .exclude(provider_state__isnull=True)
             .exclude(provider_state__exact='')
             .values('provider_state')
@@ -1165,13 +1165,18 @@ def overview(request):
             provider_list[:5], 'provider_state', 'provider_state', 'total_decided', provider_total
         )
 
-        # ── Education sectors (mirrors sector_breakdown(), aggregated overall) ──
-        sector_qs = (
-            BySector.objects
-            .values('sector')
-            .annotate(total_lodged=Sum('lodged'))
-            .order_by('-total_lodged')
-        )
+        # ── Education sectors (FY-scoped by year_month range — BySector has no
+        # financial_year field, so we derive Jul(fy_start)..Jun(fy_start+1) from
+        # selected_fy; range is bounded, no missing months are fabricated) ──
+        sector_qs = BySector.objects.values('sector').annotate(total_lodged=Sum('lodged')).order_by('-total_lodged')
+        try:
+            _sector_fy_start = int(selected_fy[:4]) if selected_fy else None
+        except (TypeError, ValueError):
+            _sector_fy_start = None
+        if _sector_fy_start is not None:
+            _sector_start_ym = f"{_sector_fy_start:04d}-07"
+            _sector_end_ym = f"{_sector_fy_start + 1:04d}-06"
+            sector_qs = sector_qs.filter(year_month__gte=_sector_start_ym, year_month__lte=_sector_end_ym)
         sector_list = list(sector_qs)
         sector_total = sum(r['total_lodged'] or 0 for r in sector_list)
         education_sectors = _share_bar_items(
