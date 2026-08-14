@@ -1030,24 +1030,40 @@ def overview(request):
         latest_snapshot = None
         if latest_month_pair:
             snap_fy, snap_month = latest_month_pair
-            snap_agg = (
-                NepalGrantRates.objects
-                .filter(financial_year=snap_fy, month=snap_month)
-                .aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
-            )
-            snap_granted = snap_agg['granted'] or 0
-            snap_refused = snap_agg['refused'] or 0
-            snap_lodged = snap_granted + snap_refused
-            snap_rate, snap_refusal_rate = _rate_pair(snap_granted, snap_refused)
+            snap_qs = NepalGrantRates.objects.filter(financial_year=snap_fy, month=snap_month)
+
+            def _pop(**filters):
+                """Aggregate granted/refused/decided/grantRate for one population within the snapshot month."""
+                agg = snap_qs.filter(**filters).aggregate(
+                    granted=Sum('grant_total'), refused=Sum('refused_total')
+                )
+                g = agg['granted'] or 0
+                r = agg['refused'] or 0
+                rate, _ = _rate_pair(g, r)
+                return {
+                    'granted':   g,
+                    'refused':   r,
+                    'decided':   g + r,
+                    'grantRate': f"{rate:.1f}%" if rate is not None else '—',
+                }
+
+            month_label = f"{snap_month.split(' ')[1]} {latest_year_month[:4]}"
+            overall_pop = _pop()
             latest_snapshot = {
                 'financialYear': snap_fy,
                 'month':         snap_month,
-                'monthLabel':    f"{snap_month.split(' ')[1]} {latest_year_month[:4]}",
-                'lodged':        snap_lodged,
-                'granted':       snap_granted,
-                'refused':       snap_refused,
-                'grantRate':     f"{snap_rate:.1f}%" if snap_rate is not None else '—',
-                'refusalRate':   f"{snap_refusal_rate:.1f}%" if snap_refusal_rate is not None else '—',
+                'monthLabel':    month_label,
+                'lodged':        overall_pop['decided'],
+                'granted':       overall_pop['granted'],
+                'refused':       overall_pop['refused'],
+                'grantRate':     overall_pop['grantRate'],
+                'refusalRate':   f"{_rate_pair(overall_pop['granted'], overall_pop['refused'])[1]:.1f}%"
+                                  if overall_pop['decided'] else '—',
+                'overall':   overall_pop,
+                'offshore':  _pop(client_location='Outside Australia'),
+                'onshore':   _pop(client_location='In Australia'),
+                'primary':   _pop(applicant_type='Primary'),
+                'secondary': _pop(applicant_type='Secondary'),
             }
 
         # ── FY-scoped queryset: defaults to latest FY, responds to ?financial_year= ──
