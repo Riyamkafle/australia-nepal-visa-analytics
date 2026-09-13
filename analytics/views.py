@@ -47,13 +47,13 @@ def fmt_num(n):
 
 
 from .models import (
-    MonthlyTrend, BySector, FySummary, NepalMerged, Forecast,
+    MonthlyTrend, BySector, FySummary, NepalMerged,
     GenderBreakdown, LocationBreakdown, AgeBreakdown,
     ChannelBreakdown, SeasonalPattern, NepalGrantRates,
 )
 from .serializers import (
     MonthlyTrendSerializer, BySectorSerializer, FySummarySerializer,
-    NepalMergedSerializer, ForecastSerializer, GenderBreakdownSerializer,
+    NepalMergedSerializer, GenderBreakdownSerializer,
     LocationBreakdownSerializer, AgeBreakdownSerializer,
     ChannelBreakdownSerializer, SeasonalPatternSerializer,
     KPISummarySerializer, UniversityRankingSerializer,
@@ -217,11 +217,41 @@ def kpi_summary(request):
 
 @api_view(['GET'])
 def monthly_trend(request):
-    """Monthly trend data with optional year filter."""
+    """
+    Monthly trend data with optional filters.
+
+    MonthlyTrend has no applicant_type/client_location columns (it's the
+    lifetime-aggregated table), so this endpoint only supports the two
+    dimensions it actually has: calendar year (`year`), an explicit
+    year_month range (`start_period`/`end_period`), or a financial year
+    (`financial_year`, converted to its equivalent Jul-Jun year_month range
+    -- same conversion pattern already used in overview()'s monthly_volume
+    block). All params are optional and additive; no params returns the
+    same full-history result as before.
+    """
     qs = MonthlyTrend.objects.all()
+
     year = request.query_params.get('year')
     if year:
         qs = qs.filter(year_month__startswith=year)
+
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
+    if start_period:
+        qs = qs.filter(year_month__gte=start_period)
+    if end_period:
+        qs = qs.filter(year_month__lte=end_period)
+
+    financial_year = request.query_params.get('financial_year')
+    if financial_year:
+        try:
+            fy_start = int(financial_year[:4])
+            fy_start_ym = f"{fy_start:04d}-07"
+            fy_end_ym = f"{fy_start + 1:04d}-06"
+            qs = qs.filter(year_month__gte=fy_start_ym, year_month__lte=fy_end_ym)
+        except (TypeError, ValueError):
+            pass
+
     serializer = MonthlyTrendSerializer(qs, many=True)
     clean_data = [sanitize_record(dict(row)) for row in serializer.data]
 
@@ -250,6 +280,20 @@ def monthly_trend(request):
             row['data_quality_flag'] = False
             row['display_grant_rate'] = rate
             row['display_refusal_rate'] = refusal
+
+    # Derive a monthly 'refused' count for full-history volume charts (e.g.
+    # Trends page). MonthlyTrend only stores lodged/granted/grant_rate, not
+    # a raw refused count, so this mirrors the identical formula already
+    # used in overview()'s monthly_volume block: decided = granted / (grant_rate/100),
+    # refused = decided - granted, clamped to >= 0. Same source data, same
+    # math, just exposed here too so it isn't duplicated with different
+    # behavior in two places.
+    for row in clean_data:
+        granted = row.get('granted') or 0
+        rate = row.get('grant_rate')
+        decided = round(granted / (rate / 100)) if (rate and rate > 0) else None
+        refused = (decided - granted) if decided is not None else None
+        row['refused'] = refused if (refused is not None and refused >= 0) else 0
 
     # The 'rolling_3m' column was pre-computed (outside this app) from the raw,
     # uncapped grant_rate values, so it inherits the same >100%/<0% distortion
@@ -348,11 +392,92 @@ def nepal_merged(request):
 
 @api_view(['GET'])
 def forecast_data(request):
-    """12-month forecast with confidence bounds."""
-    qs = Forecast.objects.all()
-    serializer = ForecastSerializer(qs, many=True)
-    clean_data = [sanitize_record(dict(row)) for row in serializer.data]
-    return Response(clean_data)
+    """
+    12-month forward forecast, computed LIVE from the current latest real
+    month -- not served from the static 'forecast' table. This means the
+    forecast horizon automatically shifts forward the moment new real
+    months are added to MonthlyTrend, with no manual regeneration step.
+
+    Method identical to build_forecast.py / forecast_backtest(): linear
+    trend (last 24 real months) + seasonal adjustment (SeasonalPattern),
+    grant rate confidence band = +/-1 std dev of the last 24 months,
+    widening 8%% further per month into the horizon. Kept in sync with
+    forecast_backtest()'s method so the backtest results stay a true
+    description of this endpoint's behavior, not a different method.
+    """
+    import numpy as np
+    import calendar as _calendar
+
+    HORIZON_MONTHS = 12
+    RECENT_WINDOW = 24
+    MONTH_NAMES = {i: _calendar.month_name[i] for i in range(1, 13)}
+
+    rows = list(MonthlyTrend.objects.order_by('year_month').values('year_month', 'lodged', 'grant_rate', 'cal_month'))
+    if len(rows) < RECENT_WINDOW:
+        return Response({'error': f'Not enough history: need at least {RECENT_WINDOW} months, have {len(rows)}'}, status=400)
+
+    seasonal_rows = list(SeasonalPattern.objects.values('cal_month', 'avg_lodged'))
+    seasonal_by_month = {r['cal_month']: r['avg_lodged'] for r in seasonal_rows}
+    seasonal_avg_overall = sum(seasonal_by_month.values()) / len(seasonal_by_month) if seasonal_by_month else 1.0
+
+    recent = rows[-RECENT_WINDOW:]
+    t_vals = list(range(len(recent)))
+    lodged_vals = [r['lodged'] for r in recent]
+    rate_vals = [r['grant_rate'] for r in recent if r['grant_rate'] is not None]
+
+    lodged_coef = np.polyfit(t_vals, lodged_vals, 1)
+    lodged_trend_fn = np.poly1d(lodged_coef)
+
+    rate_t_vals = list(range(len(rate_vals)))
+    rate_coef = np.polyfit(rate_t_vals, rate_vals, 1) if len(rate_vals) >= 2 else (0, rate_vals[0] if rate_vals else 0)
+    rate_trend_fn = np.poly1d(rate_coef)
+    rate_std = float(np.std(rate_vals)) if rate_vals else 0.0
+
+    last_year, last_month = map(int, rows[-1]['year_month'].split('-'))
+    method_note = (
+        f'Linear trend on last {RECENT_WINDOW} months of real BP0015 data, seasonally adjusted by '
+        f'calendar month; band = +/-1 std dev, widening with horizon. Computed live from the current '
+        f'latest real month ({rows[-1]["year_month"]}) -- this forecast shifts forward automatically '
+        f'as new real months are added.'
+    )
+
+    forecast_rows = []
+    t = len(recent)
+    year, month = last_year, last_month
+    for i in range(HORIZON_MONTHS):
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+        year_month = f"{year:04d}-{month:02d}"
+        month_label = f"{MONTH_NAMES[month]} {year}"
+
+        lodged_base = max(lodged_trend_fn(t), 0)
+        seas_mult = (seasonal_by_month.get(month, seasonal_avg_overall) / seasonal_avg_overall) if seasonal_avg_overall else 1.0
+        lodged_forecast = round(lodged_base * seas_mult)
+
+        rate_forecast = min(max(rate_trend_fn(t), 0), 100)
+        band_width = rate_std * (1 + i * 0.08)
+        lower_bound = round(min(max(rate_forecast - band_width, 0), 100), 1)
+        upper_bound = round(min(max(rate_forecast + band_width, 0), 100), 1)
+
+        granted_forecast = round(lodged_forecast * rate_forecast / 100)
+        refused_forecast = lodged_forecast - granted_forecast
+
+        forecast_rows.append({
+            'year_month': year_month,
+            'month_label': month_label,
+            'lodged_forecast': lodged_forecast,
+            'granted_forecast': granted_forecast,
+            'refused_forecast': refused_forecast,
+            'grant_rate_forecast': round(rate_forecast, 1),
+            'upper_bound': upper_bound,
+            'lower_bound': lower_bound,
+            'model_note': method_note,
+        })
+        t += 1
+
+    return Response(forecast_rows)
 
 
 # ─── Demographic Breakdowns ────────────────────────────────────────────────────
@@ -451,6 +576,39 @@ def _rate_pair(granted, refused):
     return (round(granted / decided * 100, 2), round(refused / decided * 100, 2))
 
 
+def _apply_period_filter(qs, start_period, end_period):
+    """
+    Shared by location_comparison() and applicant_type_comparison().
+    NepalGrantRates has no real date column -- only financial_year + month
+    text fields -- so this resolves which (financial_year, month)
+    combinations in `qs` fall within the requested YYYY-MM range, using the
+    same fy_start/_MONTH_MAP conversion used elsewhere in this file.
+    Returns `qs` unchanged if neither bound is given.
+    """
+    if not start_period and not end_period:
+        return qs
+    combos = qs.values_list('financial_year', 'month').distinct()
+    matching = Q()
+    has_match = False
+    for fy, month in combos:
+        if not fy or month not in _MONTH_MAP:
+            continue
+        try:
+            fy_start = int(fy[:4])
+        except (TypeError, ValueError):
+            continue
+        m_num = _MONTH_MAP[month]
+        year = fy_start if m_num >= 7 else fy_start + 1
+        year_month = f"{year:04d}-{m_num:02d}"
+        if start_period and year_month < start_period:
+            continue
+        if end_period and year_month > end_period:
+            continue
+        matching |= Q(financial_year=fy, month=month)
+        has_match = True
+    return qs.filter(matching) if has_match else qs.none()
+
+
 @api_view(['GET'])
 def location_comparison(request):
     """
@@ -460,19 +618,53 @@ def location_comparison(request):
     Grant Rate = Granted / (Granted + Refused) * 100, computed separately
     per location — never blended.
 
-    Optional filter: ?financial_year=2025-26
+    Cards: optional ?financial_year=2025-26 (else defaults to latest month),
+    optional ?applicant_type=Primary|Secondary, optional
+    ?start_period=YYYY-MM&end_period=YYYY-MM (overrides the latest-month
+    default when given).
+
+    Trend: ALWAYS full history by default (matches this endpoint's original,
+    still-relied-on behavior) -- only narrows when start_period/end_period
+    is explicitly passed. Not scoped by financial_year or by the cards'
+    latest-month default, so a plain GET with no params keeps returning the
+    complete historical series existing callers expect. applicant_type DOES
+    apply to the trend here (unlike applicant_type_comparison() below) since
+    it doesn't remove either side of the offshore/onshore comparison.
     """
     qs = NepalGrantRates.objects.all()
     financial_year = request.query_params.get('financial_year')
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
 
+    period_label = None
     if financial_year:
         # A financial_year was explicitly given -> aggregate the whole year (BI default)
         qs = qs.filter(financial_year=financial_year)
-    else:
-        # No financial_year given -> default to latest available month only
+        period_label = f"FY {financial_year}"
+    elif not start_period and not end_period:
+        # No financial_year AND no explicit period range given -> default to
+        # latest available month only, for the CARDS. The trend below does
+        # not inherit this default.
         latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
         if latest:
             qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
+            import calendar
+            m_num = _MONTH_MAP.get(latest['month'])
+            try:
+                fy_start = int(latest['financial_year'][:4])
+            except (TypeError, ValueError):
+                fy_start = None
+            if m_num and fy_start is not None:
+                year = fy_start if m_num >= 7 else fy_start + 1
+                period_label = f"{calendar.month_name[m_num]} {year}"
+    else:
+        period_label = f"{start_period or '?'} to {end_period or '?'}"
+
+    applicant_type = request.query_params.get('applicant_type')
+    if applicant_type:
+        qs = qs.filter(applicant_type__iexact=applicant_type)
+
+    qs = _apply_period_filter(qs, start_period, end_period)
 
     cards = {}
     for loc_key, loc_label in [('outside', 'Outside Australia'), ('in', 'In Australia')]:
@@ -490,14 +682,26 @@ def location_comparison(request):
             'refusal_rate':     refusal_rate,
         }
 
-    # Monthly trend — group by (financial_year, month) per location, derive year_month
+    total_apps = sum(c['total_applications'] for c in cards.values())
+    for c in cards.values():
+        c['application_share'] = round(c['total_applications'] / total_apps * 100, 2) if total_apps else None
+
+    # Trend: deliberately built from a FRESH, unscoped queryset (not the
+    # cards' `qs`) so it defaults to full history regardless of the cards'
+    # financial_year/latest-month scoping. applicant_type still applies
+    # (doesn't break the offshore/onshore comparison); period range applies
+    # only when explicitly requested.
+    trend_qs = NepalGrantRates.objects.all()
+    if applicant_type:
+        trend_qs = trend_qs.filter(applicant_type__iexact=applicant_type)
+    trend_qs = _apply_period_filter(trend_qs, start_period, end_period)
+
     trend_rows = (
-        NepalGrantRates.objects.exclude(client_location__isnull=True)
+        trend_qs.exclude(client_location__isnull=True)
         .values('financial_year', 'month', 'client_location')
         .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
     )
-
-    trend_map = {}  # year_month -> {'offshore': rate, 'onshore': rate}
+    trend_map = {}  # year_month -> {'offshore': rate, 'onshore': rate, ...applications}
     for row in trend_rows:
         fy = row['financial_year']
         month = row['month']
@@ -511,22 +715,34 @@ def location_comparison(request):
         m_num = _MONTH_MAP[month]
         year = fy_start if m_num >= 7 else fy_start + 1
         year_month = f"{year:04d}-{m_num:02d}"
-
         rate, _ = _rate_pair(row['granted'] or 0, row['refused'] or 0)
-        bucket = trend_map.setdefault(year_month, {'offshore': None, 'onshore': None})
+        apps = (row['granted'] or 0) + (row['refused'] or 0)
+        bucket = trend_map.setdefault(
+            year_month,
+            {'offshore': None, 'onshore': None, 'offshore_applications': 0, 'onshore_applications': 0},
+        )
         if loc.lower() == 'outside australia':
             bucket['offshore'] = rate
+            bucket['offshore_applications'] = apps
         elif loc.lower() == 'in australia':
             bucket['onshore'] = rate
+            bucket['onshore_applications'] = apps
 
     trend = [
-        {'year_month': ym, 'offshore_grant_rate': v['offshore'], 'onshore_grant_rate': v['onshore']}
+        {
+            'year_month': ym,
+            'offshore_grant_rate': v['offshore'],
+            'onshore_grant_rate': v['onshore'],
+            'offshore_applications': v['offshore_applications'],
+            'onshore_applications': v['onshore_applications'],
+        }
         for ym, v in sorted(trend_map.items())
     ]
 
     return Response({
         'offshore': cards['outside'],
         'onshore':  cards['in'],
+        'period': period_label,
         'trend':    trend,
         'note': (
             'Offshore = Outside Australia, Onshore = In Australia at time of decision. '
@@ -535,7 +751,7 @@ def location_comparison(request):
         ),
     })
 
-    
+
 @api_view(['GET'])
 def applicant_type_comparison(request):
     """
@@ -544,17 +760,61 @@ def applicant_type_comparison(request):
     types. Calculated only from NepalGrantRates (real decision-based data);
     Grant Rate = Granted / (Granted + Refused) * 100, computed separately
     per applicant_type — never blended.
-    Optional filter: ?financial_year=2025-26
+
+    Cards: optional ?financial_year=2025-26 (else defaults to latest month),
+    optional ?start_period=YYYY-MM&end_period=YYYY-MM (overrides the
+    latest-month default when given).
+
+    Trend: ALWAYS full history by default and ALWAYS shows both Primary and
+    Secondary -- the `applicant_type` query param is intentionally NOT
+    applied here, since filtering this endpoint's own comparison trend to
+    one type would zero out the other side and defeat the comparison. It
+    still applies to the cards (matching location_comparison()'s existing
+    Section 03/04 behavior) and to other applicant-type-aware sections.
+    Not scoped by financial_year or the cards' latest-month default; only
+    narrows when start_period/end_period is explicitly passed.
     """
     qs = NepalGrantRates.objects.all()
     financial_year = request.query_params.get('financial_year')
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
 
+    period_label = None
     if financial_year:
         qs = qs.filter(financial_year=financial_year)
-    else:
+        period_label = f"FY {financial_year}"
+    elif not start_period and not end_period:
         latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
         if latest:
             qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
+            import calendar
+            m_num = _MONTH_MAP.get(latest['month'])
+            try:
+                fy_start = int(latest['financial_year'][:4])
+            except (TypeError, ValueError):
+                fy_start = None
+            if m_num and fy_start is not None:
+                year = fy_start if m_num >= 7 else fy_start + 1
+                period_label = f"{calendar.month_name[m_num]} {year}"
+    else:
+        period_label = f"{start_period or '?'} to {end_period or '?'}"
+
+    applicant_type = request.query_params.get('applicant_type')
+    if applicant_type:
+        qs = qs.filter(applicant_type__iexact=applicant_type)
+
+    # Optional location filter, mirroring location_comparison()'s symmetric
+    # applicant_type param -- 'offshore'/'onshore' matches the frontend's
+    # existing ClientLocation vocabulary (Overview's dashboard-filters.tsx),
+    # mapped to the actual 'Outside Australia'/'In Australia' field values.
+    location = request.query_params.get('location')
+    if location:
+        loc_map = {'offshore': 'Outside Australia', 'onshore': 'In Australia'}
+        mapped = loc_map.get(location.lower())
+        if mapped:
+            qs = qs.filter(client_location__iexact=mapped)
+
+    qs = _apply_period_filter(qs, start_period, end_period)
 
     cards = {}
     for type_key, type_label in [('primary', 'Primary'), ('secondary', 'Secondary')]:
@@ -572,8 +832,18 @@ def applicant_type_comparison(request):
             'refusal_rate':       refusal_rate,
         }
 
+    total_apps = sum(c['total_applications'] for c in cards.values())
+    for c in cards.values():
+        c['application_share'] = round(c['total_applications'] / total_apps * 100, 2) if total_apps else None
+
+    # Trend: fresh unscoped queryset, always full history by default,
+    # NEVER filtered by applicant_type (must always show both series),
+    # period range applies only when explicitly requested.
+    trend_qs = NepalGrantRates.objects.all()
+    trend_qs = _apply_period_filter(trend_qs, start_period, end_period)
+
     trend_rows = (
-        NepalGrantRates.objects.exclude(applicant_type__isnull=True)
+        trend_qs.exclude(applicant_type__isnull=True)
         .values('financial_year', 'month', 'applicant_type')
         .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
     )
@@ -592,20 +862,33 @@ def applicant_type_comparison(request):
         year = fy_start if m_num >= 7 else fy_start + 1
         year_month = f"{year:04d}-{m_num:02d}"
         rate, _ = _rate_pair(row['granted'] or 0, row['refused'] or 0)
-        bucket = trend_map.setdefault(year_month, {'primary': None, 'secondary': None})
+        apps = (row['granted'] or 0) + (row['refused'] or 0)
+        bucket = trend_map.setdefault(
+            year_month,
+            {'primary': None, 'secondary': None, 'primary_applications': 0, 'secondary_applications': 0},
+        )
         if atype.lower() == 'primary':
             bucket['primary'] = rate
+            bucket['primary_applications'] = apps
         elif atype.lower() == 'secondary':
             bucket['secondary'] = rate
+            bucket['secondary_applications'] = apps
 
     trend = [
-        {'year_month': ym, 'primary_grant_rate': v['primary'], 'secondary_grant_rate': v['secondary']}
+        {
+            'year_month': ym,
+            'primary_grant_rate': v['primary'],
+            'secondary_grant_rate': v['secondary'],
+            'primary_applications': v['primary_applications'],
+            'secondary_applications': v['secondary_applications'],
+        }
         for ym, v in sorted(trend_map.items())
     ]
 
     return Response({
         'primary':   cards['primary'],
         'secondary': cards['secondary'],
+        'period':    period_label,
         'trend':     trend,
         'note': (
             'Each calculated independently: Grant Rate = Granted / (Granted + Refused) * 100. '
@@ -613,7 +896,137 @@ def applicant_type_comparison(request):
         ),
     })
 
+
 # ─── Search ───────────────────────────────────────────────────────────────────
+
+@api_view(['GET'])
+def provider_state_comparison(request):
+    """
+    Comparison page -- Australia provider-state breakdown.
+    Built on NepalGrantRates (the verified table), grouped by provider_state,
+    the same aggregation pattern already used inside overview()'s
+    top_provider_states block, but returning ALL states (not top 5) with a
+    computed grant_rate per state. NepalGrantRates has no true per-state
+    lodged count -- only grant_total/refused_total -- so "decided" (granted
+    + refused) is returned and must be labeled exactly that on the frontend,
+    never "lodged". The "Not Available" provider_state bucket is excluded
+    from the main list and returned separately so the frontend can show it
+    as a transparency footnote rather than plotting it on the map.
+    Supports financial_year and start_period/end_period, same as
+    location_comparison() and applicant_type_comparison().
+    """
+    financial_year = request.query_params.get('financial_year')
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
+
+    qs = NepalGrantRates.objects.exclude(provider_state__isnull=True).exclude(provider_state__exact='')
+    if financial_year:
+        qs = qs.filter(financial_year=financial_year)
+    qs = _apply_period_filter(qs, start_period, end_period)
+
+    not_available_qs = qs.filter(provider_state='Not Available')
+    not_available_total = not_available_qs.aggregate(
+        granted=Sum('grant_total'), refused=Sum('refused_total')
+    )
+    na_granted = not_available_total['granted'] or 0
+    na_refused = not_available_total['refused'] or 0
+
+    state_qs = (
+        qs.exclude(provider_state='Not Available')
+        .values('provider_state')
+        .annotate(total_granted=Sum('grant_total'), total_refused=Sum('refused_total'))
+        .order_by('-total_granted')
+    )
+
+    states = []
+    for row in state_qs:
+        granted = row['total_granted'] or 0
+        refused = row['total_refused'] or 0
+        decided = granted + refused
+        grant_rate, refusal_rate = _rate_pair(granted, refused)
+        states.append({
+            'provider_state': row['provider_state'],
+            'granted': granted,
+            'refused': refused,
+            'decided': decided,
+            'grant_rate': grant_rate,
+            'refusal_rate': refusal_rate,
+        })
+
+    states.sort(key=lambda s: s['grant_rate'] or 0, reverse=True)
+    for i, s in enumerate(states, start=1):
+        s['rank'] = i
+
+    return Response({
+        'states': states,
+        'not_available': {
+            'granted': na_granted,
+            'refused': na_refused,
+            'decided': na_granted + na_refused,
+        },
+    })
+
+
+@api_view(['GET'])
+def applicant_location_cross(request):
+    """
+    Comparison page -- Applicant Type x Location cross-tab (2x2 matrix):
+    Primary/Secondary x Offshore/Onshore. A dedicated endpoint, deliberately
+    kept separate from location_comparison() and applicant_type_comparison()
+    so those two stay untouched and Trends stays fully protected.
+    Calculated only from NepalGrantRates (real decision-based data), same
+    Grant Rate = Granted / (Granted + Refused) * 100 via _rate_pair(),
+    computed independently per cell -- never blended across cells.
+
+    Optional ?financial_year=2025-26, else defaults to latest available
+    month (same convention as location_comparison()). Optional
+    ?start_period=YYYY-MM&end_period=YYYY-MM overrides that default.
+    """
+    qs = NepalGrantRates.objects.all()
+    financial_year = request.query_params.get('financial_year')
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
+
+    if financial_year:
+        qs = qs.filter(financial_year=financial_year)
+    elif not start_period and not end_period:
+        latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
+        if latest:
+            qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
+
+    qs = _apply_period_filter(qs, start_period, end_period)
+
+    applicant_types = [('Primary', 'primary'), ('Secondary', 'secondary')]
+    locations = [('Outside Australia', 'offshore'), ('In Australia', 'onshore')]
+
+    matrix = {}
+    for at_label, at_key in applicant_types:
+        matrix[at_key] = {}
+        for loc_label, loc_key in locations:
+            cell_qs = qs.filter(applicant_type__iexact=at_label, client_location__iexact=loc_label)
+            agg = cell_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+            granted = agg['granted'] or 0
+            refused = agg['refused'] or 0
+            grant_rate, refusal_rate = _rate_pair(granted, refused)
+            matrix[at_key][loc_key] = {
+                'applicant_type': at_label,
+                'location': loc_label,
+                'granted': granted,
+                'refused': refused,
+                'decided': granted + refused,
+                'grant_rate': grant_rate,
+                'refusal_rate': refusal_rate,
+            }
+
+    return Response({
+        'matrix': matrix,
+        'note': (
+            'Primary/Secondary x Offshore/Onshore, each cell calculated independently: '
+            'Grant Rate = Granted / (Granted + Refused) * 100. '
+            'Source: NepalGrantRates (real decision-based Home Affairs data).'
+        ),
+    })
+
 
 @api_view(['GET'])
 def search(request):
@@ -948,10 +1361,24 @@ def overview(request):
     university_rankings()/sector_breakdown()'s aggregation.
     """
     try:
-        # ── Financial-year KPI cards + deltas (FySummary has real refused counts) ──
+        # ── Selected FY + Applicant Location filters (query params) ──
         fy_qs = list(FySummary.objects.order_by('financial_year'))
-        latest_fy = fy_qs[-1] if fy_qs else None
-        prev_fy   = fy_qs[-2] if len(fy_qs) >= 2 else None
+        _default_fy = fy_qs[-1].financial_year if fy_qs else None
+        selected_fy = request.GET.get('financial_year') or _default_fy
+
+        _location_param = (request.GET.get('client_location') or '').strip().lower()
+        location_kwargs = (
+            {'client_location__iexact': 'Outside Australia'} if _location_param == 'offshore'
+            else {'client_location__iexact': 'In Australia'} if _location_param == 'onshore'
+            else {}
+        )
+
+        # ── Financial-year KPI cards + deltas (FySummary has real refused counts) ──
+        # Scoped to selected_fy — NOT location-filtered (FySummary has no
+        # client_location column; these stay all-locations regardless of the filter).
+        latest_fy = next((fy for fy in fy_qs if fy.financial_year == selected_fy), fy_qs[-1] if fy_qs else None)
+        _fy_index = fy_qs.index(latest_fy) if latest_fy in fy_qs else None
+        prev_fy = fy_qs[_fy_index - 1] if _fy_index is not None and _fy_index >= 1 else None
 
         def _pct_delta(current, prior):
             if current is None or prior is None or prior == 0:
@@ -1066,14 +1493,88 @@ def overview(request):
                 'secondary': _pop(applicant_type='Secondary'),
             }
 
-        # ── FY-scoped queryset: defaults to latest FY, responds to ?financial_year= ──
-        selected_fy = request.GET.get('financial_year') or (latest_fy.financial_year if latest_fy else None)
+        # ── FY-scoped queryset (selected_fy computed above) ──
         gr_qs = NepalGrantRates.objects.filter(financial_year=selected_fy) if selected_fy else NepalGrantRates.objects.none()
+        gr_qs_located = gr_qs.filter(**location_kwargs) if location_kwargs else gr_qs
+
+        # ── selectedSnapshot — the KPI row + comparison cards below the hero
+        # read from this, not latestSnapshot. latestSnapshot (and the hero)
+        # always stays the true latest month, unfiltered, on purpose.
+        # When selected_fy IS the FY the latest month falls in: same single
+        # month as the hero, with the Applicant Location filter applied to
+        # `overall` only (offshore/onshore/primary/secondary are already
+        # each one side of a comparison, so the location filter doesn't
+        # apply to them). When selected_fy is a past, closed year: switches
+        # to that FY's full cumulative totals instead — a random month from
+        # a closed year is misleading next to a whole year's decisions.
+        def _fy_start_year(fy_str):
+            try:
+                return int((fy_str or '')[:4])
+            except (TypeError, ValueError):
+                return None
+
+        _is_current_fy = (
+            selected_fy and latest_snapshot
+            and _fy_start_year(selected_fy) == _fy_start_year(latest_snapshot['financialYear'])
+        )
+
+        if _is_current_fy and latest_month_pair:
+            _snap_fy, _snap_month = latest_month_pair
+            _snap_qs = NepalGrantRates.objects.filter(financial_year=_snap_fy, month=_snap_month)
+            if location_kwargs:
+                _snap_qs = _snap_qs.filter(**location_kwargs)
+            _agg = _snap_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+            _g = _agg['granted'] or 0
+            _r = _agg['refused'] or 0
+            _rate, _ = _rate_pair(_g, _r)
+            snap_overall = {
+                'granted': _g, 'refused': _r, 'decided': _g + _r,
+                'grantRate': f"{_rate:.1f}%" if _rate is not None else '—',
+            }
+            selected_snapshot = {
+                **latest_snapshot,
+                'overall':     snap_overall,
+                'lodged':      snap_overall['decided'],
+                'granted':     snap_overall['granted'],
+                'refused':     snap_overall['refused'],
+                'grantRate':   snap_overall['grantRate'],
+                'refusalRate': f"{_rate_pair(snap_overall['granted'], snap_overall['refused'])[1]:.1f}%"
+                                if snap_overall['decided'] else '—',
+            }
+        else:
+            def _cum_pop(**filters):
+                agg = gr_qs.filter(**filters).aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+                g = agg['granted'] or 0
+                r = agg['refused'] or 0
+                rate, _ = _rate_pair(g, r)
+                return {
+                    'granted':   g,
+                    'refused':   r,
+                    'decided':   g + r,
+                    'grantRate': f"{rate:.1f}%" if rate is not None else '—',
+                }
+
+            cum_overall = _cum_pop(**location_kwargs)
+            selected_snapshot = {
+                'financialYear': selected_fy,
+                'monthLabel':    f"FY {selected_fy}" if selected_fy else 'Unknown',
+                'lodged':        cum_overall['decided'],
+                'granted':       cum_overall['granted'],
+                'refused':       cum_overall['refused'],
+                'grantRate':     cum_overall['grantRate'],
+                'refusalRate':   f"{_rate_pair(cum_overall['granted'], cum_overall['refused'])[1]:.1f}%"
+                                  if cum_overall['decided'] else '—',
+                'overall':   cum_overall,
+                'offshore':  _cum_pop(client_location='Outside Australia'),
+                'onshore':   _cum_pop(client_location='In Australia'),
+                'primary':   _cum_pop(applicant_type='Primary'),
+                'secondary': _cum_pop(applicant_type='Secondary'),
+            }
 
         # ── Offshore vs Onshore (FY-scoped, mirrors location_comparison()) ──
 
-        def _comparison_side(filter_kwargs, label, sublabel):
-            side_qs = gr_qs.filter(**filter_kwargs)
+        def _comparison_side(filter_kwargs, label, sublabel, base_qs=None):
+            side_qs = (base_qs if base_qs is not None else gr_qs).filter(**filter_kwargs)
             agg = side_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
             granted = agg['granted'] or 0
             refused = agg['refused'] or 0
@@ -1103,8 +1604,8 @@ def overview(request):
         }
 
         # ── Primary vs Secondary applicants (same pattern, applicant_type field) ──
-        primary_side, primary_total = _comparison_side({'applicant_type__icontains': 'primary'}, 'Primary', 'Primary applicants')
-        secondary_side, secondary_total = _comparison_side({'applicant_type__icontains': 'secondary'}, 'Secondary', 'Secondary applicants')
+        primary_side, primary_total = _comparison_side({'applicant_type__icontains': 'primary'}, 'Primary', 'Primary applicants', base_qs=gr_qs_located)
+        secondary_side, secondary_total = _comparison_side({'applicant_type__icontains': 'secondary'}, 'Secondary', 'Secondary applicants', base_qs=gr_qs_located)
         type_total = primary_total + secondary_total
         primary_side['share']   = round(primary_total / type_total * 100, 1) if type_total else 0.0
         secondary_side['share'] = round(secondary_total / type_total * 100, 1) if type_total else 0.0
@@ -1179,7 +1680,7 @@ def overview(request):
         # provider_state is unpopulated/broken; NepalGrantRates has 70k+ real
         # rows across 9 provider states from the verified pivot-cache import) ──
         provider_qs = (
-            gr_qs
+            gr_qs_located
             .exclude(provider_state__isnull=True)
             .exclude(provider_state__exact='')
             .values('provider_state')
@@ -1259,6 +1760,7 @@ def overview(request):
         return Response({
             'meta':               meta,
             'latestSnapshot':     latest_snapshot,
+            'selectedSnapshot':   selected_snapshot,
             'kpis':               kpis,
             'grantRateKpi':       grant_rate_kpi,
             'offshoreVsOnshore':  offshore_vs_onshore,
@@ -1275,3 +1777,383 @@ def overview(request):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ─── Education Sector Comparison (dedicated /education-sectors page) ──────────
+# Distinct from the Overview 'educationSectors' quick-preview block (top-5 by
+# lodged share for the current snapshot) — this powers the standalone page:
+# full 7-sector latest-period ranking, previous-period deltas, and full
+# historical series per sector. Reuses BySector only; no new tables/models.
+
+@api_view(['GET'])
+def education_sector_comparison(request):
+    SECTOR_DISPLAY_NAMES = {
+        'Higher Education Sector': 'Higher Education',
+        'Vocational Education and Training Sector': 'Vocational Education and Training',
+        'Independent ELICOS Sector': 'Independent ELICOS',
+        'Schools Sector': 'Schools',
+        'Non-Award Sector': 'Non-Award',
+        'Postgraduate Research Sector': 'Postgraduate Research',
+        'Foreign Affairs or Defence Sector': 'Foreign Affairs or Defence',
+    }
+
+    try:
+        latest_ym = (
+            BySector.objects.order_by('-year_month')
+            .values_list('year_month', flat=True).first()
+        )
+        if not latest_ym:
+            return Response({'error': 'No sector data available'}, status=200)
+
+        prev_ym = (
+            BySector.objects.filter(year_month__lt=latest_ym)
+            .order_by('-year_month')
+            .values_list('year_month', flat=True).first()
+        )
+
+        current_rows = {r.sector: r for r in BySector.objects.filter(year_month=latest_ym)}
+        previous_rows = (
+            {r.sector: r for r in BySector.objects.filter(year_month=prev_ym)}
+            if prev_ym else {}
+        )
+
+        total_lodged = sum(r.lodged for r in current_rows.values())
+        total_granted = sum(r.granted for r in current_rows.values())
+
+        sectors = []
+        for sector_name, row in current_rows.items():
+            prev = previous_rows.get(sector_name)
+            lodged_share = round(row.lodged / total_lodged * 100, 2) if total_lodged else None
+            granted_share = round(row.granted / total_granted * 100, 2) if total_granted else None
+
+            lodged_change = granted_change = grant_rate_change = None
+            if prev:
+                lodged_change = row.lodged - prev.lodged
+                granted_change = row.granted - prev.granted
+                if row.grant_rate is not None and prev.grant_rate is not None:
+                    grant_rate_change = round(row.grant_rate - prev.grant_rate, 2)
+
+            sectors.append({
+                'sector': sector_name,
+                'display_name': SECTOR_DISPLAY_NAMES.get(sector_name, sector_name),
+                'lodged': row.lodged,
+                'granted': row.granted,
+                'grant_rate': row.grant_rate,
+                'lodged_share': lodged_share,
+                'granted_share': granted_share,
+                'lodged_change': lodged_change,
+                'granted_change': granted_change,
+                'grant_rate_change': grant_rate_change,
+            })
+
+        leading_sector = max(sectors, key=lambda s: s['lodged']) if sectors else None
+        rated = [s for s in sectors if s['grant_rate'] is not None]
+        highest_grant_rate = max(rated, key=lambda s: s['grant_rate']) if rated else None
+        changed = [s for s in sectors if s['grant_rate_change'] is not None]
+        largest_change = max(changed, key=lambda s: abs(s['grant_rate_change'])) if changed else None
+
+        insights = {
+            'leading_sector': ({
+                'display_name': leading_sector['display_name'],
+                'lodged': leading_sector['lodged'],
+                'lodged_share': leading_sector['lodged_share'],
+            } if leading_sector else None),
+            'highest_grant_rate': ({
+                'display_name': highest_grant_rate['display_name'],
+                'grant_rate': highest_grant_rate['grant_rate'],
+            } if highest_grant_rate else None),
+            'largest_change': ({
+                'display_name': largest_change['display_name'],
+                'grant_rate_change': largest_change['grant_rate_change'],
+            } if largest_change else None),
+        }
+
+        history = {}
+        for row in BySector.objects.all().order_by('year_month'):
+            history.setdefault(row.sector, []).append({
+                'year_month': row.year_month,
+                'lodged': row.lodged,
+                'granted': row.granted,
+                'grant_rate': row.grant_rate,
+            })
+        history_out = [
+            {
+                'sector': sector_name,
+                'display_name': SECTOR_DISPLAY_NAMES.get(sector_name, sector_name),
+                'series': series,
+            }
+            for sector_name, series in history.items()
+        ]
+
+        return Response({
+            'period': latest_ym,
+            'previous_period': prev_ym,
+            'sectors': sorted(sectors, key=lambda s: s['lodged'], reverse=True),
+            'insights': insights,
+            'history': history_out,
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+@api_view(['GET'])
+def university_market_overview(request):
+    """
+    University Market page -- Nepal-focused Provider State volume + trend.
+    Additive only; does not modify location_comparison(), applicant_type_
+    comparison(), or provider_state_comparison(). Built only from
+    NepalGrantRates (the verified table). No institution-level data exists
+    anywhere in this pipeline -- this endpoint is strictly Nepal -> Provider
+    State -> Volume -> Share -> Trend and must never be extended to imply
+    university names.
+
+    Snapshot: decided/granted/refused per provider_state for the selected
+    period, plus share_of_nepal_total (denominator = sum of decided across
+    valid states for Nepal ONLY -- there is no external Australia-wide
+    market denominator in this dataset, confirmed via citizenship_country
+    being 100% 'Nepal'). 'Not Available' is excluded from ranked states and
+    reported separately, same convention as provider_state_comparison().
+
+    Trend: month-by-month decided/granted/refused per provider_state.
+    ALWAYS full history by default (matches location_comparison()'s
+    documented convention) -- only narrows when start_period/end_period is
+    explicitly passed. 'Not Available' excluded here too.
+
+    Params: optional financial_year=2025-26 (else defaults to latest
+    available month for the snapshot only), optional
+    start_period=YYYY-MM&end_period=YYYY-MM (overrides that default for
+    both snapshot and trend).
+    """
+    financial_year = request.query_params.get('financial_year')
+    start_period = request.query_params.get('start_period')
+    end_period = request.query_params.get('end_period')
+
+    qs = NepalGrantRates.objects.all()
+    period_label = None
+    if financial_year:
+        qs = qs.filter(financial_year=financial_year)
+        period_label = f"FY {financial_year}"
+    elif not start_period and not end_period:
+        latest = qs.order_by('-financial_year', '-month').values('financial_year', 'month').first()
+        if latest:
+            qs = qs.filter(financial_year=latest['financial_year'], month=latest['month'])
+            import calendar
+            m_num = _MONTH_MAP.get(latest['month'])
+            try:
+                fy_start = int(latest['financial_year'][:4])
+            except (TypeError, ValueError):
+                fy_start = None
+            if m_num and fy_start is not None:
+                year = fy_start if m_num >= 7 else fy_start + 1
+                period_label = f"{calendar.month_name[m_num]} {year}"
+    else:
+        period_label = f"{start_period or '?'} to {end_period or '?'}"
+
+    qs = _apply_period_filter(qs, start_period, end_period)
+    qs = qs.exclude(provider_state__isnull=True).exclude(provider_state__exact='')
+
+    not_available_qs = qs.filter(provider_state='Not Available')
+    na_agg = not_available_qs.aggregate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+    na_granted = na_agg['granted'] or 0
+    na_refused = na_agg['refused'] or 0
+
+    state_qs = (
+        qs.exclude(provider_state='Not Available')
+        .values('provider_state')
+        .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+    )
+
+    states = []
+    total_decided = 0
+    for row in state_qs:
+        granted = row['granted'] or 0
+        refused = row['refused'] or 0
+        decided = granted + refused
+        total_decided += decided
+        states.append({
+            'provider_state': row['provider_state'],
+            'granted': granted,
+            'refused': refused,
+            'decided': decided,
+        })
+
+    for s in states:
+        s['share_of_nepal_total'] = round(s['decided'] / total_decided * 100, 2) if total_decided else None
+    states.sort(key=lambda s: s['decided'], reverse=True)
+    for i, s in enumerate(states, start=1):
+        s['rank'] = i
+
+    trend_qs = NepalGrantRates.objects.exclude(
+        provider_state__isnull=True
+    ).exclude(provider_state__exact='').exclude(provider_state='Not Available')
+    trend_qs = _apply_period_filter(trend_qs, start_period, end_period)
+
+    trend_rows = (
+        trend_qs.values('financial_year', 'month', 'provider_state')
+        .annotate(granted=Sum('grant_total'), refused=Sum('refused_total'))
+    )
+
+    trend_map = {}
+    for row in trend_rows:
+        fy = row['financial_year']
+        month = row['month']
+        if not fy or month not in _MONTH_MAP:
+            continue
+        try:
+            fy_start = int(fy[:4])
+        except (TypeError, ValueError):
+            continue
+        m_num = _MONTH_MAP[month]
+        year = fy_start if m_num >= 7 else fy_start + 1
+        year_month = f"{year:04d}-{m_num:02d}"
+        granted = row['granted'] or 0
+        refused = row['refused'] or 0
+        decided = granted + refused
+        entry = trend_map.setdefault(year_month, {})
+        entry[row['provider_state']] = {'granted': granted, 'refused': refused, 'decided': decided}
+
+    trend = [{'period': ym, 'states': trend_map[ym]} for ym in sorted(trend_map.keys())]
+
+    return Response({
+        'period_label': period_label,
+        'snapshot': {
+            'states': states,
+            'total_decided': total_decided,
+            'not_available': {
+                'granted': na_granted,
+                'refused': na_refused,
+                'decided': na_granted + na_refused,
+            },
+        },
+        'trend': trend,
+    })
+
+
+@api_view(['GET'])
+def forecast_backtest(request):
+    """
+    Live backtest of build_forecast.py's exact method (linear trend on the
+    prior 24 months + seasonal adjustment), replayed against the most
+    recent 12 REAL months from MonthlyTrend/SeasonalPattern -- not a static
+    file, so this recomputes automatically as new real months are added.
+
+    This is a single honest out-of-sample check using the production
+    forecasting method itself, not a fabricated confidence/reliability
+    score. It answers: "When this method has been used before, how far
+    off was it, on average?"
+
+    Documented finding (as of the first run of this backtest): grant-rate
+    forecasts have been substantially less reliable than lodged-volume
+    forecasts, coinciding with Ministerial Direction 115 (effective 14 Nov
+    2025), a real, dated Home Affairs policy change to offshore processing
+    priorities. That structural-break note is stated here as an external,
+    documented fact -- not something this code detects algorithmically.
+    """
+    import numpy as np
+
+    HOLDOUT_MONTHS = 12
+    RECENT_WINDOW = 24
+
+    rows = list(
+        MonthlyTrend.objects.order_by('year_month').values(
+            'year_month', 'lodged', 'grant_rate', 'cal_month'
+        )
+    )
+    if len(rows) < HOLDOUT_MONTHS + RECENT_WINDOW:
+        return Response(
+            {'error': f'Not enough history: need at least {HOLDOUT_MONTHS + RECENT_WINDOW} months, have {len(rows)}'},
+            status=400,
+        )
+
+    seasonal_rows = list(SeasonalPattern.objects.values('cal_month', 'avg_lodged'))
+    seasonal_by_month = {r['cal_month']: r['avg_lodged'] for r in seasonal_rows}
+    seasonal_avg_overall = sum(seasonal_by_month.values()) / len(seasonal_by_month) if seasonal_by_month else 1.0
+
+    train = rows[:-HOLDOUT_MONTHS]
+    actual_holdout = rows[-HOLDOUT_MONTHS:]
+
+    recent = train[-RECENT_WINDOW:]
+    t_vals = list(range(len(recent)))
+    lodged_vals = [r['lodged'] for r in recent]
+    rate_vals = [r['grant_rate'] for r in recent if r['grant_rate'] is not None]
+
+    lodged_coef = np.polyfit(t_vals, lodged_vals, 1)
+    lodged_trend_fn = np.poly1d(lodged_coef)
+
+    rate_t_vals = list(range(len(rate_vals)))
+    rate_coef = np.polyfit(rate_t_vals, rate_vals, 1) if len(rate_vals) >= 2 else (0, rate_vals[0] if rate_vals else 0)
+    rate_trend_fn = np.poly1d(rate_coef)
+    rate_std = float(np.std(rate_vals)) if rate_vals else 0.0
+
+    months_result = []
+    lodged_errors = []
+    rate_errors = []
+    within_band_count = 0
+    t = len(recent)
+
+    for i, actual_row in enumerate(actual_holdout):
+        cal_month = actual_row['cal_month']
+        actual_lodged = actual_row['lodged']
+        actual_rate = actual_row['grant_rate']
+
+        lodged_base = max(lodged_trend_fn(t), 0)
+        seas_mult = (seasonal_by_month.get(cal_month, seasonal_avg_overall) / seasonal_avg_overall) if seasonal_avg_overall else 1.0
+        lodged_forecast = round(lodged_base * seas_mult)
+
+        rate_forecast = min(max(rate_trend_fn(t), 0), 100)
+        band_width = rate_std * (1 + i * 0.08)
+        lower_bound = round(min(max(rate_forecast - band_width, 0), 100), 1)
+        upper_bound = round(min(max(rate_forecast + band_width, 0), 100), 1)
+
+        lodged_error = abs(lodged_forecast - actual_lodged) if actual_lodged is not None else None
+        rate_error = abs(round(rate_forecast, 1) - actual_rate) if actual_rate is not None else None
+        within_band = (lower_bound <= actual_rate <= upper_bound) if actual_rate is not None else None
+
+        if lodged_error is not None:
+            lodged_errors.append(lodged_error)
+        if rate_error is not None:
+            rate_errors.append(rate_error)
+        if within_band:
+            within_band_count += 1
+
+        months_result.append({
+            'year_month': actual_row['year_month'],
+            'forecast_lodged': lodged_forecast,
+            'actual_lodged': actual_lodged,
+            'lodged_abs_error': lodged_error,
+            'forecast_rate': round(rate_forecast, 1),
+            'actual_rate': actual_rate,
+            'rate_abs_error_pp': round(rate_error, 1) if rate_error is not None else None,
+            'predicted_range_low': lower_bound,
+            'predicted_range_high': upper_bound,
+            'actual_within_range': within_band,
+        })
+        t += 1
+
+    mae_lodged = round(sum(lodged_errors) / len(lodged_errors)) if lodged_errors else None
+    mae_rate = round(sum(rate_errors) / len(rate_errors), 1) if rate_errors else None
+
+    return Response({
+        'holdout_months': HOLDOUT_MONTHS,
+        'months': months_result,
+        'summary': {
+            'lodged_mae': mae_lodged,
+            'grant_rate_mae_pp': mae_rate,
+            'grant_rate_band_coverage': within_band_count,
+            'grant_rate_band_coverage_total': len(months_result),
+        },
+        'documented_structural_break': {
+            'label': 'Ministerial Direction 115',
+            'effective_date': '2025-11-14',
+            'description': (
+                'Home Affairs replaced Ministerial Direction 111 with MD115 on 14 November 2025, '
+                'changing offshore student visa processing priorities. This is a documented external '
+                'policy fact, not something detected algorithmically by this backtest.'
+            ),
+        },
+        'method_note': (
+            f'Backtest replays the production forecasting method (linear trend on the prior '
+            f'{RECENT_WINDOW} months + seasonal adjustment) against the most recent {HOLDOUT_MONTHS} '
+            f'real months, recomputed live from current data.'
+        ),
+    })

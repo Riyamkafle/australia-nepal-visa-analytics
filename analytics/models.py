@@ -118,28 +118,6 @@ class NepalMerged(models.Model):
         return f"NepalMerged({self.financial_year}, {self.sector})"
 
 
-class Forecast(models.Model):
-    """
-    12-month forward forecast with confidence bands.
-    Source table: forecast (12 rows)
-    """
-    year_month          = models.CharField(max_length=20, primary_key=True)
-    month_label         = models.CharField(max_length=30, null=True, blank=True)
-    lodged_forecast     = models.FloatField(null=True, blank=True)
-    granted_forecast    = models.FloatField(null=True, blank=True)
-    refused_forecast    = models.FloatField(null=True, blank=True)
-    grant_rate_forecast = models.FloatField(null=True, blank=True)
-    upper_bound         = models.FloatField(null=True, blank=True)
-    lower_bound         = models.FloatField(null=True, blank=True)
-
-    class Meta:
-        managed  = False
-        db_table = 'forecast'
-        ordering = ['year_month']
-
-    def __str__(self):
-        return f"Forecast({self.year_month})"
-
 
 class GenderBreakdown(models.Model):
     """

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    MonthlyTrend, BySector, FySummary, NepalMerged, Forecast,
+    MonthlyTrend, BySector, FySummary, NepalMerged,
     GenderBreakdown, LocationBreakdown, AgeBreakdown,
     ChannelBreakdown, SeasonalPattern,
 )
@@ -27,12 +27,6 @@ class FySummarySerializer(serializers.ModelSerializer):
 class NepalMergedSerializer(serializers.ModelSerializer):
     class Meta:
         model = NepalMerged
-        fields = '__all__'
-
-
-class ForecastSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Forecast
         fields = '__all__'
 
 

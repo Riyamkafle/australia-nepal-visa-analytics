@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    MonthlyTrend, BySector, FySummary, NepalMerged, Forecast,
+    MonthlyTrend, BySector, FySummary, NepalMerged,
     GenderBreakdown, LocationBreakdown, AgeBreakdown,
     ChannelBreakdown, SeasonalPattern,
 )
@@ -30,11 +30,6 @@ class NepalMergedAdmin(admin.ModelAdmin):
     list_display  = ('financial_year', 'sector', 'provider_state', 'gender', 'lodged_count', 'granted_count', 'grant_rate_calc')
     search_fields = ('sector', 'provider_state', 'financial_year', 'gender', 'age_group')
     list_filter   = ('financial_year', 'client_location', 'lodgement_channel', 'gender')
-
-
-@admin.register(Forecast)
-class ForecastAdmin(admin.ModelAdmin):
-    list_display = ('year_month', 'month_label', 'lodged_forecast', 'granted_forecast', 'grant_rate_forecast', 'upper_bound', 'lower_bound')
 
 
 @admin.register(GenderBreakdown)
